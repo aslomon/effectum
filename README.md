@@ -12,14 +12,85 @@ _Effectum (Latin): the result, the accomplishment — that which has been brough
 
 <br>
 
-**An autonomous development system for Claude Code.**
-Turn your ideas into structured specifications, then let Claude Code implement them — with tests, security checks, and quality gates — while you sleep.
-
-<br>
-
-[Quick Start](#-quick-start) · [How It Works](#-how-it-works) · [The Workflow](#-the-workflow) · [PRD Workshop](#-the-prd-workshop) · [Documentation](#-documentation)
+[Quick Start](#-quick-start) · [How It Works](#-how-it-works) · [The Workflow](#-the-workflow) · [PRD Workshop](#-the-prd-workshop) · [How is this different?](#-how-is-this-different) · [Limitations](#-limitations)
 
 </div>
+
+---
+
+## Why I built this
+
+I'm a solo developer who builds everything with Claude Code. I tried BMAD, SpecKit, Taskmaster, GSD — they all taught me something. BMAD was too enterprise. SpecKit too rigid. GSD is brilliant at context engineering but doesn't help you write the spec in the first place.
+
+So I built Effectum. It combines what I learned from all of them: structured specifications (like SpecKit), autonomous execution (like GSD's approach), and quality gates that actually enforce standards.
+
+The result: describe what you want, write a proper spec with the PRD Workshop, then let Claude Code build it overnight with the Ralph Loop.
+
+This isn't a new idea — it's the best combination of existing ideas I've found, packaged so it actually works.
+
+---
+
+## 🚀 Quick Start
+
+```bash
+npx @aslomon/effectum
+```
+
+The interactive installer asks two questions — scope (global or local) and runtime — then sets everything up.
+
+```bash
+# Open Claude Code in your project
+cd ~/my-project && claude
+
+# Set up your project (substitutes placeholders in settings.json)
+/setup .
+
+# Write a specification
+/prd:new
+
+# Build it
+/plan docs/prds/001-my-feature.md
+```
+
+> [!TIP]
+> That's it. Four steps from zero to autonomous development.
+
+### Install options
+
+```bash
+npx @aslomon/effectum                   # Interactive (recommended)
+npx @aslomon/effectum --global          # Install to ~/.claude/ for all projects
+npx @aslomon/effectum --local           # Install to ./.claude/ for this project only
+npx @aslomon/effectum --global --claude # Non-interactive, Claude Code runtime
+```
+
+<details>
+<summary><strong>Prefer the classic git approach?</strong></summary>
+
+```bash
+git clone https://github.com/aslomon/effectum.git
+cd effectum
+claude
+/setup ~/my-project
+```
+
+</details>
+
+---
+
+## 📦 What's Included
+
+One command. Everything you need for autonomous Claude Code development.
+
+| What | Details |
+|------|---------|
+| **10 workflow commands** | `/plan`, `/tdd`, `/verify`, `/e2e`, `/code-review`, `/build-fix`, `/refactor-clean`, `/ralph-loop`, `/cancel-ralph`, `/checkpoint` |
+| **PRD Workshop** | 8 knowledge files for guided specification writing |
+| **4 MCP servers** | Context7, Playwright, Sequential Thinking, Filesystem |
+| **Playwright setup** | Browser install + `playwright.config.ts` |
+| **Stack presets** | Next.js + Supabase, Python + FastAPI, Swift/SwiftUI, Generic |
+| **Quality gates** | 8 automated checks (build, types, lint, tests, security, etc.) |
+| **Guardrails** | Rules that prevent known mistakes |
 
 ---
 
@@ -77,93 +148,6 @@ graph LR
     style F fill:#f3f4f6,stroke:#9ca3af,color:#374151
     style G fill:#dcfce7,stroke:#22c55e,color:#166534
 ```
-
----
-
-## 🚀 Quick Start
-
-```bash
-# 1. Install Effectum
-npx effectum
-```
-
-The interactive installer asks two questions — scope (global or local) and runtime — then sets everything up.
-
-```bash
-# 2. Open Claude Code in your project
-cd ~/my-project && claude
-
-# 3. Set up your project
-/setup .
-
-# 4. Write a specification
-/prd:new
-
-# 5. Build it
-/plan docs/prds/001-my-feature.md
-```
-
-> [!TIP]
-> That's it. Five steps from zero to autonomous development.
-
-### Install options
-
-```bash
-npx effectum                   # Interactive (recommended)
-npx effectum --global          # Install to ~/.claude/ for all projects
-npx effectum --local           # Install to ./.claude/ for this project only
-npx effectum --global --claude # Non-interactive, Claude Code runtime
-```
-
-<details>
-<summary><strong>Prefer the classic git approach?</strong></summary>
-
-```bash
-git clone https://github.com/aslomon/effectum.git
-cd effectum
-claude
-/setup ~/my-project
-```
-
-</details>
-
----
-
-## 📦 What `/setup` Installs
-
-One command. Four questions. 14 files. Your project is ready.
-
-```
-/setup ~/my-project
-```
-
-Claude asks: **project name** → **tech stack** → **language** → **autonomy level**
-
-Then installs everything:
-
-<details>
-<summary><strong>📂 See all 14 installed files</strong></summary>
-
-<br>
-
-| File                                 | What it does                                                  |
-| ------------------------------------ | ------------------------------------------------------------- |
-| `CLAUDE.md`                          | Your project's brain — rules, architecture, quality standards |
-| `AUTONOMOUS-WORKFLOW.md`             | Complete reference guide (1,300+ lines)                       |
-| `.claude/commands/plan.md`           | `/plan` — Analyze, create implementation plan, wait for OK    |
-| `.claude/commands/tdd.md`            | `/tdd` — Write tests first, then code                         |
-| `.claude/commands/verify.md`         | `/verify` — Run all quality checks                            |
-| `.claude/commands/e2e.md`            | `/e2e` — End-to-end browser tests                             |
-| `.claude/commands/code-review.md`    | `/code-review` — Security + quality audit                     |
-| `.claude/commands/build-fix.md`      | `/build-fix` — Fix errors one at a time                       |
-| `.claude/commands/refactor-clean.md` | `/refactor-clean` — Remove dead code                          |
-| `.claude/commands/ralph-loop.md`     | `/ralph-loop` — Fully autonomous overnight mode               |
-| `.claude/commands/cancel-ralph.md`   | `/cancel-ralph` — Stop the loop                               |
-| `.claude/commands/checkpoint.md`     | `/checkpoint` — Git restore point                             |
-| `.claude/settings.json`              | Auto-formatting, file protection, safety hooks                |
-| `.claude/guardrails.md`              | Rules that prevent known mistakes                             |
-
-</details>
 
 ---
 
@@ -291,37 +275,6 @@ The better the spec, the better the code.
 └─────────────────────────────────────────┘
 ```
 
-### Network Map
-
-For complex projects, Effectum generates a **visual network map** showing how every feature, module, and data entity connects:
-
-```mermaid
-graph TB
-    subgraph "PRD-001: Auth"
-        AUTH[Authentication]:::done
-        PROFILES[User Profiles]:::done
-    end
-    subgraph "PRD-002: Core"
-        PROJECTS[Projects]:::inProgress
-        TASKS[Tasks]:::inProgress
-        KANBAN(Kanban Board):::planned
-    end
-    subgraph "PRD-003: AI"
-        SUMMARY[AI Summary]:::planned
-    end
-
-    AUTH --> PROJECTS
-    PROJECTS --> TASKS
-    TASKS --> KANBAN
-    TASKS --> SUMMARY
-
-    classDef done fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#166534
-    classDef inProgress fill:#dbeafe,stroke:#3b82f6,stroke-width:2px,color:#1e40af
-    classDef planned fill:#f3f4f6,stroke:#9ca3af,stroke-width:2px,color:#374151
-```
-
-<sup>🟢 Done 🔵 In Progress ⚪ Planned</sup>
-
 ### Workshop Commands
 
 | Command             | What it does                              |
@@ -341,64 +294,16 @@ graph TB
 
 ---
 
-## 🌳 Branching & Worktrees
+## 🆚 How is this different?
 
-Each PRD project in the workshop gets its own **git branch** — so you can work on multiple projects in parallel without interference.
+| Tool | What it does | What Effectum adds |
+|------|-------------|-------------------|
+| **GSD** | Context engineering, prevents context rot | PRD Workshop (helps you write the spec), Ralph Loop (autonomous overnight) |
+| **BMAD** | Full enterprise methodology | Same ideas, 90% less ceremony |
+| **SpecKit** | Living specifications | + Autonomous execution + Quality gates |
+| **Taskmaster** | Task breakdown from PRDs | + TDD workflow + Code review + E2E testing |
 
-```mermaid
-gitGraph
-    commit id: "initial"
-    branch project/taskflow
-    checkout project/taskflow
-    commit id: "vision.md"
-    commit id: "PRD-001 auth"
-    commit id: "PRD-002 tasks"
-    commit id: "network-map"
-    checkout main
-    branch project/kniffelig
-    commit id: "vision"
-    commit id: "PRD-001 redesign"
-    checkout main
-    merge project/taskflow id: "taskflow ready"
-```
-
-### How It Works
-
-**When you start a new project** (`/prd:new` or `/workshop:init`):
-
-- A new branch `project/{slug}` is created
-- All PRD work happens on this branch
-- Your other projects remain untouched on their own branches
-
-**When a project is done** (`/workshop:archive`):
-
-- The branch is merged into `main`
-- All specs are preserved in the history
-
-**Working on multiple projects simultaneously** with worktrees:
-
-```bash
-# Main repo — working on TaskFlow
-cd ~/effectum
-# (on branch project/taskflow)
-
-# Open a second project in a worktree
-git worktree add ../effectum-kniffelig project/kniffelig
-
-# Now you have two separate directories, each on its own branch:
-# ~/effectum/              → project/taskflow
-# ~/effectum-kniffelig/    → project/kniffelig
-```
-
-> [!TIP]
-> **Worktrees** let you open Claude Code in each project simultaneously — two terminal windows, two branches, zero conflicts.
-
-### Branch Overview
-
-| Branch           | Purpose                                 | Lifetime       |
-| ---------------- | --------------------------------------- | -------------- |
-| `main`           | Stable state, knowledge base, templates | Permanent      |
-| `project/{slug}` | Active PRD work for one project         | Until archived |
+The short version: Effectum doesn't invent new concepts. It combines what already works, removes what doesn't, and packages it so it actually runs.
 
 ---
 
@@ -471,51 +376,15 @@ Choose during `/setup`. Change anytime in `.claude/settings.json`.
 
 ---
 
-## 🏗️ The Big Picture
+## ⚠️ Limitations
 
-```
-┌──────────────────────────────────────────────────┐
-│  EFFECTUM REPO                                   │
-│  (clone once, use for all your projects)         │
-│                                                  │
-│  /setup ~/project-a    → Install workflow        │
-│  /setup ~/project-b    → Install workflow        │
-│  /setup ~/project-c    → Install workflow        │
-│                                                  │
-│  /prd:new              → Write specifications    │
-│  /prd:handoff          → Send to project         │
-└──────────┬───────────────────────────────────────┘
-           │
-           │  installs: CLAUDE.md, 10 commands,
-           │  hooks, guardrails, quality gates
-           │
-     ┌─────┼─────────────┬──────────────┐
-     ▼     ▼             ▼              ▼
-┌─────────┐ ┌─────────┐ ┌─────────┐
-│Project A│ │Project B│ │Project C│
-│         │ │         │ │         │
-│ /plan   │ │ /plan   │ │ /plan   │
-│ /tdd    │ │ /tdd    │ │ /tdd    │
-│ /verify │ │ /verify │ │ /verify │
-│ /ralph  │ │ /ralph  │ │ /ralph  │
-│ -loop   │ │ -loop   │ │ -loop   │
-│         │ │         │ │         │
-│ ✅ Code │ │ ✅ Code │ │ ✅ Code │
-└─────────┘ └─────────┘ └─────────┘
-```
+Effectum is useful, but it's honest about what it can't do yet:
 
----
-
-## 📊 Before & After
-
-|                | Without Effectum                   | With Effectum                                      |
-| -------------- | ---------------------------------- | -------------------------------------------------- |
-| 💡 Starting    | _"Build a login"_ → Claude guesses | Detailed spec → Claude knows exactly what to build |
-| 🧪 Testing     | Maybe write tests after            | Tests written **first**, always                    |
-| ✅ Quality     | Hope for the best                  | **8 automated gates** must pass                    |
-| 🔒 Security    | Manual review (or forget)          | Automatic **OWASP audit**                          |
-| 🌙 Overnight   | Not possible                       | Ralph Loop **builds while you sleep**              |
-| 🔄 Consistency | Depends on the prompt              | **Same workflow, same quality**, every time        |
+- **Only works with Claude Code** — workflow commands are Claude Code specific. Other runtimes (Codex, Gemini CLI) are on the roadmap.
+- **PRD Workshop requires Claude Code slash commands** — you can't use it from the web interface or API directly.
+- **Ralph Loop effectiveness depends on PRD quality** — garbage in, garbage out. A vague spec produces vague code, even autonomously.
+- **MCP servers need npm/Node.js** — if you're in a restricted environment without npm access, MCP setup will fail.
+- **No test suite yet** — ironic for a TDD tool. It's on the list.
 
 ---
 
@@ -571,7 +440,7 @@ No. Use `/plan` directly with a description for small things. Specifications shi
 <details>
 <summary><strong>Does this work with other AI coding tools?</strong></summary>
 
-Effectum is built for Claude Code. The specifications it produces are useful for any AI tool, but the workflow commands (`/plan`, `/tdd`, etc.) are Claude Code specific.
+Effectum is built for Claude Code. The specifications it produces are useful for any AI tool, but the workflow commands (`/plan`, `/tdd`, etc.) are Claude Code specific. See [Limitations](#️-limitations).
 
 </details>
 
@@ -597,9 +466,9 @@ Yes. File protection blocks writes to `.env` and secrets. Destructive command pr
 </details>
 
 <details>
-<summary><strong>Can I work on multiple PRD projects simultaneously?</strong></summary>
+<summary><strong>What does /setup actually do?</strong></summary>
 
-Yes. Each project gets its own git branch. Use `git worktree` to open multiple projects in separate directories — each with its own Claude Code session. See [Branching & Worktrees](#-branching--worktrees).
+`/setup` configures your project by substituting placeholders in `settings.json` and `CLAUDE.md` with your actual project name, tech stack, language, and autonomy level. Run it once per project after installing Effectum.
 
 </details>
 
@@ -620,7 +489,7 @@ The most impactful areas:
 
 ## License
 
-MIT
+MIT © 2026 [Jason Salomon-Rinnert](https://github.com/aslomon)
 
 <br>
 

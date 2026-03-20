@@ -5,7 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.1.1] - 2026-03-20
+
+### Fixed
+
+- **LICENSE**: Added MIT license file
+- **CLAUDE.md.tmpl**: Removed phantom `/orchestrate` command from commands table (command doesn't exist)
+- **README**: Overhauled with honest positioning, npx install as primary method, limitations section
+- **installer**: Added note to run `/setup` after install to substitute placeholders in settings.json
+
+### Changed
+
+- **package.json**: Bumped version to 0.1.1
+- **CHANGELOG**: Updated repo URL from placeholder to `aslomon/effectum`
+
+## [0.1.0] - 2026-03-15
 
 ### Added
 
@@ -22,24 +36,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `/build-fix` - Build failure recovery
   - `/refactor-clean` - Code cleanup and optimization
   - `/ralph-loop` - Rapid iterative refinement
-  - `/cancel-ralph` - Cancel active RALPH sessions
+  - `/cancel-ralph` - Cancel active Ralph Loop sessions
   - `/checkpoint` - Save project snapshots
 - **Framework Presets** (`system/stacks/`): Stack-specific configuration templates:
   - Next.js + Supabase preset
   - Python + FastAPI preset
   - Swift/SwiftUI preset
   - Generic stack-agnostic baseline
-- **Workshop Reorganization**: Moved PRD creation tools and templates into dedicated workshop module for focused project discovery
-- **Enhanced Documentation**: Expanded docs with installation guide, customization guide, troubleshooting, and visual workflow diagrams
+- **PRD Workshop**: Guided specification creation with 8 knowledge files, adaptive questioning, network maps
+- **MCP Server Integration**: Context7, Playwright, Sequential Thinking, Filesystem
+- **Enhanced Documentation**: Installation guide, customization guide, troubleshooting, visual workflow diagrams
 
 ### Changed
 
-- **Internationalization**: Translated all Claude Code commands from German to English for broader accessibility
-- **Project Structure**: Reorganized workshop files from top-level directories into `workshop/` module for clearer separation of concerns
-- **Command Documentation**: Updated all `.claude/commands/` with new unified format and enhanced workflow descriptions
+- **Internationalization**: Translated all Claude Code commands from German to English
+- **Project Structure**: Reorganized workshop files into `workshop/` module
+- **Command Documentation**: Updated all `.claude/commands/` with new unified format
 
-### Removed
-
-- **Moved to Workshop**: Knowledge base, templates, and example project files reorganized into `workshop/` module (not deleted, just relocated)
-
-[Unreleased]: https://github.com/yourname/prd-workshop/compare/v0.0.0...HEAD
+[0.1.1]: https://github.com/aslomon/effectum/compare/v0.1.0...v0.1.1
+[0.1.0]: https://github.com/aslomon/effectum/releases/tag/v0.1.0

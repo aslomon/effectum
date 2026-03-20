@@ -633,11 +633,13 @@ ${bold('Options:')}
     console.log('  ' + bold('Next steps:'));
     console.log(`  ${cyan('1.')} Open Claude Code in any project`);
     console.log(`  ${cyan('2.')} Run ${bold('/setup ~/your-project')} to configure it`);
+    console.log(`       ${dim('↳ /setup substitutes placeholders in settings.json for your project')}`);
     console.log(`  ${cyan('3.')} Write a spec with ${bold('/prd:new')}`);
   } else {
     console.log('  ' + bold('Next steps:'));
     console.log(`  ${cyan('1.')} Open Claude Code here: ${dim('claude')}`);
     console.log(`  ${cyan('2.')} Run ${bold('/setup .')} to configure this project`);
+    console.log(`       ${dim('↳ /setup substitutes placeholders in settings.json for your project')}`);
     console.log(`  ${cyan('3.')} Write a spec with ${bold('/prd:new')}`);
   }
 
