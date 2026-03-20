@@ -1,36 +1,90 @@
-# Effectum
+<div align="center">
 
-**Describe what you want. Get production-ready code.**
+# ⚡ Effectum
 
-Effectum is an autonomous development system for [Claude Code](https://claude.ai/claude-code). It turns your ideas into structured requirements, then implements them — with tests, security checks, and quality gates — while you sleep.
+### Describe what you want. Get production-ready code.
 
 _Effectum (Latin): the result, the accomplishment — that which has been brought to completion._
 
----
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Claude Code](https://img.shields.io/badge/Built%20for-Claude%20Code-blueviolet)](https://claude.ai/claude-code)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-## How It Works
+<br>
 
-You have an idea. Effectum turns it into working software in three steps:
+**An autonomous development system for Claude Code.**
+Turn your ideas into structured specifications, then let Claude Code implement them — with tests, security checks, and quality gates — while you sleep.
 
-```
-1. DESCRIBE          2. PLAN & BUILD           3. EFFECTUM
-   your idea            autonomously              production-ready code
-                                                  with tests & security
-```
+<br>
 
-**Step 1** — You describe your idea. Effectum asks the right questions and writes a detailed specification (PRD).
+[Quick Start](#-quick-start) · [How It Works](#-how-it-works) · [The Workflow](#-the-workflow) · [PRD Workshop](#-the-prd-workshop) · [Documentation](#-documentation)
 
-**Step 2** — Effectum's workflow takes the specification and implements it autonomously: tests first, then code, then verification.
-
-**Step 3** — You wake up to a working feature. Tests passing. Code reviewed. Quality gates green.
+</div>
 
 ---
 
-## Quick Start
+## 🎯 How It Works
+
+Effectum has two parts that work together:
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+### 🏗️ The Installer
+
+Sets up your project with everything Claude Code needs for autonomous development:
+
+- 10 workflow commands
+- Quality gates & safety hooks
+- Architecture rules & guardrails
+- Stack-specific configuration
+
+**One command: `/setup ~/my-project`**
+
+</td>
+<td width="50%" valign="top">
+
+### 📋 The PRD Workshop
+
+Helps you write specifications that are good enough for autonomous implementation:
+
+- Guided discovery process
+- Adaptive questioning
+- Network maps & dependency graphs
+- Quality scoring & review
+
+**One command: `/prd:new`**
+
+</td>
+</tr>
+</table>
+
+```mermaid
+graph LR
+    A["💡 Your Idea"] --> B["📋 Specification\n(PRD Workshop)"]
+    B --> C["/plan\nAnalyze & Plan"]
+    C --> D["/tdd\nTests → Code"]
+    D --> E["/verify\nQuality Gates"]
+    E --> F["/code-review\nSecurity Audit"]
+    F --> G["✅ Production Code"]
+
+    style A fill:#fef3c7,stroke:#f59e0b,color:#92400e
+    style B fill:#e0e7ff,stroke:#6366f1,color:#3730a3
+    style C fill:#f3f4f6,stroke:#9ca3af,color:#374151
+    style D fill:#f3f4f6,stroke:#9ca3af,color:#374151
+    style E fill:#f3f4f6,stroke:#9ca3af,color:#374151
+    style F fill:#f3f4f6,stroke:#9ca3af,color:#374151
+    style G fill:#dcfce7,stroke:#22c55e,color:#166534
+```
+
+---
+
+## 🚀 Quick Start
 
 ```bash
 # 1. Clone
-git clone https://github.com/jasonrinnert/effectum.git
+git clone https://github.com/aslomon/effectum.git
 cd effectum
 
 # 2. Open Claude Code
@@ -42,270 +96,515 @@ claude
 # 4. Write a specification
 /prd:new
 
-# 5. Build it (in your project)
+# 5. Build it
 cd ~/my-project && claude
 /plan docs/prds/001-my-feature.md
 ```
 
-That's it. Five steps from zero to autonomous development.
+> [!TIP]
+> That's it. Five steps from zero to autonomous development.
 
 ---
 
-## What `/setup` Installs in Your Project
+## 📦 What `/setup` Installs
 
-One command. 14 files. Your project is ready.
+One command. Four questions. 14 files. Your project is ready.
 
 ```
 /setup ~/my-project
 ```
 
-Claude asks four questions — project name, tech stack, language, autonomy level — then installs:
+Claude asks: **project name** → **tech stack** → **language** → **autonomy level**
 
-| File                                 | What it does                                                   |
-| ------------------------------------ | -------------------------------------------------------------- |
-| `CLAUDE.md`                          | Your project's brain — rules, architecture, quality standards  |
-| `AUTONOMOUS-WORKFLOW.md`             | Complete reference guide                                       |
-| `.claude/commands/plan.md`           | **`/plan`** — Analyze, create implementation plan, wait for OK |
-| `.claude/commands/tdd.md`            | **`/tdd`** — Write tests first, then code                      |
-| `.claude/commands/verify.md`         | **`/verify`** — Run all quality checks                         |
-| `.claude/commands/e2e.md`            | **`/e2e`** — End-to-end browser tests                          |
-| `.claude/commands/code-review.md`    | **`/code-review`** — Security + quality audit                  |
-| `.claude/commands/build-fix.md`      | **`/build-fix`** — Fix errors one at a time                    |
-| `.claude/commands/refactor-clean.md` | **`/refactor-clean`** — Remove dead code                       |
-| `.claude/commands/ralph-loop.md`     | **`/ralph-loop`** — Fully autonomous overnight mode            |
-| `.claude/commands/cancel-ralph.md`   | **`/cancel-ralph`** — Stop the loop                            |
-| `.claude/commands/checkpoint.md`     | **`/checkpoint`** — Git restore point                          |
-| `.claude/settings.json`              | Auto-formatting, file protection, safety hooks                 |
-| `.claude/guardrails.md`              | Rules that prevent known mistakes                              |
+Then installs everything:
+
+<details>
+<summary><strong>📂 See all 14 installed files</strong></summary>
+
+<br>
+
+| File                                 | What it does                                                  |
+| ------------------------------------ | ------------------------------------------------------------- |
+| `CLAUDE.md`                          | Your project's brain — rules, architecture, quality standards |
+| `AUTONOMOUS-WORKFLOW.md`             | Complete reference guide (1,300+ lines)                       |
+| `.claude/commands/plan.md`           | `/plan` — Analyze, create implementation plan, wait for OK    |
+| `.claude/commands/tdd.md`            | `/tdd` — Write tests first, then code                         |
+| `.claude/commands/verify.md`         | `/verify` — Run all quality checks                            |
+| `.claude/commands/e2e.md`            | `/e2e` — End-to-end browser tests                             |
+| `.claude/commands/code-review.md`    | `/code-review` — Security + quality audit                     |
+| `.claude/commands/build-fix.md`      | `/build-fix` — Fix errors one at a time                       |
+| `.claude/commands/refactor-clean.md` | `/refactor-clean` — Remove dead code                          |
+| `.claude/commands/ralph-loop.md`     | `/ralph-loop` — Fully autonomous overnight mode               |
+| `.claude/commands/cancel-ralph.md`   | `/cancel-ralph` — Stop the loop                               |
+| `.claude/commands/checkpoint.md`     | `/checkpoint` — Git restore point                             |
+| `.claude/settings.json`              | Auto-formatting, file protection, safety hooks                |
+| `.claude/guardrails.md`              | Rules that prevent known mistakes                             |
+
+</details>
 
 ---
 
-## The Workflow
+## 🔧 The Workflow
 
 ### `/plan` — Think before building
 
-Claude reads your specification, explores your codebase, and creates a plan. It identifies risks, asks questions, and **waits for your OK** before writing any code.
+> Claude reads your specification, explores your codebase, and creates a plan. It identifies risks, asks questions, and **waits for your OK** before writing a single line of code.
 
 ### `/tdd` — Tests first, always
 
-Write a failing test. Write the code to pass it. Improve. Repeat. Every feature is tested before it exists.
+> Write a failing test → Write code to pass it → Improve → Repeat.
+> Every feature is tested before it exists.
 
 ### `/verify` — Every quality gate, every time
 
-| Check       | What it verifies               |
-| ----------- | ------------------------------ |
-| Build       | Compiles without errors        |
-| Types       | No type errors                 |
-| Lint        | Clean code, no warnings        |
-| Tests       | All pass, 80%+ coverage        |
-| Security    | No OWASP vulnerabilities       |
-| Debug logs  | No `console.log` in production |
-| Type safety | No `any` or unsafe casts       |
-| File size   | Nothing over 300 lines         |
+| Gate           | What it checks              | Standard                |
+| -------------- | --------------------------- | ----------------------- |
+| 🔨 Build       | Compiles without errors     | 0 errors                |
+| 📐 Types       | Type safety                 | 0 errors                |
+| 🧹 Lint        | Clean code style            | 0 warnings              |
+| 🧪 Tests       | Test suite                  | All pass, 80%+ coverage |
+| 🔒 Security    | OWASP vulnerabilities       | None found              |
+| 🚫 Debug logs  | `console.log` in production | 0 occurrences           |
+| 🛡️ Type safety | `any` or unsafe casts       | None                    |
+| 📏 File size   | Oversized files             | Max 300 lines           |
 
-### `/code-review` — Security + quality audit
+### `/code-review` — A second pair of eyes
 
-Reviews every change for security issues, code quality, and architecture violations. Finds what humans miss.
+> Reviews every change for security issues, code quality, architecture violations, and common mistakes. Rates findings as **Critical**, **Warning**, or **Info**.
 
 ### `/ralph-loop` — Build while you sleep
 
-The most powerful feature:
+> [!IMPORTANT]
+> This is the most powerful feature.
 
-```
+```bash
 /ralph-loop "Build the auth system"
   --max-iterations 30
   --completion-promise "All tests pass, build succeeds, 0 lint errors"
 ```
 
-Claude works alone — writing code, running tests, fixing errors, iterating — until **every quality gate passes**. It only stops when the promise is 100% true.
+Claude works autonomously — writing code, running tests, fixing errors, iterating — until **every quality gate passes**. It only stops when the promise is 100% true.
 
-You go to sleep. You wake up to a working feature.
+**You go to sleep. You wake up to a working feature.**
+
+<details>
+<summary><strong>🔄 How Ralph Loop works internally</strong></summary>
+
+<br>
+
+```mermaid
+graph TD
+    A["Start: Read PRD"] --> B["Check current state\n(git diff, tests)"]
+    B --> C["Implement next step"]
+    C --> D["Run quality gates"]
+    D --> E{"All gates\npass?"}
+    E -- No --> F{"Same error\n3+ times?"}
+    F -- No --> B
+    F -- Yes --> G["Try different approach"]
+    G --> B
+    E -- Yes --> H{"Completion\npromise true?"}
+    H -- No --> B
+    H -- Yes --> I["✅ Output promise\nDone!"]
+
+    D --> J{"80% iterations\nused?"}
+    J -- Yes --> K["📝 Write status report"]
+    K --> B
+
+    style I fill:#dcfce7,stroke:#22c55e
+    style A fill:#e0e7ff,stroke:#6366f1
+```
+
+- **Built-in error recovery**: reads errors, tries alternatives, documents blockers
+- **Status report at 80%**: if running out of iterations, writes what's done and what's left
+- **Honest promises**: the completion promise is ONLY output when 100% true
+
+</details>
 
 ---
 
-## Writing Specifications — The PRD Workshop
+## 📋 The PRD Workshop
 
-A specification is the bridge between "I want this" and "Claude builds this." Better spec = better code.
+A specification (PRD) is the bridge between _"I want this"_ and _"Claude builds this."_
+
+The better the spec, the better the code.
 
 ### Two Modes
 
-**Workshop** — You have a vague idea. Effectum asks questions, round by round, until it understands. Then writes the spec.
+| Mode            | When to use                 | What happens                                                       |
+| --------------- | --------------------------- | ------------------------------------------------------------------ |
+| **🔍 Workshop** | Vague idea, complex project | Effectum asks questions round by round until it fully understands  |
+| **⚡ Express**  | Clear requirements          | Describe it, Effectum fills gaps and produces the spec in one shot |
 
-**Express** — You know what you want. Describe it, Effectum fills the gaps and produces the spec in one shot.
+### What a Specification Contains
 
-### What Effectum Produces
-
-Every specification includes:
-
-| Section             | Why it matters                                  |
-| ------------------- | ----------------------------------------------- |
-| Problem & Goal      | What are we solving? How do we measure success? |
-| User Stories        | What can users do when this is done?            |
-| Acceptance Criteria | Testable conditions: Given X, When Y, Then Z    |
-| Data Model          | Tables, fields, types, security policies        |
-| API Design          | Endpoints, formats, error codes                 |
-| Quality Gates       | Automated checks that must pass                 |
-| Completion Promise  | The sentence that must be true when done        |
+```
+┌─────────────────────────────────────────┐
+│  📋 EFFECTUM SPECIFICATION (PRD)        │
+├─────────────────────────────────────────┤
+│                                         │
+│  Problem & Goal                         │
+│  ── What are we solving? Why?           │
+│                                         │
+│  User Stories                           │
+│  ── What can users do when done?        │
+│                                         │
+│  Acceptance Criteria                    │
+│  ── Given X, When Y, Then Z            │
+│  ── (every criterion = one test)        │
+│                                         │
+│  Data Model                            │
+│  ── Tables, fields, types, RLS          │
+│                                         │
+│  API Design                            │
+│  ── Endpoints, formats, error codes     │
+│                                         │
+│  Quality Gates                         │
+│  ── 8 automated checks that must pass   │
+│                                         │
+│  Completion Promise                    │
+│  ── "All tests pass, build succeeds,    │
+│     0 lint errors"                      │
+│                                         │
+└─────────────────────────────────────────┘
+```
 
 ### Network Map
 
-For complex projects, Effectum generates a visual network map (Mermaid diagram) showing how every feature, module, and data entity connects. The map grows as your project grows.
+For complex projects, Effectum generates a **visual network map** showing how every feature, module, and data entity connects:
+
+```mermaid
+graph TB
+    subgraph "PRD-001: Auth"
+        AUTH[Authentication]:::done
+        PROFILES[User Profiles]:::done
+    end
+    subgraph "PRD-002: Core"
+        PROJECTS[Projects]:::inProgress
+        TASKS[Tasks]:::inProgress
+        KANBAN(Kanban Board):::planned
+    end
+    subgraph "PRD-003: AI"
+        SUMMARY[AI Summary]:::planned
+    end
+
+    AUTH --> PROJECTS
+    PROJECTS --> TASKS
+    TASKS --> KANBAN
+    TASKS --> SUMMARY
+
+    classDef done fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#166534
+    classDef inProgress fill:#dbeafe,stroke:#3b82f6,stroke-width:2px,color:#1e40af
+    classDef planned fill:#f3f4f6,stroke:#9ca3af,stroke-width:2px,color:#374151
+```
+
+<sup>🟢 Done 🔵 In Progress ⚪ Planned</sup>
 
 ### Workshop Commands
 
-| Command            | What it does                      |
-| ------------------ | --------------------------------- |
-| `/prd:new`         | Start a new specification         |
-| `/prd:express`     | Quick spec from clear input       |
-| `/prd:discuss`     | Deep-dive into details            |
-| `/prd:review`      | Quality check — is this ready?    |
-| `/prd:decompose`   | Split a large project into pieces |
-| `/prd:network-map` | Visualize how everything connects |
-| `/prd:handoff`     | Send spec to your project         |
-| `/prd:status`      | See all projects and progress     |
-| `/prd:resume`      | Continue where you left off       |
-| `/prd:prompt`      | Generate the handoff prompt       |
+| Command             | What it does                              |
+| ------------------- | ----------------------------------------- |
+| `/prd:new`          | Start a new specification (guided)        |
+| `/prd:express`      | Quick spec from clear input               |
+| `/prd:discuss`      | Deep-dive into specific areas             |
+| `/prd:review`       | Quality check — ready for implementation? |
+| `/prd:decompose`    | Split a large project into pieces         |
+| `/prd:network-map`  | Visualize connections (Mermaid)           |
+| `/prd:handoff`      | Export spec to your project               |
+| `/prd:status`       | See all projects and progress             |
+| `/prd:resume`       | Continue where you left off               |
+| `/prd:prompt`       | Generate the right handoff prompt         |
+| `/workshop:init`    | Create a new project workspace            |
+| `/workshop:archive` | Archive a completed project               |
 
 ---
 
-## Stack Presets
+## 🌳 Branching & Worktrees
 
-Effectum adapts to your tech stack:
+Each PRD project in the workshop gets its own **git branch** — so you can work on multiple projects in parallel without interference.
 
-| Preset                 | Technologies                                                        | Best for                         |
-| ---------------------- | ------------------------------------------------------------------- | -------------------------------- |
-| **Next.js + Supabase** | Next.js, TypeScript, Tailwind, Shadcn, Supabase, Vitest, Playwright | Full-stack web apps              |
-| **Python + FastAPI**   | Python, FastAPI, Pydantic, SQLAlchemy, pytest, ruff                 | APIs and backends                |
-| **Swift/SwiftUI**      | Swift, SwiftUI, SwiftData, XCTest                                   | iOS and macOS apps               |
-| **Generic**            | Stack-agnostic baseline                                             | Anything — customize after setup |
+```mermaid
+gitGraph
+    commit id: "initial"
+    branch project/taskflow
+    checkout project/taskflow
+    commit id: "vision.md"
+    commit id: "PRD-001 auth"
+    commit id: "PRD-002 tasks"
+    commit id: "network-map"
+    checkout main
+    branch project/kniffelig
+    commit id: "vision"
+    commit id: "PRD-001 redesign"
+    checkout main
+    merge project/taskflow id: "taskflow ready"
+```
 
-Each preset configures the right build commands, test frameworks, linters, and architecture rules.
+### How It Works
+
+**When you start a new project** (`/prd:new` or `/workshop:init`):
+
+- A new branch `project/{slug}` is created
+- All PRD work happens on this branch
+- Your other projects remain untouched on their own branches
+
+**When a project is done** (`/workshop:archive`):
+
+- The branch is merged into `main`
+- All specs are preserved in the history
+
+**Working on multiple projects simultaneously** with worktrees:
+
+```bash
+# Main repo — working on TaskFlow
+cd ~/effectum
+# (on branch project/taskflow)
+
+# Open a second project in a worktree
+git worktree add ../effectum-kniffelig project/kniffelig
+
+# Now you have two separate directories, each on its own branch:
+# ~/effectum/              → project/taskflow
+# ~/effectum-kniffelig/    → project/kniffelig
+```
+
+> [!TIP]
+> **Worktrees** let you open Claude Code in each project simultaneously — two terminal windows, two branches, zero conflicts.
+
+### Branch Overview
+
+| Branch           | Purpose                                 | Lifetime       |
+| ---------------- | --------------------------------------- | -------------- |
+| `main`           | Stable state, knowledge base, templates | Permanent      |
+| `project/{slug}` | Active PRD work for one project         | Until archived |
 
 ---
 
-## Three Autonomy Levels
+## 🎨 Stack Presets
 
-| Level             | Claude asks before...               | Best for                     |
-| ----------------- | ----------------------------------- | ---------------------------- |
-| **Conservative**  | Most changes, all git operations    | Teams, learning the system   |
-| **Standard**      | Ambiguous specs, breaking changes   | Daily development            |
-| **Full Autonomy** | Almost nothing — only real blockers | Overnight builds, Ralph Loop |
+Effectum adapts to your technology:
+
+<table>
+<tr>
+<td width="25%" align="center">
+<br>
+<strong>Next.js + Supabase</strong>
+<br><br>
+TypeScript, Tailwind, Shadcn<br>
+Supabase, Vitest, Playwright<br>
+<br>
+<em>Full-stack web apps</em>
+<br><br>
+</td>
+<td width="25%" align="center">
+<br>
+<strong>Python + FastAPI</strong>
+<br><br>
+Pydantic, SQLAlchemy<br>
+pytest, ruff<br>
+<br>
+<em>APIs and backends</em>
+<br><br>
+</td>
+<td width="25%" align="center">
+<br>
+<strong>Swift / SwiftUI</strong>
+<br><br>
+SwiftData, XCTest<br>
+swift-format, SPM<br>
+<br>
+<em>iOS and macOS apps</em>
+<br><br>
+</td>
+<td width="25%" align="center">
+<br>
+<strong>Generic</strong>
+<br><br>
+Stack-agnostic<br>
+Customize everything<br>
+<br>
+<em>Anything else</em>
+<br><br>
+</td>
+</tr>
+</table>
+
+Each preset configures build commands, test frameworks, linters, formatters, and architecture rules for your stack.
+
+---
+
+## 🎚️ Three Autonomy Levels
+
+Choose how much Claude decides on its own:
+
+|                           |  Conservative   |    Standard     |  Full Autonomy   |
+| ------------------------- | :-------------: | :-------------: | :--------------: |
+| **Claude asks before...** |  Most changes   | Ambiguous specs |  Almost nothing  |
+| **Git operations**        |   Always asks   |  Asks for push  |    Autonomous    |
+| **File changes**          |  Confirms each  |  Works freely   |   Works freely   |
+| **Best for**              | Teams, learning |    Daily dev    | Overnight builds |
+| **Ralph Loop**            |       ❌        |       ✅        |  ✅ Recommended  |
 
 Choose during `/setup`. Change anytime in `.claude/settings.json`.
 
 ---
 
-## The Big Picture
+## 🏗️ The Big Picture
 
 ```
-┌─────────────────────────────────────────────┐
-│  EFFECTUM REPO                              │
-│  (clone once, use for all projects)         │
-│                                             │
-│  /setup       → Install the workflow        │
-│  /prd:new     → Write specifications        │
-│  /prd:handoff → Send to your project        │
-└──────────────┬──────────────────────────────┘
-               │
-               │  installs CLAUDE.md, commands,
-               │  hooks, guardrails
-               ▼
-┌─────────────────────────────────────────────┐
-│  YOUR PROJECT                               │
-│                                             │
-│  /plan          → Think, then propose       │
-│  /tdd           → Tests first, then code    │
-│  /verify        → All quality gates         │
-│  /code-review   → Security + quality        │
-│  /ralph-loop    → Autonomous overnight      │
-│                                             │
-│  Result: Production-ready code              │
-└─────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────┐
+│  EFFECTUM REPO                                   │
+│  (clone once, use for all your projects)         │
+│                                                  │
+│  /setup ~/project-a    → Install workflow        │
+│  /setup ~/project-b    → Install workflow        │
+│  /setup ~/project-c    → Install workflow        │
+│                                                  │
+│  /prd:new              → Write specifications    │
+│  /prd:handoff          → Send to project         │
+└──────────┬───────────────────────────────────────┘
+           │
+           │  installs: CLAUDE.md, 10 commands,
+           │  hooks, guardrails, quality gates
+           │
+     ┌─────┼─────────────┬──────────────┐
+     ▼     ▼             ▼              ▼
+┌─────────┐ ┌─────────┐ ┌─────────┐
+│Project A│ │Project B│ │Project C│
+│         │ │         │ │         │
+│ /plan   │ │ /plan   │ │ /plan   │
+│ /tdd    │ │ /tdd    │ │ /tdd    │
+│ /verify │ │ /verify │ │ /verify │
+│ /ralph  │ │ /ralph  │ │ /ralph  │
+│ -loop   │ │ -loop   │ │ -loop   │
+│         │ │         │ │         │
+│ ✅ Code │ │ ✅ Code │ │ ✅ Code │
+└─────────┘ └─────────┘ └─────────┘
 ```
 
 ---
 
-## Before & After
+## 📊 Before & After
 
-|                    | Without Effectum                 | With Effectum                                      |
-| ------------------ | -------------------------------- | -------------------------------------------------- |
-| Starting a feature | "Build a login" → Claude guesses | Detailed spec → Claude knows exactly what to build |
-| Testing            | Maybe, after coding              | Tests written first, always                        |
-| Quality            | Hope for the best                | 8 automated gates must pass                        |
-| Security           | Manual review (or forget)        | Automatic OWASP audit                              |
-| Overnight work     | Not possible                     | Ralph Loop builds while you sleep                  |
-| Consistency        | Depends on the prompt            | Same workflow, same quality, every time            |
+|                | Without Effectum                   | With Effectum                                      |
+| -------------- | ---------------------------------- | -------------------------------------------------- |
+| 💡 Starting    | _"Build a login"_ → Claude guesses | Detailed spec → Claude knows exactly what to build |
+| 🧪 Testing     | Maybe write tests after            | Tests written **first**, always                    |
+| ✅ Quality     | Hope for the best                  | **8 automated gates** must pass                    |
+| 🔒 Security    | Manual review (or forget)          | Automatic **OWASP audit**                          |
+| 🌙 Overnight   | Not possible                       | Ralph Loop **builds while you sleep**              |
+| 🔄 Consistency | Depends on the prompt              | **Same workflow, same quality**, every time        |
 
 ---
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 effectum/
-├── system/                      The installable workflow
-│   ├── templates/               Config templates (CLAUDE.md, settings, guardrails)
-│   ├── commands/                10 workflow commands
-│   └── stacks/                  Stack presets
 │
-├── workshop/                    Specification tools
-│   ├── knowledge/               8 reference guides
-│   ├── templates/               Document templates
-│   └── projects/                Your spec projects
+├── system/                          The installable workflow
+│   ├── templates/                   CLAUDE.md, settings, guardrails (parameterized)
+│   ├── commands/                    10 workflow commands
+│   └── stacks/                     Next.js · Python · Swift · Generic
 │
-├── docs/                        Documentation
-│   ├── workflow-overview.md
-│   ├── installation-guide.md
-│   ├── prd-workshop-guide.md
-│   ├── customization.md
-│   └── troubleshooting.md
+├── workshop/                        Specification tools
+│   ├── knowledge/                   8 reference guides
+│   ├── templates/                   PRD & project templates
+│   └── projects/                    Your spec projects (per branch)
 │
-└── CLAUDE.md                    Makes Claude understand this repo
+├── docs/                            Documentation
+│   ├── workflow-overview.md         The complete workflow
+│   ├── installation-guide.md        Setup step by step
+│   ├── prd-workshop-guide.md        Writing great specs
+│   ├── customization.md            Adapting Effectum
+│   └── troubleshooting.md          Common fixes
+│
+├── CLAUDE.md                        Makes Claude understand this repo
+└── README.md                        You are here
 ```
 
 ---
 
-## Documentation
+## 📚 Documentation
 
-| Guide                                            | What you'll learn                 |
-| ------------------------------------------------ | --------------------------------- |
-| [Workflow Overview](docs/workflow-overview.md)   | The complete workflow explained   |
-| [Installation Guide](docs/installation-guide.md) | Detailed setup instructions       |
-| [PRD Workshop Guide](docs/prd-workshop-guide.md) | How to write great specifications |
-| [Customization](docs/customization.md)           | Adapting Effectum to your needs   |
-| [Troubleshooting](docs/troubleshooting.md)       | Common issues and solutions       |
-
----
-
-## FAQ
-
-**Do I need to write a specification for every feature?**
-No. Use `/plan` directly with a description for small things. Specifications shine for anything complex.
-
-**Does this work with other AI coding tools?**
-Effectum is built for Claude Code. The specifications work with any AI tool, but the workflow commands are Claude Code specific.
-
-**Can I customize everything after setup?**
-Yes. Everything is plain text — edit `CLAUDE.md`, `.claude/settings.json`, `.claude/guardrails.md`. See [Customization](docs/customization.md).
-
-**What if Ralph Loop gets stuck?**
-Built-in error recovery: reads errors, tries alternatives, documents blockers. At 80% of max iterations, writes a status report of what's done and what's left.
-
-**Is this safe?**
-File protection blocks writes to `.env` and secrets. Destructive command prevention blocks `rm -rf` and `DROP TABLE`. Quality gates catch issues before they ship. Conservative mode asks before most actions.
+| Guide                                               | What you'll learn                          |
+| --------------------------------------------------- | ------------------------------------------ |
+| 📖 [Workflow Overview](docs/workflow-overview.md)   | The complete autonomous workflow explained |
+| 🔧 [Installation Guide](docs/installation-guide.md) | Detailed setup instructions                |
+| 📋 [PRD Workshop Guide](docs/prd-workshop-guide.md) | How to write great specifications          |
+| ⚙️ [Customization](docs/customization.md)           | Adapting Effectum to your needs            |
+| 🔍 [Troubleshooting](docs/troubleshooting.md)       | Common issues and solutions                |
 
 ---
 
-## Contributing
+## ❓ FAQ
+
+<details>
+<summary><strong>Do I need to write a specification for every feature?</strong></summary>
+
+No. Use `/plan` directly with a description for small things. Specifications shine for anything complex — they eliminate back-and-forth and produce dramatically better results.
+
+</details>
+
+<details>
+<summary><strong>Does this work with other AI coding tools?</strong></summary>
+
+Effectum is built for Claude Code. The specifications it produces are useful for any AI tool, but the workflow commands (`/plan`, `/tdd`, etc.) are Claude Code specific.
+
+</details>
+
+<details>
+<summary><strong>Can I customize everything after setup?</strong></summary>
+
+Yes. Everything is plain text — edit `CLAUDE.md` for rules, `.claude/settings.json` for hooks, `.claude/guardrails.md` for safety rules. See [Customization](docs/customization.md).
+
+</details>
+
+<details>
+<summary><strong>What if Ralph Loop gets stuck?</strong></summary>
+
+Built-in error recovery: reads errors, tries alternatives, documents blockers. At 80% of max iterations, writes a status report of what's done and what's left. Use `/cancel-ralph` to stop it manually anytime.
+
+</details>
+
+<details>
+<summary><strong>Is this safe to use?</strong></summary>
+
+Yes. File protection blocks writes to `.env` and secrets. Destructive command prevention blocks `rm -rf` and `DROP TABLE`. Quality gates catch issues before they ship. Conservative mode asks before most actions.
+
+</details>
+
+<details>
+<summary><strong>Can I work on multiple PRD projects simultaneously?</strong></summary>
+
+Yes. Each project gets its own git branch. Use `git worktree` to open multiple projects in separate directories — each with its own Claude Code session. See [Branching & Worktrees](#-branching--worktrees).
+
+</details>
+
+---
+
+## 🤝 Contributing
 
 The most impactful areas:
 
-- **Stack presets** — Add Go, Rust, Ruby, Django, etc.
-- **Workflow commands** — Improve or add new ones
-- **Knowledge base** — Better examples, more techniques
-- **Documentation** — Clearer guides, more languages
+- **🎨 Stack presets** — Add Go, Rust, Ruby, Django, etc.
+- **🔧 Workflow commands** — Improve or add new ones
+- **📚 Knowledge base** — Better examples, more techniques
+- **🌍 Documentation** — Clearer guides, translations
 
 ---
+
+<div align="center">
 
 ## License
 
 MIT
+
+<br>
+
+_Effectum — that which has been brought to completion._
+
+<br>
+
+**[⬆ Back to top](#-effectum)**
+
+</div>
