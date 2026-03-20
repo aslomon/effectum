@@ -7,7 +7,8 @@
 
 const fs = require("fs");
 const path = require("path");
-const { FORMATTER_MAP, LANGUAGE_INSTRUCTIONS } = require("./constants");
+const { FORMATTER_MAP } = require("./constants");
+const { LANGUAGE_INSTRUCTIONS } = require("./languages");
 
 /**
  * Build a substitution map from user config and parsed stack sections.

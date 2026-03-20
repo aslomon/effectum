@@ -1,8 +1,16 @@
 /**
  * Shared constants for the Effectum CLI.
- * Autonomy levels, formatter mappings, MCP server definitions, stack choices, language choices.
+ * Autonomy levels, formatter mappings, MCP server definitions, stack choices.
+ *
+ * Language and app-type definitions have moved to their own modules:
+ *   - languages.js  (LANGUAGE_CHOICES, LANGUAGE_INSTRUCTIONS)
+ *   - app-types.js  (APP_TYPE_CHOICES, APP_TYPE_TAGS)
  */
 "use strict";
+
+// Re-export from new modules for backward compatibility
+const { LANGUAGE_CHOICES, LANGUAGE_INSTRUCTIONS } = require("./languages");
+const { APP_TYPE_CHOICES, APP_TYPE_TAGS } = require("./app-types");
 
 /** @type {Record<string, { defaultMode: string, permissions: { allow: string[] } }>} */
 const AUTONOMY_MAP = {
@@ -72,7 +80,7 @@ const FORMATTER_MAP = {
   },
 };
 
-/** @type {Array<{ key: string, label: string, package: string, desc: string, config: object }>} */
+/** @type {Array<{ key: string, label: string, package: string, desc: string, config?: object, configFn?: function }>} */
 const MCP_SERVERS = [
   {
     key: "context7",
@@ -141,33 +149,6 @@ const STACK_CHOICES = [
 ];
 
 /** @type {Array<{ value: string, label: string, hint: string }>} */
-const LANGUAGE_CHOICES = [
-  {
-    value: "english",
-    label: "English",
-    hint: "Communicate in English",
-  },
-  {
-    value: "german",
-    label: "Deutsch (du/informal)",
-    hint: "German, informal",
-  },
-  {
-    value: "custom",
-    label: "Custom",
-    hint: "Enter your own language instruction",
-  },
-];
-
-/** @type {Record<string, string>} */
-const LANGUAGE_INSTRUCTIONS = {
-  english:
-    "Speak English with the user. All code, comments, commits, and docs in English.",
-  german:
-    "Speak German (du/informal) with the user. All code, comments, commits, and docs in English.",
-};
-
-/** @type {Array<{ value: string, label: string, hint: string }>} */
 const AUTONOMY_CHOICES = [
   {
     value: "conservative",
@@ -191,7 +172,10 @@ module.exports = {
   FORMATTER_MAP,
   MCP_SERVERS,
   STACK_CHOICES,
+  AUTONOMY_CHOICES,
+  // Re-exported from languages.js / app-types.js
   LANGUAGE_CHOICES,
   LANGUAGE_INSTRUCTIONS,
-  AUTONOMY_CHOICES,
+  APP_TYPE_CHOICES,
+  APP_TYPE_TAGS,
 };
