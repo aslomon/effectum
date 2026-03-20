@@ -83,26 +83,49 @@ graph LR
 ## 🚀 Quick Start
 
 ```bash
-# 1. Clone
-git clone https://github.com/aslomon/effectum.git
-cd effectum
+# 1. Install Effectum
+npx effectum
+```
 
-# 2. Open Claude Code
-claude
+The interactive installer asks two questions — scope (global or local) and runtime — then sets everything up.
+
+```bash
+# 2. Open Claude Code in your project
+cd ~/my-project && claude
 
 # 3. Set up your project
-/setup ~/my-project
+/setup .
 
 # 4. Write a specification
 /prd:new
 
 # 5. Build it
-cd ~/my-project && claude
 /plan docs/prds/001-my-feature.md
 ```
 
 > [!TIP]
 > That's it. Five steps from zero to autonomous development.
+
+### Install options
+
+```bash
+npx effectum                   # Interactive (recommended)
+npx effectum --global          # Install to ~/.claude/ for all projects
+npx effectum --local           # Install to ./.claude/ for this project only
+npx effectum --global --claude # Non-interactive, Claude Code runtime
+```
+
+<details>
+<summary><strong>Prefer the classic git approach?</strong></summary>
+
+```bash
+git clone https://github.com/aslomon/effectum.git
+cd effectum
+claude
+/setup ~/my-project
+```
+
+</details>
 
 ---
 

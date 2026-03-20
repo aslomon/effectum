@@ -1,0 +1,29 @@
+{
+  "name": "effectum",
+  "version": "0.1.0",
+  "description": "Autonomous development system for Claude Code — describe what you want, get production-ready code",
+  "bin": {
+    "effectum": "bin/install.js"
+  },
+  "files": [
+    "bin/",
+    "system/",
+    "workshop/"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aslomon/effectum.git"
+  },
+  "keywords": [
+    "claude-code",
+    "autonomous",
+    "development",
+    "spec-driven",
+    "tdd",
+    "prd"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
