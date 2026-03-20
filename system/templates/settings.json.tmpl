@@ -81,7 +81,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'FILE=$(jq -r \".tool_input.file_path\" <<< \"$(cat)\"); EXT=\"${FILE##*.}\"; case \"$EXT\" in ts|tsx|js|jsx) echo "no formatter configured" \"$FILE\" 2>/dev/null;; esac; exit 0'",
+            "command": "echo formatter-not-configured",
             "timeout": 15,
             "statusMessage": "Auto-formatting..."
           }
