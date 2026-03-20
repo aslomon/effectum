@@ -2,6 +2,7 @@
 /**
  * Reconfigure — re-apply settings from .effectum.json.
  * Reads the saved config and regenerates CLAUDE.md, settings.json, guardrails.md.
+ * Supports v0.4.0 config schema with appType, description, recommended setup.
  */
 "use strict";
 
@@ -13,8 +14,6 @@ const {
   buildSubstitutionMap,
   renderTemplate,
   findTemplatePath,
-  findRemainingPlaceholders,
-  substituteAll,
 } = require("./lib/template");
 const { AUTONOMY_MAP, FORMATTER_MAP } = require("./lib/constants");
 const { ensureDir, deepMerge, findRepoRoot } = require("./lib/utils");
@@ -40,7 +39,10 @@ async function main() {
     process.exit(1);
   }
 
-  p.log.info(`Reconfiguring "${config.projectName}" (${config.stack})`);
+  const configInfo = [`"${config.projectName}" (${config.stack})`];
+  if (config.appType) configInfo.push(`type: ${config.appType}`);
+  if (config.mode) configInfo.push(`mode: ${config.mode}`);
+  p.log.info(`Reconfiguring ${configInfo.join(", ")}`);
 
   if (dryRun) {
     p.note(JSON.stringify(config, null, 2), "Current Configuration");
@@ -93,6 +95,14 @@ async function main() {
     defaultMode: autonomy.defaultMode,
     deny: settingsObj.permissions?.deny || [],
   };
+
+  // Apply Agent Teams env var from saved config
+  if (settingsObj.env && config.recommended) {
+    settingsObj.env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = config.recommended
+      .agentTeams
+      ? "1"
+      : "0";
+  }
 
   const formatter = FORMATTER_MAP[config.stack] || FORMATTER_MAP.generic;
   if (settingsObj.hooks?.PostToolUse) {

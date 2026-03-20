@@ -1,14 +1,24 @@
 #!/usr/bin/env node
 /**
- * Effectum interactive installer.
- * Rewritten with @clack/prompts for full TUI experience.
+ * Effectum interactive installer — Intelligent Setup Recommender.
+ *
+ * 9-step flow:
+ *   1. Install Scope       (global / local)
+ *   2. Project Basics       (name, stack, package manager)
+ *   3. App Type             (web-app, api, mobile, cli, ...)
+ *   4. Description          (free-text intent)
+ *   5. Language             (15+ languages + custom)
+ *   6. Autonomy             (conservative / standard / full)
+ *   7. Recommendation       (preview calculated setup)
+ *   8. Decision             (use recommended / customize / manual)
+ *   9. Install              (write files)
  *
  * Usage:
- *   npx @aslomon/effectum              → interactive install
- *   npx @aslomon/effectum --global     → non-interactive global install
- *   npx @aslomon/effectum --local      → non-interactive local install
- *   npx @aslomon/effectum --yes        → non-interactive with smart defaults
- *   npx @aslomon/effectum --dry-run    → show plan without writing
+ *   npx @aslomon/effectum              -> interactive install
+ *   npx @aslomon/effectum --global     -> non-interactive global install
+ *   npx @aslomon/effectum --local      -> non-interactive local install
+ *   npx @aslomon/effectum --yes        -> non-interactive with smart defaults
+ *   npx @aslomon/effectum --dry-run    -> show plan without writing
  */
 "use strict";
 
@@ -22,25 +32,37 @@ const {
   buildSubstitutionMap,
   renderTemplate,
   findTemplatePath,
-  findRemainingPlaceholders,
 } = require("./lib/template");
 const { writeConfig } = require("./lib/config");
 const { AUTONOMY_MAP, FORMATTER_MAP, MCP_SERVERS } = require("./lib/constants");
-const { ensureDir, deepMerge, findRepoRoot: findRepoRootShared } = require("./lib/utils");
+const {
+  ensureDir,
+  deepMerge,
+  findRepoRoot: findRepoRootShared,
+} = require("./lib/utils");
+const { recommend } = require("./lib/recommendation");
 const {
   initClack,
   getClack,
   printBanner,
+  askScope,
   askProjectName,
   askStack,
+  askAppType,
+  askDescription,
   askLanguage,
   askAutonomy,
-  askMcpServers,
+  showRecommendation,
+  askSetupMode,
+  askCustomize,
+  askManual,
   askPlaywright,
   askGitBranch,
   showSummary,
   showOutro,
 } = require("./lib/ui");
+
+// ─── File helpers ─────────────────────────────────────────────────────────────
 
 function copyFile(src, dest, opts = {}) {
   if (fs.existsSync(dest) && opts.skipExisting) {
@@ -71,7 +93,7 @@ function findRepoRoot() {
   return findRepoRootShared();
 }
 
-// ─── Parse CLI args ───────────────────────────────────────────────────────
+// ─── Parse CLI args ─────────────────────────────────────────────────────────
 
 function parseArgs(argv) {
   const args = argv.slice(2);
@@ -84,11 +106,11 @@ function parseArgs(argv) {
     yes: args.includes("--yes") || args.includes("-y"),
     dryRun: args.includes("--dry-run"),
     help: args.includes("--help") || args.includes("-h"),
-    nonInteractive: false, // computed below
+    nonInteractive: false,
   };
 }
 
-// ─── MCP server install helpers ───────────────────────────────────────────
+// ─── MCP server install helpers ─────────────────────────────────────────────
 
 function checkPackageAvailable(pkg) {
   try {
@@ -174,7 +196,7 @@ function addMcpToSettings(settingsPath, mcpResults, targetDir) {
   );
 }
 
-// ─── Playwright install helpers ───────────────────────────────────────────
+// ─── Playwright install helpers ─────────────────────────────────────────────
 
 function installPlaywrightBrowsers() {
   try {
@@ -228,7 +250,7 @@ export default defineConfig({
   return { status: "created", dest: tsConfig };
 }
 
-// ─── Core install: copy commands, templates, stacks ───────────────────────
+// ─── Core install: copy commands, templates, stacks ─────────────────────────
 
 function installBaseFiles(targetDir, repoRoot, isGlobal) {
   const claudeDir = isGlobal ? targetDir : path.join(targetDir, ".claude");
@@ -278,7 +300,7 @@ function installBaseFiles(targetDir, repoRoot, isGlobal) {
   return steps;
 }
 
-// ─── Generate configured files (CLAUDE.md, settings.json, guardrails.md) ─
+// ─── Generate configured files (CLAUDE.md, settings.json, guardrails.md) ───
 
 function generateConfiguredFiles(config, targetDir, repoRoot, isGlobal) {
   const claudeDir = isGlobal ? targetDir : path.join(targetDir, ".claude");
@@ -292,16 +314,14 @@ function generateConfiguredFiles(config, targetDir, repoRoot, isGlobal) {
   const claudeMdTmpl = findTemplatePath("CLAUDE.md.tmpl", targetDir, repoRoot);
   const { content: claudeMdContent, remaining: claudeMdRemaining } =
     renderTemplate(claudeMdTmpl, vars);
-  const claudeMdDest = isGlobal
-    ? path.join(targetDir, "CLAUDE.md")
-    : path.join(targetDir, "CLAUDE.md");
+  const claudeMdDest = path.join(targetDir, "CLAUDE.md");
   ensureDir(path.dirname(claudeMdDest));
   fs.writeFileSync(claudeMdDest, claudeMdContent, "utf8");
   steps.push({ status: "created", dest: claudeMdDest });
 
   if (claudeMdRemaining.length > 0) {
     console.warn(
-      `⚠ CLAUDE.md has remaining placeholders: ${claudeMdRemaining.join(", ")}`,
+      `Warning: CLAUDE.md has remaining placeholders: ${claudeMdRemaining.join(", ")}`,
     );
   }
 
@@ -326,6 +346,12 @@ function generateConfiguredFiles(config, targetDir, repoRoot, isGlobal) {
     defaultMode: autonomy.defaultMode,
     deny: settingsObj.permissions?.deny || [],
   };
+
+  // Apply Agent Teams env var
+  if (settingsObj.env) {
+    settingsObj.env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS =
+      config.recommended && config.recommended.agentTeams ? "1" : "0";
+  }
 
   // Apply formatter in PostToolUse hook
   const formatter = FORMATTER_MAP[config.stack] || FORMATTER_MAP.generic;
@@ -374,7 +400,6 @@ function generateConfiguredFiles(config, targetDir, repoRoot, isGlobal) {
   const guardrailsRaw = fs.readFileSync(guardrailsTmpl, "utf8");
   let guardrailsContent = guardrailsRaw;
 
-  // Replace "No stack-specific guardrails..." with actual content
   if (stackSections.STACK_SPECIFIC_GUARDRAILS) {
     guardrailsContent = guardrailsContent.replace(
       /No stack-specific guardrails configured yet\. Run \/setup to configure for your stack\./,
@@ -396,26 +421,39 @@ function generateConfiguredFiles(config, targetDir, repoRoot, isGlobal) {
   return steps;
 }
 
-// ─── Smart defaults for non-interactive mode ──────────────────────────────
+// ─── Smart defaults for non-interactive mode ────────────────────────────────
 
 function buildSmartDefaults(targetDir) {
   const detected = detectAll(targetDir);
-  const formatter =
-    FORMATTER_MAP[detected.stack || "generic"] || FORMATTER_MAP.generic;
+  const stack = detected.stack || "generic";
+  const formatter = FORMATTER_MAP[stack] || FORMATTER_MAP.generic;
+
+  const rec = recommend({
+    stack,
+    appType: "web-app",
+    description: "",
+    autonomyLevel: "standard",
+    language: "english",
+  });
+
   return {
     projectName: detected.projectName,
-    stack: detected.stack || "generic",
+    stack,
+    appType: "web-app",
+    description: "",
     language: "english",
     autonomyLevel: "standard",
     packageManager: detected.packageManager,
     formatter: formatter.name,
-    mcpServers: MCP_SERVERS.map((s) => s.key),
-    playwrightBrowsers: true,
+    mcpServers: rec.mcps,
+    playwrightBrowsers: rec.mcps.includes("playwright"),
     installScope: "local",
+    recommended: rec,
+    mode: "recommended",
   };
 }
 
-// ─── Git branch creation ──────────────────────────────────────────────────
+// ─── Git branch creation ────────────────────────────────────────────────────
 
 function createGitBranch(name) {
   const result = spawnSync("git", ["checkout", "-b", name], {
@@ -425,7 +463,7 @@ function createGitBranch(name) {
   return result.status === 0;
 }
 
-// ─── Main ─────────────────────────────────────────────────────────────────
+// ─── Main ───────────────────────────────────────────────────────────────────
 
 async function main() {
   const args = parseArgs(process.argv);
@@ -434,10 +472,10 @@ async function main() {
   // Help
   if (args.help) {
     console.log(`
-effectum — autonomous development system for Claude Code
+effectum — intelligent setup for Claude Code
 
 Usage:
-  npx effectum                  Interactive installer
+  npx effectum                  Interactive installer (9-step flow)
   npx effectum init             Per-project init (after global install)
   npx effectum reconfigure      Re-apply config from .effectum.json
   npx effectum --global         Install globally (~/.claude/, no prompts)
@@ -477,7 +515,7 @@ Options:
   const homeClaudeDir = path.join(os.homedir(), ".claude");
   const targetDir = isGlobal ? homeClaudeDir : process.cwd();
 
-  // ── Non-interactive mode ────────────────────────────────────────────────
+  // ── Non-interactive mode ──────────────────────────────────────────────────
   if (isNonInteractive) {
     const config = buildSmartDefaults(targetDir);
     config.installScope = isGlobal ? "global" : "local";
@@ -524,7 +562,7 @@ Options:
     process.exit(0);
   }
 
-  // ── Interactive mode ────────────────────────────────────────────────────
+  // ── Interactive mode — 9-step flow ────────────────────────────────────────
   const p = await initClack();
   printBanner();
 
@@ -536,47 +574,77 @@ Options:
     );
   }
 
-  // Scope
-  const scopeValue = await p.select({
-    message: "Install scope",
-    options: [
-      {
-        value: "local",
-        label: "Local",
-        hint: "This project only (./.claude/)",
-      },
-      {
-        value: "global",
-        label: "Global",
-        hint: "All projects (~/.claude/)",
-      },
-    ],
-    initialValue: "local",
-  });
-  if (p.isCancel(scopeValue)) {
-    p.cancel("Setup cancelled.");
-    process.exit(0);
-  }
+  // ── Step 1: Install Scope ─────────────────────────────────────────────────
+  const scopeValue = await askScope();
   const installGlobal = scopeValue === "global";
   const installTargetDir = installGlobal ? homeClaudeDir : process.cwd();
 
-  // Project name
-  const projectName = await askProjectName(detected.projectName);
+  // Global install: skip project-specific steps, install base only
+  if (installGlobal) {
+    if (args.dryRun) {
+      p.log.info("Dry run — no files will be written.");
+      p.note(
+        [
+          "~/.claude/commands/*.md",
+          "~/.claude/settings.json",
+          "~/.claude/guardrails.md",
+          "~/.effectum/templates/",
+          "~/.effectum/stacks/",
+        ].join("\n"),
+        "Files to be created",
+      );
+      p.outro("Dry run complete. No changes made.");
+      process.exit(0);
+    }
 
-  // Stack
+    const s = p.spinner();
+    s.start("Installing global workflow commands and templates...");
+    installBaseFiles(installTargetDir, repoRoot, true);
+    s.stop("Global base files installed");
+
+    showOutro(true);
+    process.exit(0);
+  }
+
+  // ── Step 2: Project Basics ────────────────────────────────────────────────
+  const projectName = await askProjectName(detected.projectName);
   const stack = await askStack(detected.stack);
 
-  // Language
+  // ── Step 3: App Type ──────────────────────────────────────────────────────
+  const appType = await askAppType();
+
+  // ── Step 4: Description ───────────────────────────────────────────────────
+  const description = await askDescription();
+
+  // ── Step 5: Language ──────────────────────────────────────────────────────
   const langResult = await askLanguage();
 
-  // Autonomy
+  // ── Step 6: Autonomy ──────────────────────────────────────────────────────
   const autonomyLevel = await askAutonomy();
 
-  // MCP servers
-  const mcpServerKeys = await askMcpServers();
+  // ── Step 7: Recommendation Preview ────────────────────────────────────────
+  const rec = recommend({
+    stack,
+    appType,
+    description,
+    autonomyLevel,
+    language: langResult.language,
+  });
 
-  // Playwright
-  const wantPlaywright = mcpServerKeys.includes("playwright")
+  showRecommendation(rec);
+
+  // ── Step 8: Decision ──────────────────────────────────────────────────────
+  const setupMode = await askSetupMode();
+
+  let finalSetup = rec;
+  if (setupMode === "customize") {
+    finalSetup = await askCustomize(rec);
+  } else if (setupMode === "manual") {
+    finalSetup = await askManual();
+  }
+
+  // Check if playwright is in the final MCP list and ask about browser install
+  const wantPlaywright = finalSetup.mcps.includes("playwright")
     ? await askPlaywright()
     : false;
 
@@ -584,23 +652,34 @@ Options:
   const gitBranch = await askGitBranch();
 
   // Build config object
-  const formatter = FORMATTER_MAP[stack] || FORMATTER_MAP.generic;
+  const formatterDef = FORMATTER_MAP[stack] || FORMATTER_MAP.generic;
   const config = {
     projectName,
     stack,
+    appType,
+    description,
     language: langResult.language,
     ...(langResult.customLanguage
       ? { customLanguage: langResult.customLanguage }
       : {}),
     autonomyLevel,
     packageManager: detected.packageManager,
-    formatter: formatter.name,
-    mcpServers: mcpServerKeys,
+    formatter: formatterDef.name,
+    mcpServers: finalSetup.mcps,
     playwrightBrowsers: wantPlaywright,
-    installScope: installGlobal ? "global" : "local",
+    installScope: "local",
+    recommended: {
+      commands: finalSetup.commands,
+      hooks: finalSetup.hooks,
+      skills: finalSetup.skills,
+      mcps: finalSetup.mcps,
+      subagents: finalSetup.subagents,
+      agentTeams: finalSetup.agentTeams,
+    },
+    mode: setupMode,
   };
 
-  // ── Dry run ─────────────────────────────────────────────────────────────
+  // ── Dry run ───────────────────────────────────────────────────────────────
   if (args.dryRun) {
     p.log.info("Dry run — no files will be written.");
     p.note(JSON.stringify(config, null, 2), "Planned Configuration");
@@ -612,7 +691,7 @@ Options:
       "AUTONOMOUS-WORKFLOW.md",
       ".effectum.json",
     ];
-    if (mcpServerKeys.length > 0) {
+    if (finalSetup.mcps.length > 0) {
       plannedFiles.push("MCP servers in settings.json");
     }
     p.note(plannedFiles.join("\n"), "Files to be created/updated");
@@ -620,62 +699,60 @@ Options:
     process.exit(0);
   }
 
-  // ── Create git branch ──────────────────────────────────────────────────
+  // ── Step 9: Install ───────────────────────────────────────────────────────
+
+  // Create git branch if requested
   if (gitBranch.create) {
-    const s = p.spinner();
-    s.start("Creating git branch...");
+    const sGit = p.spinner();
+    sGit.start("Creating git branch...");
     const ok = createGitBranch(gitBranch.name);
     if (ok) {
-      s.stop(`Branch "${gitBranch.name}" created`);
+      sGit.stop(`Branch "${gitBranch.name}" created`);
     } else {
-      s.stop("Could not create branch (may already exist)");
+      sGit.stop("Could not create branch (may already exist)");
     }
   }
 
-  // ── Step 1: Base files ─────────────────────────────────────────────────
+  // 9a: Base files
   const s1 = p.spinner();
   s1.start("Installing workflow commands and templates...");
-  const baseSteps = installBaseFiles(installTargetDir, repoRoot, installGlobal);
+  const baseSteps = installBaseFiles(installTargetDir, repoRoot, false);
   s1.stop(
     `Installed ${baseSteps.filter((s) => s.status === "created").length} files`,
   );
 
-  // ── Step 2: Configure (local only) ────────────────────────────────────
-  const configSteps = [];
-  if (!installGlobal) {
-    const s2 = p.spinner();
-    s2.start(
-      "Generating configured files (CLAUDE.md, settings.json, guardrails.md)...",
-    );
-    const cSteps = generateConfiguredFiles(
-      config,
-      installTargetDir,
-      repoRoot,
-      installGlobal,
-    );
-    configSteps.push(...cSteps);
-    s2.stop("Configuration files generated");
-  }
+  // 9b: Configure
+  const s2 = p.spinner();
+  s2.start("Generating CLAUDE.md, settings.json, guardrails.md...");
+  const configSteps = generateConfiguredFiles(
+    config,
+    installTargetDir,
+    repoRoot,
+    false,
+  );
+  s2.stop("Configuration files generated");
 
-  // ── Step 3: MCP servers ────────────────────────────────────────────────
-  if (mcpServerKeys.length > 0) {
+  // 9c: MCP servers
+  if (finalSetup.mcps.length > 0) {
     const s3 = p.spinner();
     s3.start("Setting up MCP servers...");
-    const mcpResults = installMcpServers(mcpServerKeys);
-    const settingsPath = installGlobal
-      ? path.join(homeClaudeDir, "settings.json")
-      : path.join(installTargetDir, ".claude", "settings.json");
+    const mcpResults = installMcpServers(finalSetup.mcps);
+    const settingsPath = path.join(
+      installTargetDir,
+      ".claude",
+      "settings.json",
+    );
     addMcpToSettings(settingsPath, mcpResults, installTargetDir);
     const okCount = mcpResults.filter((r) => r.ok).length;
     s3.stop(`${okCount} MCP servers configured`);
   }
 
-  // ── Step 4: Playwright ─────────────────────────────────────────────────
+  // 9d: Playwright
   if (wantPlaywright) {
     const s4 = p.spinner();
     s4.start("Installing Playwright browsers...");
     const pwResult = installPlaywrightBrowsers();
-    if (!installGlobal) ensurePlaywrightConfig(process.cwd());
+    ensurePlaywrightConfig(process.cwd());
     s4.stop(
       pwResult.ok
         ? "Playwright browsers installed"
@@ -683,13 +760,11 @@ Options:
     );
   }
 
-  // ── Step 5: Save config ────────────────────────────────────────────────
-  if (!installGlobal) {
-    const configPath = writeConfig(installTargetDir, config);
-    configSteps.push({ status: "created", dest: configPath });
-  }
+  // 9e: Save config
+  const configPath = writeConfig(installTargetDir, config);
+  configSteps.push({ status: "created", dest: configPath });
 
-  // ── Summary ─────────────────────────────────────────────────────────────
+  // ── Summary ───────────────────────────────────────────────────────────────
   const allSteps = [...baseSteps, ...configSteps];
   const allFiles = allSteps
     .filter((s) => s && s.dest)
@@ -700,10 +775,9 @@ Options:
         : path.relative(process.cwd(), s.dest);
     });
 
-  // Deduplicate for summary
   const uniqueFiles = [...new Set(allFiles)].slice(0, 20);
   showSummary(config, uniqueFiles);
-  showOutro(installGlobal);
+  showOutro(false);
 }
 
 main().catch((err) => {
