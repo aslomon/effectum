@@ -1,9 +1,9 @@
 {
   "name": "@aslomon/effectum",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "description": "Autonomous development system for Claude Code — describe what you want, get production-ready code",
   "bin": {
-    "effectum": "bin/install.js"
+    "effectum": "bin/effectum.js"
   },
   "files": [
     "bin/",

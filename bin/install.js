@@ -1,98 +1,67 @@
 #!/usr/bin/env node
-'use strict';
+/**
+ * Effectum interactive installer.
+ * Rewritten with @clack/prompts for full TUI experience.
+ *
+ * Usage:
+ *   npx @aslomon/effectum              → interactive install
+ *   npx @aslomon/effectum --global     → non-interactive global install
+ *   npx @aslomon/effectum --local      → non-interactive local install
+ *   npx @aslomon/effectum --yes        → non-interactive with smart defaults
+ *   npx @aslomon/effectum --dry-run    → show plan without writing
+ */
+"use strict";
 
-const fs = require('fs');
-const path = require('path');
-const readline = require('readline');
-const os = require('os');
-const { spawnSync } = require('child_process');
+const fs = require("fs");
+const path = require("path");
+const os = require("os");
+const { spawnSync } = require("child_process");
+const p = require("@clack/prompts");
 
-// ─── ANSI colors ───────────────────────────────────────────────────────────
-const c = {
-  reset:   '\x1b[0m',
-  bold:    '\x1b[1m',
-  dim:     '\x1b[2m',
-  yellow:  '\x1b[33m',
-  cyan:    '\x1b[36m',
-  green:   '\x1b[32m',
-  red:     '\x1b[31m',
-  magenta: '\x1b[35m',
-  blue:    '\x1b[34m',
-  white:   '\x1b[37m',
-  bgBlack: '\x1b[40m',
-};
-
-const bold    = s => `${c.bold}${s}${c.reset}`;
-const yellow  = s => `${c.yellow}${s}${c.reset}`;
-const cyan    = s => `${c.cyan}${s}${c.reset}`;
-const green   = s => `${c.green}${s}${c.reset}`;
-const red     = s => `${c.red}${s}${c.reset}`;
-const dim     = s => `${c.dim}${s}${c.reset}`;
-
-// ─── Banner ────────────────────────────────────────────────────────────────
-function printBanner() {
-  console.log();
-  console.log(yellow('  ⚡') + bold(yellow(' EFFECTUM')));
-  console.log(dim('  Autonomous development system for Claude Code'));
-  console.log(dim('  Describe what you want. Get production-ready code.'));
-  console.log();
-}
-
-// ─── Readline helpers ──────────────────────────────────────────────────────
-function createRL() {
-  return readline.createInterface({
-    input:  process.stdin,
-    output: process.stdout,
-  });
-}
-
-function ask(rl, question) {
-  return new Promise(resolve => rl.question(question, answer => resolve(answer.trim())));
-}
-
-async function askChoice(rl, question, choices, defaultIdx = 0) {
-  console.log(question);
-  choices.forEach((ch, i) => {
-    const marker = i === defaultIdx ? green('▶') : ' ';
-    const num    = cyan(`${i + 1}`);
-    const label  = i === defaultIdx ? bold(ch.label) : ch.label;
-    console.log(`  ${marker} ${num}) ${label}${ch.desc ? dim('  — ' + ch.desc) : ''}`);
-  });
-  const answer = await ask(rl, `  ${dim(`[1-${choices.length}, default ${defaultIdx + 1}]:`)} `);
-  const n = parseInt(answer, 10);
-  if (!answer || isNaN(n) || n < 1 || n > choices.length) return defaultIdx;
-  return n - 1;
-}
-
-async function confirm(rl, question, defaultYes = true) {
-  const hint = defaultYes ? dim('[Y/n]') : dim('[y/N]');
-  const answer = await ask(rl, `${question} ${hint} `);
-  if (!answer) return defaultYes;
-  return answer.toLowerCase().startsWith('y');
-}
+const { detectAll } = require("./lib/detect");
+const { loadStackPreset } = require("./lib/stack-parser");
+const {
+  buildSubstitutionMap,
+  renderTemplate,
+  findTemplatePath,
+  findRemainingPlaceholders,
+} = require("./lib/template");
+const { writeConfig } = require("./lib/config");
+const { AUTONOMY_MAP, FORMATTER_MAP, MCP_SERVERS } = require("./lib/constants");
+const {
+  printBanner,
+  askProjectName,
+  askStack,
+  askLanguage,
+  askAutonomy,
+  askMcpServers,
+  askPlaywright,
+  askGitBranch,
+  showSummary,
+  showOutro,
+} = require("./lib/ui");
 
 // ─── File helpers ──────────────────────────────────────────────────────────
+
 function ensureDir(dir) {
   fs.mkdirSync(dir, { recursive: true });
 }
 
 function copyFile(src, dest, opts = {}) {
-  const { skipExisting = false } = opts;
-  if (fs.existsSync(dest) && skipExisting) {
-    return { status: 'skipped', dest };
+  if (fs.existsSync(dest) && opts.skipExisting) {
+    return { status: "skipped", dest };
   }
   ensureDir(path.dirname(dest));
   fs.copyFileSync(src, dest);
-  return { status: 'created', dest };
+  return { status: "created", dest };
 }
 
 function copyDir(srcDir, destDir, opts = {}) {
   const results = [];
   if (!fs.existsSync(srcDir)) return results;
-
   const entries = fs.readdirSync(srcDir, { withFileTypes: true });
   for (const entry of entries) {
-    const srcPath  = path.join(srcDir, entry.name);
+    const srcPath = path.join(srcDir, entry.name);
     const destPath = path.join(destDir, entry.name);
     if (entry.isDirectory()) {
       results.push(...copyDir(srcPath, destPath, opts));
@@ -103,13 +72,16 @@ function copyDir(srcDir, destDir, opts = {}) {
   return results;
 }
 
-// ─── Deep-merge two plain objects ─────────────────────────────────────────
 function deepMerge(target, source) {
   const out = Object.assign({}, target);
   for (const key of Object.keys(source)) {
     if (
-      source[key] && typeof source[key] === 'object' && !Array.isArray(source[key]) &&
-      out[key]    && typeof out[key]    === 'object' && !Array.isArray(out[key])
+      source[key] &&
+      typeof source[key] === "object" &&
+      !Array.isArray(source[key]) &&
+      out[key] &&
+      typeof out[key] === "object" &&
+      !Array.isArray(out[key])
     ) {
       out[key] = deepMerge(out[key], source[key]);
     } else {
@@ -119,109 +91,38 @@ function deepMerge(target, source) {
   return out;
 }
 
-// ─── Merge settings.json (template → existing) ────────────────────────────
-function mergeSettings(templatePath, destPath) {
-  let template;
-  try {
-    template = JSON.parse(fs.readFileSync(templatePath, 'utf8'));
-  } catch (e) {
-    return { status: 'error', dest: destPath, error: `Could not read template: ${e.message}` };
-  }
+// ─── Repo root discovery ──────────────────────────────────────────────────
 
-  let existing = {};
-  if (fs.existsSync(destPath)) {
-    try {
-      existing = JSON.parse(fs.readFileSync(destPath, 'utf8'));
-    } catch (_) {
-      // corrupted/empty — overwrite
-    }
-  }
-
-  // Template wins for all keys, but preserve keys only in existing
-  const merged = deepMerge(existing, template);
-
-  ensureDir(path.dirname(destPath));
-  fs.writeFileSync(destPath, JSON.stringify(merged, null, 2) + '\n', 'utf8');
-  return { status: 'created', dest: destPath };
-}
-
-// ─── Find repo root ────────────────────────────────────────────────────────
 function findRepoRoot() {
   const binDir = path.dirname(__filename);
-  const repoRoot = path.resolve(binDir, '..');
-  if (fs.existsSync(path.join(repoRoot, 'system', 'commands'))) {
-    return repoRoot;
-  }
-  return repoRoot;
+  return path.resolve(binDir, "..");
 }
 
-// ─── Parse CLI args ────────────────────────────────────────────────────────
+// ─── Parse CLI args ───────────────────────────────────────────────────────
+
 function parseArgs(argv) {
   const args = argv.slice(2);
   return {
-    global:         args.includes('--global') || args.includes('-g'),
-    local:          args.includes('--local')  || args.includes('-l'),
-    claude:         args.includes('--claude'),
-    withMcp:        args.includes('--with-mcp'),
-    withPlaywright: args.includes('--with-playwright'),
-    nonInteractive: args.includes('--yes') || args.includes('-y') ||
-                    args.includes('--global') || args.includes('--local'),
-    help:           args.includes('--help') || args.includes('-h'),
+    global: args.includes("--global") || args.includes("-g"),
+    local: args.includes("--local") || args.includes("-l"),
+    claude: args.includes("--claude"),
+    withMcp: args.includes("--with-mcp"),
+    withPlaywright: args.includes("--with-playwright"),
+    yes: args.includes("--yes") || args.includes("-y"),
+    dryRun: args.includes("--dry-run"),
+    help: args.includes("--help") || args.includes("-h"),
+    nonInteractive: false, // computed below
   };
 }
 
-// ─── MCP Server definitions ────────────────────────────────────────────────
-const MCP_SERVERS = [
-  {
-    key:     'context7',
-    label:   'Context7',
-    package: '@upstash/context7-mcp',
-    desc:    'Context management — up-to-date library docs for Claude',
-    config: {
-      command: 'npx',
-      args:    ['-y', '@upstash/context7-mcp'],
-    },
-  },
-  {
-    key:     'playwright',
-    label:   'Playwright MCP',
-    package: '@playwright/mcp',
-    desc:    'E2E browser automation — required for /e2e command',
-    config: {
-      command: 'npx',
-      args:    ['-y', '@playwright/mcp'],
-    },
-  },
-  {
-    key:     'sequential-thinking',
-    label:   'Sequential Thinking',
-    package: '@modelcontextprotocol/server-sequential-thinking',
-    desc:    'Complex planning and multi-step reasoning',
-    config: {
-      command: 'npx',
-      args:    ['-y', '@modelcontextprotocol/server-sequential-thinking'],
-    },
-  },
-  {
-    key:     'filesystem',
-    label:   'Filesystem',
-    package: '@modelcontextprotocol/server-filesystem',
-    desc:    'File operations (read/write/search)',
-    config: {
-      command: 'npx',
-      args:    ['-y', '@modelcontextprotocol/server-filesystem', process.cwd()],
-    },
-  },
-];
+// ─── MCP server install helpers ───────────────────────────────────────────
 
-// ─── Check if package is available via npx (quick dry-run) ────────────────
 function checkPackageAvailable(pkg) {
   try {
-    // Try `npm view` — fast, no install, works offline cache check
-    const result = spawnSync('npm', ['view', pkg, 'version'], {
+    const result = spawnSync("npm", ["view", pkg, "version"], {
       timeout: 8000,
-      stdio:   'pipe',
-      encoding: 'utf8',
+      stdio: "pipe",
+      encoding: "utf8",
     });
     return result.status === 0 && result.stdout.trim().length > 0;
   } catch (_) {
@@ -229,64 +130,63 @@ function checkPackageAvailable(pkg) {
   }
 }
 
-// ─── Install / verify MCP servers ─────────────────────────────────────────
-function installMcpServers(verbose = true) {
+function installMcpServers(selectedKeys) {
   const results = [];
+  const selected = MCP_SERVERS.filter((s) => selectedKeys.includes(s.key));
 
-  for (const server of MCP_SERVERS) {
-    if (verbose) process.stdout.write(`     ${dim(server.label + '...')} `);
-
+  for (const server of selected) {
     try {
       const available = checkPackageAvailable(server.package);
       if (available) {
-        if (verbose) console.log(green('✓') + dim(` ${server.package}`));
-        results.push({ ...server, ok: true, note: 'available via npx' });
+        results.push({ ...server, ok: true, note: "available via npx" });
       } else {
-        // Try npm install -g as fallback
-        const install = spawnSync('npm', ['install', '-g', server.package], {
+        const install = spawnSync("npm", ["install", "-g", server.package], {
           timeout: 60000,
-          stdio: 'pipe',
-          encoding: 'utf8',
+          stdio: "pipe",
+          encoding: "utf8",
         });
         if (install.status === 0) {
-          if (verbose) console.log(green('✓') + dim(' installed globally'));
-          results.push({ ...server, ok: true, note: 'installed globally' });
+          results.push({ ...server, ok: true, note: "installed globally" });
         } else {
-          if (verbose) console.log(yellow('⚠') + dim(' npm check failed — will use npx at runtime'));
-          results.push({ ...server, ok: true, note: 'npx at runtime (not pre-installed)' });
+          results.push({
+            ...server,
+            ok: true,
+            note: "npx at runtime (not pre-installed)",
+          });
         }
       }
     } catch (err) {
-      if (verbose) console.log(red('✗') + ` ${err.message}`);
       results.push({ ...server, ok: false, error: err.message });
     }
   }
-
   return results;
 }
 
-// ─── Add MCP servers to settings.json ─────────────────────────────────────
-function addMcpToSettings(settingsPath, mcpResults) {
+function addMcpToSettings(settingsPath, mcpResults, targetDir) {
   let settings = {};
   if (fs.existsSync(settingsPath)) {
     try {
-      settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+      settings = JSON.parse(fs.readFileSync(settingsPath, "utf8"));
     } catch (_) {}
   }
 
   if (!settings.mcpServers) settings.mcpServers = {};
 
-  // Add each server that didn't hard-fail
   for (const result of mcpResults) {
     if (!result.ok) continue;
+    const config = result.configFn ? result.configFn(targetDir) : result.config;
     if (!settings.mcpServers[result.key]) {
-      settings.mcpServers[result.key] = result.config;
+      settings.mcpServers[result.key] = config;
     }
   }
 
-  // Also ensure mcp__playwright and mcp__sequential-thinking are in permissions.allow
   if (settings.permissions && Array.isArray(settings.permissions.allow)) {
-    const toAdd = ['mcp__playwright', 'mcp__sequential-thinking', 'mcp__context7', 'mcp__filesystem'];
+    const toAdd = [
+      "mcp__playwright",
+      "mcp__sequential-thinking",
+      "mcp__context7",
+      "mcp__filesystem",
+    ];
     for (const perm of toAdd) {
       if (!settings.permissions.allow.includes(perm)) {
         settings.permissions.allow.push(perm);
@@ -294,47 +194,40 @@ function addMcpToSettings(settingsPath, mcpResults) {
     }
   }
 
-  fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2) + '\n', 'utf8');
+  fs.writeFileSync(
+    settingsPath,
+    JSON.stringify(settings, null, 2) + "\n",
+    "utf8",
+  );
 }
 
-// ─── Install Playwright browsers ──────────────────────────────────────────
-function installPlaywrightBrowsers(verbose = true) {
-  if (verbose) process.stdout.write(`     ${dim('Installing Playwright browsers...')} `);
+// ─── Playwright install helpers ───────────────────────────────────────────
+
+function installPlaywrightBrowsers() {
   try {
-    const result = spawnSync('npx', ['playwright', 'install', '--with-deps', 'chromium'], {
+    const result = spawnSync(
+      "npx",
+      ["playwright", "install", "--with-deps", "chromium"],
+      { timeout: 120000, stdio: "pipe", encoding: "utf8" },
+    );
+    if (result.status === 0) return { ok: true };
+    const result2 = spawnSync("npx", ["playwright", "install", "chromium"], {
       timeout: 120000,
-      stdio: 'pipe',
-      encoding: 'utf8',
+      stdio: "pipe",
+      encoding: "utf8",
     });
-    if (result.status === 0) {
-      if (verbose) console.log(green('✓'));
-      return { ok: true };
-    } else {
-      // Try without --with-deps (CI environments)
-      const result2 = spawnSync('npx', ['playwright', 'install', 'chromium'], {
-        timeout: 120000,
-        stdio: 'pipe',
-        encoding: 'utf8',
-      });
-      if (result2.status === 0) {
-        if (verbose) console.log(green('✓') + dim(' (chromium only)'));
-        return { ok: true };
-      }
-      if (verbose) console.log(yellow('⚠') + dim(' browser install failed — run: npx playwright install'));
-      return { ok: false, error: result.stderr };
-    }
+    if (result2.status === 0) return { ok: true };
+    return { ok: false, error: result.stderr };
   } catch (err) {
-    if (verbose) console.log(yellow('⚠') + dim(` ${err.message}`));
     return { ok: false, error: err.message };
   }
 }
 
-// ─── Create playwright.config.ts if missing ───────────────────────────────
 function ensurePlaywrightConfig(targetDir) {
-  const tsConfig  = path.join(targetDir, 'playwright.config.ts');
-  const jsConfig  = path.join(targetDir, 'playwright.config.js');
+  const tsConfig = path.join(targetDir, "playwright.config.ts");
+  const jsConfig = path.join(targetDir, "playwright.config.js");
   if (fs.existsSync(tsConfig) || fs.existsSync(jsConfig)) {
-    return { status: 'skipped', dest: tsConfig };
+    return { status: "skipped", dest: tsConfig };
   }
   const content = `import { defineConfig, devices } from '@playwright/test';
 
@@ -358,307 +251,488 @@ export default defineConfig({
 });
 `;
   ensureDir(path.dirname(tsConfig));
-  fs.writeFileSync(tsConfig, content, 'utf8');
-  return { status: 'created', dest: tsConfig };
+  fs.writeFileSync(tsConfig, content, "utf8");
+  return { status: "created", dest: tsConfig };
 }
 
-// ─── Verify ralph-loop command ────────────────────────────────────────────
-function verifyRalphLoop(commandsDir) {
-  const ralphPath = path.join(commandsDir, 'ralph-loop.md');
-  return fs.existsSync(ralphPath);
-}
+// ─── Core install: copy commands, templates, stacks ───────────────────────
 
-// ─── Install logic ─────────────────────────────────────────────────────────
-async function install(opts) {
-  const { targetDir, repoRoot, isGlobal, runtime } = opts;
-
-  // For global installs, .claude/ is the target dir itself
-  const claudeDir   = isGlobal ? targetDir : path.join(targetDir, '.claude');
-  const commandsDir = path.join(claudeDir, 'commands');
-
+function installBaseFiles(targetDir, repoRoot, isGlobal) {
+  const claudeDir = isGlobal ? targetDir : path.join(targetDir, ".claude");
+  const commandsDir = path.join(claudeDir, "commands");
   const steps = [];
 
-  // 1. system/commands/*.md → .claude/commands/  (always overwrite)
-  const srcCommands = path.join(repoRoot, 'system', 'commands');
-  const cmdResults  = copyDir(srcCommands, commandsDir, { skipExisting: false });
-  steps.push(...cmdResults);
+  // 1. Commands
+  const srcCommands = path.join(repoRoot, "system", "commands");
+  steps.push(...copyDir(srcCommands, commandsDir, { skipExisting: false }));
 
-  // 2. AUTONOMOUS-WORKFLOW.md → target/
-  const awSrc  = path.join(repoRoot, 'system', 'templates', 'AUTONOMOUS-WORKFLOW.md');
+  // 2. AUTONOMOUS-WORKFLOW.md
+  const awSrc = path.join(
+    repoRoot,
+    "system",
+    "templates",
+    "AUTONOMOUS-WORKFLOW.md",
+  );
   const awDest = isGlobal
-    ? path.join(os.homedir(), '.effectum', 'AUTONOMOUS-WORKFLOW.md')
-    : path.join(targetDir, 'AUTONOMOUS-WORKFLOW.md');
+    ? path.join(os.homedir(), ".effectum", "AUTONOMOUS-WORKFLOW.md")
+    : path.join(targetDir, "AUTONOMOUS-WORKFLOW.md");
   steps.push(copyFile(awSrc, awDest, { skipExisting: false }));
 
-  // 3. settings.json — ALWAYS merge (template wins, existing keys preserved)
-  const settingsSrc  = path.join(repoRoot, 'system', 'templates', 'settings.json.tmpl');
-  const settingsDest = path.join(claudeDir, 'settings.json');
-  steps.push(mergeSettings(settingsSrc, settingsDest));
-
-  // 4. guardrails.md — ALWAYS overwrite
-  const guardrailsSrc  = path.join(repoRoot, 'system', 'templates', 'guardrails.md.tmpl');
-  const guardrailsDest = path.join(claudeDir, 'guardrails.md');
-  steps.push(copyFile(guardrailsSrc, guardrailsDest, { skipExisting: false }));
-
-  // 5. workshop/ — copy for BOTH local and global
-  const workshopSrc  = path.join(repoRoot, 'workshop');
+  // 3. Workshop
+  const workshopSrc = path.join(repoRoot, "workshop");
   const workshopDest = isGlobal
-    ? path.join(os.homedir(), '.effectum', 'workshop')
-    : path.join(targetDir, 'workshop');
-  const wResults = copyDir(workshopSrc, workshopDest, { skipExisting: true });
-  steps.push(...wResults);
+    ? path.join(os.homedir(), ".effectum", "workshop")
+    : path.join(targetDir, "workshop");
+  steps.push(...copyDir(workshopSrc, workshopDest, { skipExisting: true }));
 
-  // 6. Copy templates + stacks so /setup can find them after npx install
-  const templatesSrc = path.join(repoRoot, 'system', 'templates');
-  const stacksSrc    = path.join(repoRoot, 'system', 'stacks');
-  const effectumDir  = isGlobal
-    ? path.join(os.homedir(), '.effectum')
-    : path.join(targetDir, '.effectum');
-  const tResults = copyDir(templatesSrc, path.join(effectumDir, 'templates'), { skipExisting: false });
-  const sResults = copyDir(stacksSrc,    path.join(effectumDir, 'stacks'),    { skipExisting: false });
-  steps.push(...tResults, ...sResults);
+  // 4. Copy templates + stacks so reconfigure can find them later
+  const templatesSrc = path.join(repoRoot, "system", "templates");
+  const stacksSrc = path.join(repoRoot, "system", "stacks");
+  const effectumDir = isGlobal
+    ? path.join(os.homedir(), ".effectum")
+    : path.join(targetDir, ".effectum");
+  steps.push(
+    ...copyDir(templatesSrc, path.join(effectumDir, "templates"), {
+      skipExisting: false,
+    }),
+  );
+  steps.push(
+    ...copyDir(stacksSrc, path.join(effectumDir, "stacks"), {
+      skipExisting: false,
+    }),
+  );
 
   return steps;
 }
 
-// ─── Status icon ──────────────────────────────────────────────────────────
-function statusIcon(status) {
-  switch (status) {
-    case 'created':  return green('✓');
-    case 'skipped':  return dim('─');
-    case 'error':    return red('✗');
-    default:         return dim('·');
+// ─── Generate configured files (CLAUDE.md, settings.json, guardrails.md) ─
+
+function generateConfiguredFiles(config, targetDir, repoRoot, isGlobal) {
+  const claudeDir = isGlobal ? targetDir : path.join(targetDir, ".claude");
+  const steps = [];
+
+  // Load stack preset
+  const stackSections = loadStackPreset(config.stack, targetDir, repoRoot);
+  const vars = buildSubstitutionMap(config, stackSections);
+
+  // 1. CLAUDE.md
+  const claudeMdTmpl = findTemplatePath("CLAUDE.md.tmpl", targetDir, repoRoot);
+  const { content: claudeMdContent, remaining: claudeMdRemaining } =
+    renderTemplate(claudeMdTmpl, vars);
+  const claudeMdDest = isGlobal
+    ? path.join(targetDir, "CLAUDE.md")
+    : path.join(targetDir, "CLAUDE.md");
+  ensureDir(path.dirname(claudeMdDest));
+  fs.writeFileSync(claudeMdDest, claudeMdContent, "utf8");
+  steps.push({ status: "created", dest: claudeMdDest });
+
+  if (claudeMdRemaining.length > 0) {
+    p.log.warn(
+      `CLAUDE.md has remaining placeholders: ${claudeMdRemaining.join(", ")}`,
+    );
   }
+
+  // 2. settings.json — build from template with autonomy level applied
+  const settingsTmpl = findTemplatePath(
+    "settings.json.tmpl",
+    targetDir,
+    repoRoot,
+  );
+  let settingsObj;
+  try {
+    settingsObj = JSON.parse(fs.readFileSync(settingsTmpl, "utf8"));
+  } catch (e) {
+    throw new Error(`Could not parse settings template: ${e.message}`);
+  }
+
+  // Apply autonomy level
+  const autonomy = AUTONOMY_MAP[config.autonomyLevel] || AUTONOMY_MAP.standard;
+  settingsObj.permissions = {
+    ...settingsObj.permissions,
+    ...autonomy.permissions,
+    defaultMode: autonomy.defaultMode,
+    deny: settingsObj.permissions?.deny || [],
+  };
+
+  // Apply formatter in PostToolUse hook
+  const formatter = FORMATTER_MAP[config.stack] || FORMATTER_MAP.generic;
+  if (settingsObj.hooks?.PostToolUse) {
+    for (const group of settingsObj.hooks.PostToolUse) {
+      if (group.matcher === "Edit|Write") {
+        for (const hook of group.hooks) {
+          if (
+            hook.command &&
+            hook.command.includes("formatter-not-configured")
+          ) {
+            if (formatter.command === "echo no-formatter-configured") {
+              hook.command = "echo no-formatter-configured";
+            } else {
+              hook.command = `bash -c 'INPUT=$(cat); FILE=$(echo "$INPUT" | jq -r ".tool_input.file_path // empty"); if [[ "$FILE" =~ \\.(${formatter.glob})$ ]]; then ${formatter.command} "$FILE" 2>/dev/null; fi; exit 0'`;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Merge with existing settings if present
+  const settingsDest = path.join(claudeDir, "settings.json");
+  let existing = {};
+  if (fs.existsSync(settingsDest)) {
+    try {
+      existing = JSON.parse(fs.readFileSync(settingsDest, "utf8"));
+    } catch (_) {}
+  }
+  const merged = deepMerge(existing, settingsObj);
+  ensureDir(path.dirname(settingsDest));
+  fs.writeFileSync(
+    settingsDest,
+    JSON.stringify(merged, null, 2) + "\n",
+    "utf8",
+  );
+  steps.push({ status: "created", dest: settingsDest });
+
+  // 3. guardrails.md — substitute stack-specific sections
+  const guardrailsTmpl = findTemplatePath(
+    "guardrails.md.tmpl",
+    targetDir,
+    repoRoot,
+  );
+  const guardrailsRaw = fs.readFileSync(guardrailsTmpl, "utf8");
+  let guardrailsContent = guardrailsRaw;
+
+  // Replace "No stack-specific guardrails..." with actual content
+  if (stackSections.STACK_SPECIFIC_GUARDRAILS) {
+    guardrailsContent = guardrailsContent.replace(
+      /No stack-specific guardrails configured yet\. Run \/setup to configure for your stack\./,
+      stackSections.STACK_SPECIFIC_GUARDRAILS,
+    );
+  }
+  if (stackSections.TOOL_SPECIFIC_GUARDRAILS) {
+    guardrailsContent = guardrailsContent.replace(
+      /No tool-specific guardrails configured yet\. Run \/setup to configure\./,
+      stackSections.TOOL_SPECIFIC_GUARDRAILS,
+    );
+  }
+
+  const guardrailsDest = path.join(claudeDir, "guardrails.md");
+  ensureDir(path.dirname(guardrailsDest));
+  fs.writeFileSync(guardrailsDest, guardrailsContent, "utf8");
+  steps.push({ status: "created", dest: guardrailsDest });
+
+  return steps;
 }
 
-// ─── Main ──────────────────────────────────────────────────────────────────
+// ─── Smart defaults for non-interactive mode ──────────────────────────────
+
+function buildSmartDefaults(targetDir) {
+  const detected = detectAll(targetDir);
+  const formatter =
+    FORMATTER_MAP[detected.stack || "generic"] || FORMATTER_MAP.generic;
+  return {
+    projectName: detected.projectName,
+    stack: detected.stack || "generic",
+    language: "english",
+    autonomyLevel: "standard",
+    packageManager: detected.packageManager,
+    formatter: formatter.name,
+    mcpServers: MCP_SERVERS.map((s) => s.key),
+    playwrightBrowsers: true,
+    installScope: "local",
+  };
+}
+
+// ─── Git branch creation ──────────────────────────────────────────────────
+
+function createGitBranch(name) {
+  const result = spawnSync("git", ["checkout", "-b", name], {
+    stdio: "pipe",
+    encoding: "utf8",
+  });
+  return result.status === 0;
+}
+
+// ─── Main ─────────────────────────────────────────────────────────────────
+
 async function main() {
-  const args    = parseArgs(process.argv);
+  const args = parseArgs(process.argv);
   const repoRoot = findRepoRoot();
 
+  // Help
   if (args.help) {
     console.log(`
-${bold('effectum')} — autonomous development system for Claude Code
+effectum — autonomous development system for Claude Code
 
-${bold('Usage:')}
-  npx effectum                              Interactive installer
-  npx effectum --global                     Install to ~/.claude/ (no prompts)
-  npx effectum --local                      Install to ./.claude/ (no prompts)
-  npx effectum --global --claude            Non-interactive, Claude Code runtime
-  npx effectum --global --with-mcp          Include MCP server setup
-  npx effectum --global --with-playwright   Include Playwright browser install
-  npx effectum --global --claude --with-mcp --with-playwright   Full install
+Usage:
+  npx effectum                  Interactive installer
+  npx effectum init             Per-project init (after global install)
+  npx effectum reconfigure      Re-apply config from .effectum.json
+  npx effectum --global         Install globally (~/.claude/, no prompts)
+  npx effectum --local          Install locally (./.claude/, no prompts)
+  npx effectum --dry-run        Show planned files without writing
+  npx effectum --yes            Non-interactive with smart defaults
 
-${bold('Options:')}
+Options:
   --global, -g        Install globally for all projects (~/.claude/)
   --local,  -l        Install locally for this project (./.claude/)
   --claude            Select Claude Code runtime (default)
-  --with-mcp          Install MCP servers (Context7, Playwright, Sequential Thinking, Filesystem)
+  --with-mcp          Install MCP servers
   --with-playwright   Install Playwright browsers
-  --yes, -y           Skip confirmation prompts
+  --yes, -y           Skip interactive prompts, use smart defaults
+  --dry-run           Show what would be created without writing
   --help, -h          Show this help
 `);
     process.exit(0);
   }
 
+  // Check repo files exist
+  if (!fs.existsSync(path.join(repoRoot, "system", "commands"))) {
+    console.error("Error: Could not find Effectum system files.");
+    console.error("  Expected: " + path.join(repoRoot, "system", "commands"));
+    process.exit(1);
+  }
+
+  // Determine mode
+  const isNonInteractive =
+    args.yes ||
+    args.global ||
+    args.local ||
+    process.env.CI === "true" ||
+    !process.stdin.isTTY;
+
+  const isGlobal = args.global;
+  const homeClaudeDir = path.join(os.homedir(), ".claude");
+  const targetDir = isGlobal ? homeClaudeDir : process.cwd();
+
+  // ── Non-interactive mode ────────────────────────────────────────────────
+  if (isNonInteractive) {
+    const config = buildSmartDefaults(targetDir);
+    config.installScope = isGlobal ? "global" : "local";
+
+    if (args.dryRun) {
+      console.log("\n  Dry run — no files will be written.\n");
+      console.log("  Config:", JSON.stringify(config, null, 2));
+      console.log("\n  Files that would be created:");
+      console.log("    .claude/commands/*.md");
+      console.log("    .claude/settings.json");
+      console.log("    .claude/guardrails.md");
+      console.log("    CLAUDE.md");
+      console.log("    AUTONOMOUS-WORKFLOW.md");
+      console.log("    .effectum.json");
+      if (args.withMcp) console.log("    MCP servers in settings.json");
+      process.exit(0);
+    }
+
+    // Install base files
+    installBaseFiles(targetDir, repoRoot, isGlobal);
+
+    // Generate configured files (only for local installs)
+    if (!isGlobal) {
+      generateConfiguredFiles(config, targetDir, repoRoot, isGlobal);
+      writeConfig(targetDir, config);
+    }
+
+    // MCP servers
+    if (args.withMcp) {
+      const mcpResults = installMcpServers(config.mcpServers);
+      const settingsPath = isGlobal
+        ? path.join(homeClaudeDir, "settings.json")
+        : path.join(targetDir, ".claude", "settings.json");
+      addMcpToSettings(settingsPath, mcpResults, targetDir);
+    }
+
+    // Playwright
+    if (args.withPlaywright) {
+      installPlaywrightBrowsers();
+      if (!isGlobal) ensurePlaywrightConfig(process.cwd());
+    }
+
+    console.log("\n  Effectum installed successfully.\n");
+    process.exit(0);
+  }
+
+  // ── Interactive mode ────────────────────────────────────────────────────
   printBanner();
 
-  // ── Check repo files exist ───────────────────────────────────────────────
-  if (!fs.existsSync(path.join(repoRoot, 'system', 'commands'))) {
-    console.log(red('✗ Error:') + ' Could not find Effectum system files.');
-    console.log(dim('  Expected: ' + path.join(repoRoot, 'system', 'commands')));
-    console.log(dim('  This is a bug — please report it at https://github.com/aslomon/effectum/issues'));
-    process.exit(1);
+  const detected = detectAll(process.cwd());
+
+  if (detected.stack) {
+    p.log.info(
+      `Detected: ${detected.stack} project (${detected.packageManager})`,
+    );
   }
 
-  let isGlobal;
-  let runtime = 'claude';
-  let wantMcp = args.withMcp;
-  let wantPlaywright = args.withPlaywright;
+  // Scope
+  const scopeValue = await p.select({
+    message: "Install scope",
+    options: [
+      {
+        value: "local",
+        label: "Local",
+        hint: "This project only (./.claude/)",
+      },
+      {
+        value: "global",
+        label: "Global",
+        hint: "All projects (~/.claude/)",
+      },
+    ],
+    initialValue: "local",
+  });
+  if (p.isCancel(scopeValue)) {
+    p.cancel("Setup cancelled.");
+    process.exit(0);
+  }
+  const installGlobal = scopeValue === "global";
+  const installTargetDir = installGlobal ? homeClaudeDir : process.cwd();
 
-  // ── Non-interactive mode ─────────────────────────────────────────────────
-  if (args.global || args.local) {
-    isGlobal = args.global;
-    if (args.claude) runtime = 'claude';
-    // wantMcp / wantPlaywright already set from flags
-  } else {
-    // ── Interactive mode ───────────────────────────────────────────────────
-    const rl = createRL();
+  // Project name
+  const projectName = await askProjectName(detected.projectName);
 
-    try {
-      // Scope question
-      const scopeIdx = await askChoice(rl,
-        bold('Where do you want to install Effectum?'),
-        [
-          { label: 'Global',  desc: 'all projects  (~/.claude/)' },
-          { label: 'Local',   desc: 'this project only  (./.claude/)' },
-        ],
-        0
-      );
-      isGlobal = scopeIdx === 0;
-      console.log();
+  // Stack
+  const stack = await askStack(detected.stack);
 
-      // Runtime question
-      const runtimeIdx = await askChoice(rl,
-        bold('Which AI coding runtime?'),
-        [
-          { label: 'Claude Code',                desc: 'default — recommended' },
-          { label: 'Codex / Gemini / OpenCode',  desc: 'coming soon' },
-        ],
-        0
-      );
-      runtime = runtimeIdx === 0 ? 'claude' : 'other';
-      console.log();
+  // Language
+  const langResult = await askLanguage();
 
-      if (runtime === 'other') {
-        console.log(yellow('⚠') + '  Only Claude Code is fully supported right now.');
-        console.log(dim('   Other runtimes are on the roadmap. Proceeding with Claude Code configuration.'));
-        runtime = 'claude';
-        console.log();
-      }
+  // Autonomy
+  const autonomyLevel = await askAutonomy();
 
-      // MCP question
-      wantMcp = await confirm(rl,
-        bold('Install MCP servers?') + dim('  (Context7, Playwright MCP, Sequential Thinking, Filesystem)'),
-        true
-      );
-      console.log();
+  // MCP servers
+  const mcpServerKeys = await askMcpServers();
 
-      // Playwright question
-      if (wantMcp) {
-        wantPlaywright = await confirm(rl,
-          bold('Install Playwright browsers?') + dim('  (required for /e2e command)'),
-          true
-        );
-        console.log();
-      }
+  // Playwright
+  const wantPlaywright = mcpServerKeys.includes("playwright")
+    ? await askPlaywright()
+    : false;
 
-    } finally {
-      rl.close();
+  // Git branch
+  const gitBranch = await askGitBranch();
+
+  // Build config object
+  const formatter = FORMATTER_MAP[stack] || FORMATTER_MAP.generic;
+  const config = {
+    projectName,
+    stack,
+    language: langResult.language,
+    ...(langResult.customLanguage
+      ? { customLanguage: langResult.customLanguage }
+      : {}),
+    autonomyLevel,
+    packageManager: detected.packageManager,
+    formatter: formatter.name,
+    mcpServers: mcpServerKeys,
+    playwrightBrowsers: wantPlaywright,
+    installScope: installGlobal ? "global" : "local",
+  };
+
+  // ── Dry run ─────────────────────────────────────────────────────────────
+  if (args.dryRun) {
+    p.log.info("Dry run — no files will be written.");
+    p.note(JSON.stringify(config, null, 2), "Planned Configuration");
+    const plannedFiles = [
+      ".claude/commands/*.md",
+      ".claude/settings.json",
+      ".claude/guardrails.md",
+      "CLAUDE.md",
+      "AUTONOMOUS-WORKFLOW.md",
+      ".effectum.json",
+    ];
+    if (mcpServerKeys.length > 0) {
+      plannedFiles.push("MCP servers in settings.json");
     }
+    p.note(plannedFiles.join("\n"), "Files to be created/updated");
+    p.outro("Dry run complete. No changes made.");
+    process.exit(0);
   }
 
-  // ── Determine target directory ───────────────────────────────────────────
-  // For global: target is ~/.claude/  (so claudeDir = ~/.claude/)
-  // For local:  target is ./          (so claudeDir = ./.claude/)
-  const homeClaudeDir = path.join(os.homedir(), '.claude');
-  const targetDir     = isGlobal ? homeClaudeDir : process.cwd();
-  const displayTarget = isGlobal ? '~/.claude' : './.claude';
-
-  console.log(`  ${dim('Scope:')}   ${cyan(isGlobal ? 'Global' : 'Local')}`);
-  console.log(`  ${dim('Target:')}  ${cyan(displayTarget)}`);
-  console.log(`  ${dim('Runtime:')} ${cyan('Claude Code')}`);
-  console.log();
-
-  // ── Step 1: Workflow commands + files ────────────────────────────────────
-  console.log(bold('  1. Installing workflow commands...'));
-  let steps;
-  try {
-    steps = await install({ targetDir, repoRoot, isGlobal, runtime });
-  } catch (err) {
-    console.log(red('  ✗ Installation failed:') + ' ' + err.message);
-    process.exit(1);
-  }
-
-  // Print file results
-  for (const step of steps) {
-    if (!step || !step.dest) continue;
-    const homeDir = os.homedir();
-    const rel = step.dest.startsWith(homeDir)
-      ? '~/' + path.relative(homeDir, step.dest)
-      : path.relative(process.cwd(), step.dest);
-    const icon = statusIcon(step.status);
-    if (step.status === 'error') {
-      console.log(`     ${icon}  ${red(rel)} — ${step.error || ''}`);
+  // ── Create git branch ──────────────────────────────────────────────────
+  if (gitBranch.create) {
+    const s = p.spinner();
+    s.start("Creating git branch...");
+    const ok = createGitBranch(gitBranch.name);
+    if (ok) {
+      s.stop(`Branch "${gitBranch.name}" created`);
     } else {
-      console.log(`     ${icon}  ${step.status === 'skipped' ? dim(rel) : rel}`);
+      s.stop("Could not create branch (may already exist)");
     }
   }
 
-  // Verify ralph-loop
-  const settingsPath = isGlobal
-    ? path.join(homeClaudeDir, 'settings.json')
-    : path.join(targetDir, '.claude', 'settings.json');
+  // ── Step 1: Base files ─────────────────────────────────────────────────
+  const s1 = p.spinner();
+  s1.start("Installing workflow commands and templates...");
+  const baseSteps = installBaseFiles(installTargetDir, repoRoot, installGlobal);
+  s1.stop(
+    `Installed ${baseSteps.filter((s) => s.status === "created").length} files`,
+  );
 
-  const commandsInstallDir = isGlobal
-    ? path.join(homeClaudeDir, 'commands')
-    : path.join(targetDir, '.claude', 'commands');
-
-  if (verifyRalphLoop(commandsInstallDir)) {
-    console.log(`     ${green('✓')}  ralph-loop command ${dim('verified')}`);
-  } else {
-    console.log(`     ${yellow('⚠')}  ralph-loop command not found`);
+  // ── Step 2: Configure (local only) ────────────────────────────────────
+  const configSteps = [];
+  if (!installGlobal) {
+    const s2 = p.spinner();
+    s2.start(
+      "Generating configured files (CLAUDE.md, settings.json, guardrails.md)...",
+    );
+    const cSteps = generateConfiguredFiles(
+      config,
+      installTargetDir,
+      repoRoot,
+      installGlobal,
+    );
+    configSteps.push(...cSteps);
+    s2.stop("Configuration files generated");
   }
 
-  console.log(`  ${green('✅')} Done`);
-  console.log();
-
-  // ── Step 2: MCP servers ──────────────────────────────────────────────────
-  if (wantMcp) {
-    console.log(bold('  2. Installing MCP servers...'));
-    const mcpResults = installMcpServers(true);
-
-    // Inject into settings.json
-    try {
-      addMcpToSettings(settingsPath, mcpResults);
-      console.log(`     ${green('✓')}  MCP servers added to settings.json`);
-    } catch (err) {
-      console.log(`     ${red('✗')}  Could not update settings.json: ${err.message}`);
-    }
-
-    console.log(`  ${green('✅')} Done`);
-    console.log();
+  // ── Step 3: MCP servers ────────────────────────────────────────────────
+  if (mcpServerKeys.length > 0) {
+    const s3 = p.spinner();
+    s3.start("Setting up MCP servers...");
+    const mcpResults = installMcpServers(mcpServerKeys);
+    const settingsPath = installGlobal
+      ? path.join(homeClaudeDir, "settings.json")
+      : path.join(installTargetDir, ".claude", "settings.json");
+    addMcpToSettings(settingsPath, mcpResults, installTargetDir);
+    const okCount = mcpResults.filter((r) => r.ok).length;
+    s3.stop(`${okCount} MCP servers configured`);
   }
 
-  // ── Step 3: Playwright browsers ──────────────────────────────────────────
+  // ── Step 4: Playwright ─────────────────────────────────────────────────
   if (wantPlaywright) {
-    console.log(bold('  3. Setting up Playwright...'));
-    installPlaywrightBrowsers(true);
-
-    // Create playwright.config.ts in the current project (local installs only)
-    if (!isGlobal) {
-      const pcResult = ensurePlaywrightConfig(process.cwd());
-      const icon = statusIcon(pcResult.status);
-      const rel  = path.relative(process.cwd(), pcResult.dest);
-      console.log(`     ${icon}  ${pcResult.status === 'skipped' ? dim(rel) : rel}`);
-    }
-
-    console.log(`  ${green('✅')} Done`);
-    console.log();
+    const s4 = p.spinner();
+    s4.start("Installing Playwright browsers...");
+    const pwResult = installPlaywrightBrowsers();
+    if (!installGlobal) ensurePlaywrightConfig(process.cwd());
+    s4.stop(
+      pwResult.ok
+        ? "Playwright browsers installed"
+        : "Playwright install failed (run manually: npx playwright install)",
+    );
   }
 
-  // ── Step 4: Summary ──────────────────────────────────────────────────────
-  const createdCount = steps.filter(s => s && s.status === 'created').length;
-  const skippedCount = steps.filter(s => s && s.status === 'skipped').length;
-
-  console.log(green('⚡') + bold(' Effectum ready!'));
-  console.log();
-  console.log(`  ${dim('Files installed:')}  ${createdCount}`);
-  if (skippedCount) console.log(`  ${dim('Already existed:')} ${skippedCount} ${dim('(preserved)')}`);
-  if (wantMcp)        console.log(`  ${dim('MCP servers:')}     ${MCP_SERVERS.length} configured`);
-  if (wantPlaywright) console.log(`  ${dim('Playwright:')}      browsers installed`);
-  console.log();
-
-  if (isGlobal) {
-    console.log('  ' + bold('Next steps:'));
-    console.log(`  ${cyan('1.')} Open Claude Code in any project`);
-    console.log(`  ${cyan('2.')} Run ${bold('/setup ~/your-project')} to configure it`);
-    console.log(`       ${dim('↳ /setup substitutes placeholders in settings.json for your project')}`);
-    console.log(`  ${cyan('3.')} Write a spec with ${bold('/prd:new')}`);
-  } else {
-    console.log('  ' + bold('Next steps:'));
-    console.log(`  ${cyan('1.')} Open Claude Code here: ${dim('claude')}`);
-    console.log(`  ${cyan('2.')} Run ${bold('/setup .')} to configure this project`);
-    console.log(`       ${dim('↳ /setup substitutes placeholders in settings.json for your project')}`);
-    console.log(`  ${cyan('3.')} Write a spec with ${bold('/prd:new')}`);
+  // ── Step 5: Save config ────────────────────────────────────────────────
+  if (!installGlobal) {
+    const configPath = writeConfig(installTargetDir, config);
+    configSteps.push({ status: "created", dest: configPath });
   }
 
-  console.log();
-  console.log(dim('  Docs: https://github.com/aslomon/effectum'));
-  console.log();
+  // ── Summary ─────────────────────────────────────────────────────────────
+  const allSteps = [...baseSteps, ...configSteps];
+  const allFiles = allSteps
+    .filter((s) => s && s.dest)
+    .map((s) => {
+      const homeDir = os.homedir();
+      return s.dest.startsWith(homeDir)
+        ? "~/" + path.relative(homeDir, s.dest)
+        : path.relative(process.cwd(), s.dest);
+    });
+
+  // Deduplicate for summary
+  const uniqueFiles = [...new Set(allFiles)].slice(0, 20);
+  showSummary(config, uniqueFiles);
+  showOutro(installGlobal);
 }
 
-main().catch(err => {
-  console.error(red('Fatal error:'), err.message);
+main().catch((err) => {
+  p.log.error(`Fatal error: ${err.message}`);
   process.exit(1);
 });
