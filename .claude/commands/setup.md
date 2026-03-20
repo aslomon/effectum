@@ -12,7 +12,7 @@ Validate:
 - The path exists. If not, ask: "This directory does not exist. Should I create it?"
 - Check for an existing `.claude/` directory at the target path.
   - If found, ask: **"A .claude/ directory already exists. Overwrite, merge, or abort?"**
-    - **Overwrite**: Delete existing `.claude/` and replace with fresh installation.
+    - **Overwrite**: Replace CONFIGURATION files only (`CLAUDE.md`, `.claude/settings.json`, `.claude/guardrails.md`) but **keep all commands** already in `.claude/commands/`.
     - **Merge**: Keep existing files, only add missing ones. Warn about conflicts.
     - **Abort**: Stop the installation.
 
@@ -57,12 +57,24 @@ Options: English, German (du/informal), or specify another.
 
 ## Step 3: Read Templates and Stack Preset
 
-Read these files from the repo root:
+Read the template files — check these locations **in order** and use the first one found:
 
-1. `system/templates/CLAUDE.md.tmpl` — Main configuration template
-2. `system/templates/settings.json.tmpl` — Settings template
-3. `system/templates/guardrails.md.tmpl` — Guardrails template
-4. `system/stacks/{selected-stack}.md` — Stack-specific content (nextjs-supabase.md, python-fastapi.md, swift-ios.md, or generic.md)
+1. `.effectum/templates/` — local install (created by `npx @aslomon/effectum --local`)
+2. `~/.effectum/templates/` — global install (created by `npx @aslomon/effectum --global`)
+3. `system/templates/` — development (running directly from the repo)
+
+Templates to read:
+- `CLAUDE.md.tmpl` — Main configuration template
+- `settings.json.tmpl` — Settings template
+- `guardrails.md.tmpl` — Guardrails template
+
+Read the stack preset file — check these locations **in order** and use the first one found:
+
+1. `.effectum/stacks/{selected-stack}.md`
+2. `~/.effectum/stacks/{selected-stack}.md`
+3. `system/stacks/{selected-stack}.md`
+
+Available stacks: `nextjs-supabase.md`, `python-fastapi.md`, `swift-ios.md`, `generic.md`
 
 The stack preset file contains values for these placeholders:
 

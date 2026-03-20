@@ -408,6 +408,16 @@ async function install(opts) {
   const wResults = copyDir(workshopSrc, workshopDest, { skipExisting: true });
   steps.push(...wResults);
 
+  // 6. Copy templates + stacks so /setup can find them after npx install
+  const templatesSrc = path.join(repoRoot, 'system', 'templates');
+  const stacksSrc    = path.join(repoRoot, 'system', 'stacks');
+  const effectumDir  = isGlobal
+    ? path.join(os.homedir(), '.effectum')
+    : path.join(targetDir, '.effectum');
+  const tResults = copyDir(templatesSrc, path.join(effectumDir, 'templates'), { skipExisting: false });
+  const sResults = copyDir(stacksSrc,    path.join(effectumDir, 'stacks'),    { skipExisting: false });
+  steps.push(...tResults, ...sResults);
+
   return steps;
 }
 
