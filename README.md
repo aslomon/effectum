@@ -1,6 +1,11 @@
 <div align="center">
 
-# ⚡ Effectum
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/logo.svg">
+  <img src="docs/logo.svg" alt="effectum" height="32">
+</picture>
+
+<br><br>
 
 ### Describe what you want. Get production-ready code.
 
@@ -9,10 +14,11 @@ _Effectum (Latin): the result, the accomplishment — that which has been brough
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Built%20for-Claude%20Code-blueviolet)](https://claude.ai/claude-code)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Website](https://img.shields.io/badge/Website-aslomon.github.io%2Feffectum-D97706)](https://aslomon.github.io/effectum/)
 
 <br>
 
-[Quick Start](#-quick-start) · [How It Works](#-how-it-works) · [The Workflow](#-the-workflow) · [PRD Workshop](#-the-prd-workshop) · [How is this different?](#-how-is-this-different) · [Limitations](#-limitations)
+[Quick Start](#-quick-start) · [How It Works](#-how-it-works) · [The Workflow](#-the-workflow) · [PRD Workshop](#-the-prd-workshop) · [How is this different?](#-how-is-this-different) · [Website](https://aslomon.github.io/effectum/)
 
 </div>
 
@@ -82,15 +88,15 @@ claude
 
 One command. Everything you need for autonomous Claude Code development.
 
-| What | Details |
-|------|---------|
+| What                     | Details                                                                                                                            |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
 | **10 workflow commands** | `/plan`, `/tdd`, `/verify`, `/e2e`, `/code-review`, `/build-fix`, `/refactor-clean`, `/ralph-loop`, `/cancel-ralph`, `/checkpoint` |
-| **PRD Workshop** | 8 knowledge files for guided specification writing |
-| **4 MCP servers** | Context7, Playwright, Sequential Thinking, Filesystem |
-| **Playwright setup** | Browser install + `playwright.config.ts` |
-| **Stack presets** | Next.js + Supabase, Python + FastAPI, Swift/SwiftUI, Generic |
-| **Quality gates** | 8 automated checks (build, types, lint, tests, security, etc.) |
-| **Guardrails** | Rules that prevent known mistakes |
+| **PRD Workshop**         | 8 knowledge files for guided specification writing                                                                                 |
+| **4 MCP servers**        | Context7, Playwright, Sequential Thinking, Filesystem                                                                              |
+| **Playwright setup**     | Browser install + `playwright.config.ts`                                                                                           |
+| **Stack presets**        | Next.js + Supabase, Python + FastAPI, Swift/SwiftUI, Generic                                                                       |
+| **Quality gates**        | 8 automated checks (build, types, lint, tests, security, etc.)                                                                     |
+| **Guardrails**           | Rules that prevent known mistakes                                                                                                  |
 
 ---
 
@@ -296,12 +302,12 @@ The better the spec, the better the code.
 
 ## 🆚 How is this different?
 
-| Tool | What it does | What Effectum adds |
-|------|-------------|-------------------|
-| **GSD** | Context engineering, prevents context rot | PRD Workshop (helps you write the spec), Ralph Loop (autonomous overnight) |
-| **BMAD** | Full enterprise methodology | Same ideas, 90% less ceremony |
-| **SpecKit** | Living specifications | + Autonomous execution + Quality gates |
-| **Taskmaster** | Task breakdown from PRDs | + TDD workflow + Code review + E2E testing |
+| Tool           | What it does                              | What Effectum adds                                                         |
+| -------------- | ----------------------------------------- | -------------------------------------------------------------------------- |
+| **GSD**        | Context engineering, prevents context rot | PRD Workshop (helps you write the spec), Ralph Loop (autonomous overnight) |
+| **BMAD**       | Full enterprise methodology               | Same ideas, 90% less ceremony                                              |
+| **SpecKit**    | Living specifications                     | + Autonomous execution + Quality gates                                     |
+| **Taskmaster** | Task breakdown from PRDs                  | + TDD workflow + Code review + E2E testing                                 |
 
 The short version: Effectum doesn't invent new concepts. It combines what already works, removes what doesn't, and packages it so it actually runs.
 
