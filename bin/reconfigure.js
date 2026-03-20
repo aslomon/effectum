@@ -19,36 +19,7 @@ const {
   substituteAll,
 } = require("./lib/template");
 const { AUTONOMY_MAP, FORMATTER_MAP } = require("./lib/constants");
-
-// ─── File helpers ──────────────────────────────────────────────────────────
-
-function ensureDir(dir) {
-  fs.mkdirSync(dir, { recursive: true });
-}
-
-function deepMerge(target, source) {
-  const out = Object.assign({}, target);
-  for (const key of Object.keys(source)) {
-    if (
-      source[key] &&
-      typeof source[key] === "object" &&
-      !Array.isArray(source[key]) &&
-      out[key] &&
-      typeof out[key] === "object" &&
-      !Array.isArray(out[key])
-    ) {
-      out[key] = deepMerge(out[key], source[key]);
-    } else {
-      out[key] = source[key];
-    }
-  }
-  return out;
-}
-
-function findRepoRoot() {
-  const binDir = path.dirname(__filename);
-  return path.resolve(binDir, "..");
-}
+const { ensureDir, deepMerge, findRepoRoot } = require("./lib/utils");
 
 // ─── Main ─────────────────────────────────────────────────────────────────
 

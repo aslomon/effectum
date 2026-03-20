@@ -12,6 +12,14 @@
 const path = require("path");
 
 const args = process.argv.slice(2);
+
+// Handle --version early
+if (args.includes("--version") || args.includes("-v")) {
+  const pkg = require("../package.json");
+  console.log(`effectum v${pkg.version}`);
+  process.exit(0);
+}
+
 const subcommand = args.find((a) => !a.startsWith("-"));
 
 // Route to the correct script

@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **Interactive CLI Configurator** with @clack/prompts TUI:
+  - `bin/lib/constants.js` - Autonomy/Formatter Maps, MCP-Server definitions, choice mappings
+  - `bin/lib/detect.js` - Auto-detection of Stack, Project name, Package Manager
+  - `bin/lib/stack-parser.js` - Parses Stack preset Markdown into Key-Value Maps
+  - `bin/lib/template.js` - Placeholder substitution engine
+  - `bin/lib/config.js` - `.effectum.json` read/write utilities
+  - `bin/lib/ui.js` - @clack/prompts wrapper for all interactive prompts
+  - `bin/effectum.js` - Subcommand router (install/init/reconfigure)
+  - `bin/init.js` - Per-project initialization
+  - `bin/reconfigure.js` - Re-apply configuration from `.effectum.json`
+- **Smart Defaults**: Auto-detection of project context with fallback mechanisms
+- **Multi-Select Support**: Interactive selection for Stack, Language, Autonomy, and MCP Servers
+- **Configuration Persistence**: `.effectum.json` for re-running configuration
+- **Dry-run Mode**: `--dry-run` flag shows plan without writing files
+- **Git Integration**: Optional git branch creation during setup
+- **@clack/prompts Dependency**: Modern TUI library for interactive prompts
+
+### Changed
+
+- **CLI Rewrite**: Complete rewrite of `bin/install.js` with new @clack/prompts TUI
+- **Package.json**: Updated bin entry to `effectum.js`, bumped version to 0.2.0
+- **Installation Flow**: New interactive guided setup replacing previous argument-based approach
+
+### Fixed
+
+- **Placeholder Substitution**: All 9+ placeholders correctly substituted in generated files
+- **Zero Leftover Placeholders**: Verification that no `{{...}}` remain in generated files
+- **Autonomy Mode Mapping**: Correct mapping of `conservative→default`, `standard→default`, `full→bypassPermissions`
+
 ## [0.1.1] - 2026-03-20
 
 ### Fixed

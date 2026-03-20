@@ -28,6 +28,7 @@ const {
 } = require("./lib/template");
 const { writeConfig } = require("./lib/config");
 const { AUTONOMY_MAP, FORMATTER_MAP, MCP_SERVERS } = require("./lib/constants");
+const { ensureDir, deepMerge, findRepoRoot: findRepoRootShared } = require("./lib/utils");
 const {
   printBanner,
   askProjectName,
@@ -40,12 +41,6 @@ const {
   showSummary,
   showOutro,
 } = require("./lib/ui");
-
-// ─── File helpers ──────────────────────────────────────────────────────────
-
-function ensureDir(dir) {
-  fs.mkdirSync(dir, { recursive: true });
-}
 
 function copyFile(src, dest, opts = {}) {
   if (fs.existsSync(dest) && opts.skipExisting) {
@@ -72,30 +67,8 @@ function copyDir(srcDir, destDir, opts = {}) {
   return results;
 }
 
-function deepMerge(target, source) {
-  const out = Object.assign({}, target);
-  for (const key of Object.keys(source)) {
-    if (
-      source[key] &&
-      typeof source[key] === "object" &&
-      !Array.isArray(source[key]) &&
-      out[key] &&
-      typeof out[key] === "object" &&
-      !Array.isArray(out[key])
-    ) {
-      out[key] = deepMerge(out[key], source[key]);
-    } else {
-      out[key] = source[key];
-    }
-  }
-  return out;
-}
-
-// ─── Repo root discovery ──────────────────────────────────────────────────
-
 function findRepoRoot() {
-  const binDir = path.dirname(__filename);
-  return path.resolve(binDir, "..");
+  return findRepoRootShared();
 }
 
 // ─── Parse CLI args ───────────────────────────────────────────────────────

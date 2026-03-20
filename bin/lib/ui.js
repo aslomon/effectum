@@ -197,7 +197,7 @@ function showSummary(config, files) {
 function showOutro(isGlobal) {
   if (isGlobal) {
     p.outro(
-      "Effectum ready! Open Claude Code in any project and run /setup to configure it.",
+      "Effectum ready! In any project, run: npx @aslomon/effectum init",
     );
   } else {
     p.outro(
