@@ -156,24 +156,12 @@ const COMMAND_RULES = [
   { key: "verify", label: "/verify", tags: [], always: true },
   { key: "code-review", label: "/code-review", tags: [], always: true },
   { key: "build-fix", label: "/build-fix", tags: [], always: true },
-  {
-    key: "refactor-clean",
-    label: "/refactor-clean",
-    tags: ["backend-heavy", "frontend-heavy"],
-  },
+  { key: "refactor-clean", label: "/refactor-clean", tags: [], always: true },
+  { key: "e2e", label: "/e2e", tags: [], always: true },
+  { key: "ralph-loop", label: "/ralph-loop", tags: [], always: true },
+  { key: "checkpoint", label: "/checkpoint", tags: [], always: true },
   { key: "update-docs", label: "/update-docs", tags: ["docs-needed"] },
   { key: "test-coverage", label: "/test-coverage", tags: ["testing-heavy"] },
-  { key: "checkpoint", label: "/checkpoint", tags: [] },
-  {
-    key: "e2e",
-    label: "/e2e",
-    tags: ["frontend-heavy", "e2e", "ui-design"],
-  },
-  {
-    key: "ralph-loop",
-    label: "/ralph-loop",
-    tags: ["automation", "ai-agent"],
-  },
   {
     key: "simplify",
     label: "/simplify",
@@ -258,11 +246,8 @@ const SKILL_RULES = [
  */
 const MCP_RULES = [
   { key: "context7", tags: [], always: true },
-  { key: "playwright", tags: ["frontend-heavy", "e2e", "ui-design"] },
-  {
-    key: "sequential-thinking",
-    tags: ["ai-agent", "automation", "compute-heavy"],
-  },
+  { key: "playwright", tags: [], always: true },
+  { key: "sequential-thinking", tags: [], always: true },
   { key: "filesystem", tags: ["file-handling", "storage"] },
 ];
 
