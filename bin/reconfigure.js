@@ -7,8 +7,6 @@
 
 const fs = require("fs");
 const path = require("path");
-const p = require("@clack/prompts");
-
 const { readConfig } = require("./lib/config");
 const { loadStackPreset } = require("./lib/stack-parser");
 const {
@@ -20,6 +18,7 @@ const {
 } = require("./lib/template");
 const { AUTONOMY_MAP, FORMATTER_MAP } = require("./lib/constants");
 const { ensureDir, deepMerge, findRepoRoot } = require("./lib/utils");
+const { initClack } = require("./lib/ui");
 
 // ─── Main ─────────────────────────────────────────────────────────────────
 
@@ -29,6 +28,7 @@ async function main() {
   const targetDir = process.cwd();
   const repoRoot = findRepoRoot();
 
+  const p = await initClack();
   p.intro("EFFECTUM — Reconfigure");
 
   // Read existing config
@@ -165,6 +165,6 @@ async function main() {
 }
 
 main().catch((err) => {
-  p.log.error(`Fatal error: ${err.message}`);
+  console.error(`Fatal error: ${err.message}`);
   process.exit(1);
 });

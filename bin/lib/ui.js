@@ -1,15 +1,38 @@
 /**
  * Shared @clack/prompts helpers and display utilities.
+ * Uses dynamic import() because @clack/prompts is ESM-only.
  */
 "use strict";
 
-const p = require("@clack/prompts");
 const {
   STACK_CHOICES,
   LANGUAGE_CHOICES,
   AUTONOMY_CHOICES,
   MCP_SERVERS,
 } = require("./constants");
+
+/** @type {import("@clack/prompts")} */
+let p;
+
+/**
+ * Initialize @clack/prompts (ESM module). Must be called once before using prompts.
+ * @returns {Promise<import("@clack/prompts")>}
+ */
+async function initClack() {
+  if (!p) {
+    p = await import("@clack/prompts");
+  }
+  return p;
+}
+
+/**
+ * Get the loaded clack instance (for use in install.js / reconfigure.js).
+ * @returns {import("@clack/prompts")}
+ */
+function getClack() {
+  if (!p) throw new Error("Call initClack() before using prompts");
+  return p;
+}
 
 /**
  * Print the Effectum banner via clack intro.
@@ -207,6 +230,8 @@ function showOutro(isGlobal) {
 }
 
 module.exports = {
+  initClack,
+  getClack,
   printBanner,
   handleCancel,
   askProjectName,

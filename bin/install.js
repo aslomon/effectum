@@ -16,8 +16,6 @@ const fs = require("fs");
 const path = require("path");
 const os = require("os");
 const { spawnSync } = require("child_process");
-const p = require("@clack/prompts");
-
 const { detectAll } = require("./lib/detect");
 const { loadStackPreset } = require("./lib/stack-parser");
 const {
@@ -30,6 +28,8 @@ const { writeConfig } = require("./lib/config");
 const { AUTONOMY_MAP, FORMATTER_MAP, MCP_SERVERS } = require("./lib/constants");
 const { ensureDir, deepMerge, findRepoRoot: findRepoRootShared } = require("./lib/utils");
 const {
+  initClack,
+  getClack,
   printBanner,
   askProjectName,
   askStack,
@@ -300,8 +300,8 @@ function generateConfiguredFiles(config, targetDir, repoRoot, isGlobal) {
   steps.push({ status: "created", dest: claudeMdDest });
 
   if (claudeMdRemaining.length > 0) {
-    p.log.warn(
-      `CLAUDE.md has remaining placeholders: ${claudeMdRemaining.join(", ")}`,
+    console.warn(
+      `⚠ CLAUDE.md has remaining placeholders: ${claudeMdRemaining.join(", ")}`,
     );
   }
 
@@ -525,6 +525,7 @@ Options:
   }
 
   // ── Interactive mode ────────────────────────────────────────────────────
+  const p = await initClack();
   printBanner();
 
   const detected = detectAll(process.cwd());
@@ -706,6 +707,6 @@ Options:
 }
 
 main().catch((err) => {
-  p.log.error(`Fatal error: ${err.message}`);
+  console.error(`Fatal error: ${err.message}`);
   process.exit(1);
 });
