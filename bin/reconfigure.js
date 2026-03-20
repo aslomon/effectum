@@ -18,6 +18,8 @@ const {
 const { AUTONOMY_MAP, FORMATTER_MAP } = require("./lib/constants");
 const { ensureDir, deepMerge, findRepoRoot } = require("./lib/utils");
 const { initClack } = require("./lib/ui");
+const { recommend } = require("./lib/recommendation");
+const { writeConfig } = require("./lib/config");
 
 // ─── Main ─────────────────────────────────────────────────────────────────
 
@@ -37,6 +39,20 @@ async function main() {
       "No .effectum.json found in this directory. Run `npx @aslomon/effectum` first.",
     );
     process.exit(1);
+  }
+
+  // Re-run recommendation engine with current config values
+  if (config.appType || config.description) {
+    const rec = recommend({
+      stack: config.stack,
+      appType: config.appType || "web-app",
+      description: config.description || "",
+      autonomyLevel: config.autonomyLevel || "standard",
+      language: config.language || "english",
+    });
+    config.recommended = rec;
+    // Persist updated recommendations
+    writeConfig(targetDir, config);
   }
 
   const configInfo = [`"${config.projectName}" (${config.stack})`];
