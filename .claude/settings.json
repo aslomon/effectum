@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'echo \"=== PRD WORKSHOP ===\"; echo \"\"; if [ -f STATUS.md ]; then cat STATUS.md; else echo \"No projects yet. Use /prd:new to start.\"; fi; echo \"\"; echo \"Commands: /prd:new | /prd:resume | /prd:status | /prd:review | /prd:handoff\"'"
+          }
+        ]
+      }
+    ]
+  }
+}

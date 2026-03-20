@@ -1,0 +1,14 @@
+.DS_Store
+*.swp
+*.swo
+*~
+.env
+.env.*
+node_modules/
+
+# Claude Code local state
+.claude/ralph-loop.local.md
+.claude/ralph-status.md
+.claude/ralph-blockers.md
+.claude/logs/
+.claude/backups/

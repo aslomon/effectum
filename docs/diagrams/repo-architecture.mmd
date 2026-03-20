@@ -1,0 +1,109 @@
+%%{ init: { 'theme': 'base', 'themeVariables': { 'primaryColor': '#4f46e5', 'primaryTextColor': '#fff', 'primaryBorderColor': '#3730a3', 'lineColor': '#6366f1' } } }%%
+
+graph TB
+    subgraph ROOT["autonomous-dev/"]
+        CLAUDE_MD["CLAUDE.md<br/><i>Workshop config</i>"]
+        README["README.md"]
+        CHANGELOG["CHANGELOG.md"]
+        STATUS["STATUS.md"]
+    end
+
+    subgraph CLAUDE_DIR[".claude/"]
+        SETTINGS[".claude/settings.json<br/><i>Hooks + permissions</i>"]
+        GUARDRAILS[".claude/guardrails.md<br/><i>Workshop guardrails</i>"]
+
+        subgraph COMMANDS[".claude/commands/"]
+            subgraph PRD_CMDS["prd/"]
+                PRD_NEW["new.md"]
+                PRD_DISCUSS["discuss.md"]
+                PRD_EXPRESS["express.md"]
+                PRD_REVIEW["review.md"]
+                PRD_HANDOFF["handoff.md"]
+                PRD_STATUS["status.md"]
+                PRD_RESUME["resume.md"]
+                PRD_DECOMPOSE["decompose.md"]
+                PRD_NETWORK["network-map.md"]
+                PRD_PROMPT["prompt.md"]
+            end
+            subgraph WS_CMDS["workshop/"]
+                WS_INIT["init.md"]
+                WS_ARCHIVE["archive.md"]
+            end
+            SETUP_CMD["setup.md"]
+        end
+    end
+
+    subgraph SYSTEM["system/"]
+        subgraph SYS_TEMPLATES["templates/"]
+            TMPL_CLAUDE["CLAUDE.md.tmpl"]
+            TMPL_SETTINGS["settings.json.tmpl"]
+            TMPL_GUARDS["guardrails.md.tmpl"]
+            AUTO_WORKFLOW["AUTONOMOUS-WORKFLOW.md"]
+        end
+        subgraph SYS_COMMANDS["commands/"]
+            CMD_PLAN["plan.md"]
+            CMD_TDD["tdd.md"]
+            CMD_VERIFY["verify.md"]
+            CMD_E2E["e2e.md"]
+            CMD_CR["code-review.md"]
+            CMD_BF["build-fix.md"]
+            CMD_RC["refactor-clean.md"]
+            CMD_RL["ralph-loop.md"]
+            CMD_CANCEL["cancel-ralph.md"]
+            CMD_CP["checkpoint.md"]
+        end
+        subgraph SYS_STACKS["stacks/"]
+            STK_NEXT["nextjs-supabase.md"]
+            STK_PYTHON["python-fastapi.md"]
+            STK_SWIFT["swift-ios.md"]
+            STK_GENERIC["generic.md"]
+        end
+    end
+
+    subgraph WORKSHOP["workshop/"]
+        subgraph WS_KNOWLEDGE["knowledge/"]
+            K1["01-prd-template.md"]
+            K2["02-questioning-framework.md"]
+            K3["03-decomposition-guide.md"]
+            K4["04-examples.md"]
+            K5["05-quality-checklist.md"]
+            K6["06-network-map-guide.md"]
+            K7["07-prompt-templates.md"]
+            K8["08-workflow-modes.md"]
+        end
+        subgraph WS_TEMPLATES["templates/"]
+            WT_PROJECT["PROJECT.md"]
+            WT_PRD["prd.md"]
+            WT_VISION["vision.md"]
+            WT_REQ["requirements-map.md"]
+            WT_NET["network-map.mmd"]
+            WT_SHARED["shared-contracts.md"]
+        end
+        subgraph WS_PROJECTS["projects/"]
+            EXAMPLE["_example-project/"]
+        end
+    end
+
+    subgraph DOCS["docs/"]
+        DOC_OVERVIEW["workflow-overview.md"]
+        DOC_INSTALL["installation-guide.md"]
+        DOC_WORKSHOP["prd-workshop-guide.md"]
+        DOC_CUSTOM["customization.md"]
+        DOC_TROUBLE["troubleshooting.md"]
+        subgraph DIAGRAMS["diagrams/"]
+            DIA_FLOW["workflow-flow.mmd"]
+            DIA_INSTALL["installation-flow.mmd"]
+            DIA_ARCH["repo-architecture.mmd"]
+        end
+    end
+
+    SETUP_CMD -->|"reads"| SYS_TEMPLATES
+    SETUP_CMD -->|"reads"| SYS_STACKS
+    SETUP_CMD -->|"copies"| SYS_COMMANDS
+    PRD_HANDOFF -->|"reads"| WS_KNOWLEDGE
+
+    style ROOT fill:#f0f9ff,stroke:#3b82f6
+    style SYSTEM fill:#fef3c7,stroke:#f59e0b
+    style WORKSHOP fill:#e0e7ff,stroke:#6366f1
+    style DOCS fill:#d1fae5,stroke:#10b981
+    style CLAUDE_DIR fill:#fce7f3,stroke:#ec4899

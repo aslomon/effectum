@@ -1,0 +1,77 @@
+%%{ init: { 'theme': 'base', 'themeVariables': { 'primaryColor': '#4f46e5', 'primaryTextColor': '#fff', 'primaryBorderColor': '#3730a3', 'lineColor': '#6366f1' } } }%%
+
+flowchart TB
+    START(["Run /setup ~/my-project"])
+
+    subgraph VALIDATE["Step 1: Validate Target"]
+        CHECK_PATH{"Path exists?"}
+        CHECK_CLAUDE{"\.claude/ exists?"}
+        CREATE_DIR["Create directory"]
+        CONFLICT{"Overwrite / Merge / Abort?"}
+    end
+
+    subgraph CONFIG["Step 2: Gather Configuration"]
+        NAME["Project Name<br/>(auto-detect from dir)"]
+        STACK{"Tech Stack?"}
+        DETECT["Auto-detect:<br/>package.json → Next.js<br/>pyproject.toml → Python<br/>Package.swift → Swift"]
+        LANG["Communication Language<br/>(default: English)"]
+        AUTONOMY{"Autonomy Level?"}
+    end
+
+    subgraph TEMPLATES["Step 3: Read Templates"]
+        TMPL_CLAUDE["CLAUDE.md.tmpl"]
+        TMPL_SETTINGS["settings.json.tmpl"]
+        TMPL_GUARDS["guardrails.md.tmpl"]
+        STACK_PRESET["stacks/{stack}.md"]
+    end
+
+    subgraph INSTALL["Step 4: Generate & Install"]
+        GEN_CLAUDE["CLAUDE.md"]
+        GEN_SETTINGS[".claude/settings.json"]
+        GEN_GUARDS[".claude/guardrails.md"]
+        COPY_WORKFLOW["AUTONOMOUS-WORKFLOW.md"]
+        COPY_CMDS["10 Command Files<br/>.claude/commands/"]
+    end
+
+    VERIFY_INSTALL["Step 5: Verify<br/>(list files + summary table)"]
+    NEXT_STEPS["Step 6: Next Steps<br/>(open project in Claude Code)"]
+
+    START --> CHECK_PATH
+    CHECK_PATH -->|"No"| CREATE_DIR
+    CHECK_PATH -->|"Yes"| CHECK_CLAUDE
+    CREATE_DIR --> CHECK_CLAUDE
+    CHECK_CLAUDE -->|"No"| NAME
+    CHECK_CLAUDE -->|"Yes"| CONFLICT
+    CONFLICT -->|"Overwrite/Merge"| NAME
+    CONFLICT -->|"Abort"| ABORT(["Installation cancelled"])
+
+    NAME --> DETECT
+    DETECT --> STACK
+    STACK --> LANG
+    LANG --> AUTONOMY
+
+    AUTONOMY --> TMPL_CLAUDE
+    AUTONOMY --> TMPL_SETTINGS
+    AUTONOMY --> TMPL_GUARDS
+    AUTONOMY --> STACK_PRESET
+
+    TMPL_CLAUDE --> GEN_CLAUDE
+    TMPL_SETTINGS --> GEN_SETTINGS
+    TMPL_GUARDS --> GEN_GUARDS
+    STACK_PRESET --> GEN_CLAUDE
+    STACK_PRESET --> GEN_SETTINGS
+    STACK_PRESET --> GEN_GUARDS
+    STACK_PRESET --> COPY_WORKFLOW
+    STACK_PRESET --> COPY_CMDS
+
+    GEN_CLAUDE --> VERIFY_INSTALL
+    GEN_SETTINGS --> VERIFY_INSTALL
+    GEN_GUARDS --> VERIFY_INSTALL
+    COPY_WORKFLOW --> VERIFY_INSTALL
+    COPY_CMDS --> VERIFY_INSTALL
+
+    VERIFY_INSTALL --> NEXT_STEPS
+
+    style START fill:#4f46e5,stroke:#3730a3,color:#fff
+    style NEXT_STEPS fill:#d1fae5,stroke:#10b981,color:#065f46
+    style ABORT fill:#fee2e2,stroke:#ef4444,color:#991b1b

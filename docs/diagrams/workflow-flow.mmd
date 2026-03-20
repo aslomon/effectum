@@ -1,0 +1,80 @@
+%%{ init: { 'theme': 'base', 'themeVariables': { 'primaryColor': '#4f46e5', 'primaryTextColor': '#fff', 'primaryBorderColor': '#3730a3', 'lineColor': '#6366f1', 'secondaryColor': '#f0f9ff', 'tertiaryColor': '#fef3c7' } } }%%
+
+flowchart TB
+    subgraph PRD_WORKSHOP["PRD Workshop (This Repo)"]
+        IDEA["Idea / Feature Request"]
+        WORKSHOP["/prd:new<br/>Discovery + Scoping"]
+        PRD["Agent-Ready PRD<br/>+ Quality Gates<br/>+ Completion Promise"]
+        REVIEW["/prd:review<br/>Readiness Scoring"]
+        HANDOFF["/prd:handoff<br/>Generate Prompt"]
+    end
+
+    subgraph TARGET_PROJECT["Target Project"]
+        subgraph PHASE1["Phase 1: Planning"]
+            PLAN["/plan<br/>Analyze + Plan"]
+            APPROVAL{{"User Approval"}}
+        end
+
+        subgraph PHASE2["Phase 2: Database & Types"]
+            MIGRATION["DB Migration<br/>+ RLS Policies"]
+            TYPES["Generate Types<br/>+ Zod Schemas"]
+            SMOKE["Smoke Test<br/>(validate env)"]
+        end
+
+        subgraph PHASE3["Phase 3: Backend TDD"]
+            BTEST_RED["Write Failing Tests<br/>(RED)"]
+            BTEST_GREEN["Implement API<br/>(GREEN)"]
+            BTEST_REFACTOR["Refactor"]
+        end
+
+        subgraph PHASE4["Phase 4: Frontend TDD"]
+            FTEST_RED["Write Failing Tests<br/>(RED)"]
+            FTEST_GREEN["Implement UI<br/>(GREEN)"]
+            FTEST_REFACTOR["Refactor"]
+        end
+
+        subgraph PHASE5["Phase 5: E2E"]
+            E2E["/e2e<br/>End-to-End Tests"]
+        end
+
+        subgraph PHASE6["Phase 6: Verification"]
+            VERIFY["/verify<br/>Build + Types + Lint + Tests"]
+            CODE_REVIEW["/code-review<br/>Security + Quality"]
+        end
+
+        DONE["Production-Ready Code"]
+    end
+
+    IDEA --> WORKSHOP
+    WORKSHOP --> PRD
+    PRD --> REVIEW
+    REVIEW -->|"Score >= 2.0"| HANDOFF
+    REVIEW -->|"Score < 2.0"| WORKSHOP
+
+    HANDOFF -->|"Paste prompt"| PLAN
+    PLAN --> APPROVAL
+    APPROVAL -->|"OK"| MIGRATION
+    APPROVAL -->|"Change X"| PLAN
+
+    MIGRATION --> TYPES
+    TYPES --> SMOKE
+    SMOKE --> BTEST_RED
+
+    BTEST_RED --> BTEST_GREEN
+    BTEST_GREEN --> BTEST_REFACTOR
+    BTEST_REFACTOR --> FTEST_RED
+
+    FTEST_RED --> FTEST_GREEN
+    FTEST_GREEN --> FTEST_REFACTOR
+    FTEST_REFACTOR --> E2E
+
+    E2E --> VERIFY
+    VERIFY -->|"All gates pass"| CODE_REVIEW
+    VERIFY -->|"Failures"| BTEST_RED
+    CODE_REVIEW -->|"Approved"| DONE
+    CODE_REVIEW -->|"Issues found"| BTEST_RED
+
+    style IDEA fill:#fef3c7,stroke:#f59e0b,color:#92400e
+    style DONE fill:#d1fae5,stroke:#10b981,color:#065f46
+    style APPROVAL fill:#fef3c7,stroke:#f59e0b,color:#92400e
+    style PRD fill:#e0e7ff,stroke:#4f46e5,color:#3730a3

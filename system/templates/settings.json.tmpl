@@ -1,0 +1,201 @@
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "0"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(*)",
+      "Read(*)",
+      "Write(*)",
+      "Edit(*)",
+      "Glob(*)",
+      "Grep(*)",
+      "WebFetch(*)",
+      "WebSearch(*)",
+      "Task(*)",
+      "NotebookEdit(*)",
+      "mcp__playwright",
+      "mcp__sequential-thinking"
+    ],
+    "deny": [
+      "Bash(rm -rf /)",
+      "Bash(rm -rf ~)",
+      "Bash(rm -rf /*)",
+      "Bash(rm -rf .)"
+    ],
+    "defaultMode": "{{AUTONOMY_PERMISSIONS}}"
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'echo \"Git: branch=$(git branch --show-current 2>/dev/null || echo none) | uncommitted=$(git status --short 2>/dev/null | wc -l | tr -d \" \") files | recent: $(git log --oneline -3 2>/dev/null || echo none)\"; GLOBAL_GR=\"$HOME/.claude/guardrails.md\"; PROJECT_GR=\"${CLAUDE_PROJECT_DIR:-.}/.claude/guardrails.md\"; if [ -f \"$GLOBAL_GR\" ]; then echo \"=== GLOBAL GUARDRAILS ===\"; cat \"$GLOBAL_GR\"; echo \"=== END GUARDRAILS ===\"; fi; if [ -f \"$PROJECT_GR\" ] && [ \"$PROJECT_GR\" != \"$GLOBAL_GR\" ]; then echo \"=== PROJECT GUARDRAILS ===\"; cat \"$PROJECT_GR\"; echo \"=== END PROJECT GUARDRAILS ===\"; fi'",
+            "statusMessage": "Loading git context & guardrails..."
+          }
+        ]
+      },
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'cd \"$CLAUDE_PROJECT_DIR\" 2>/dev/null; echo \"=== POST-COMPACTION CONTEXT ===\"; echo \"Branch: $(git branch --show-current 2>/dev/null)\"; echo \"Modified: $(git diff --name-only 2>/dev/null | tr \"\\n\" \", \")\"; echo \"Staged: $(git diff --cached --name-only 2>/dev/null | tr \"\\n\" \", \")\"; echo \"Last 5 commits: $(git log --oneline -5 2>/dev/null)\"; echo \"Rules: {{PACKAGE_MANAGER}} (not others). Check DESIGN.md before UI work.\"; if [ -f DESIGN.md ]; then echo \"DESIGN.md exists — follow it.\"; fi; if [ -f .claude/logs/tool-failures.jsonl ]; then echo \"Recent errors:\"; tail -3 .claude/logs/tool-failures.jsonl 2>/dev/null; fi; GLOBAL_GR=\"$HOME/.claude/guardrails.md\"; PROJECT_GR=\"${CLAUDE_PROJECT_DIR:-.}/.claude/guardrails.md\"; if [ -f \"$GLOBAL_GR\" ]; then echo \"=== GUARDRAILS ===\"; head -50 \"$GLOBAL_GR\"; echo \"=== END ===\"; fi; if [ -f \"$PROJECT_GR\" ] && [ \"$PROJECT_GR\" != \"$GLOBAL_GR\" ]; then echo \"=== PROJECT GUARDRAILS ===\"; head -30 \"$PROJECT_GR\"; echo \"=== END ===\"; fi; echo \"=== END CONTEXT ===\"'",
+            "statusMessage": "Re-injecting context..."
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'INPUT=$(cat); FILE=$(echo \"$INPUT\" | jq -r \".tool_input.file_path // empty\"); for p in \".env\" \".env.local\" \".env.production\" \"secrets/\" \".git/\" \"package-lock.json\" \"pnpm-lock.yaml\" \"Pipfile.lock\" \"poetry.lock\" \"Package.resolved\" \"Cargo.lock\"; do if [[ \"$FILE\" == *\"$p\"* ]]; then echo \"Blocked: protected file pattern \\\"$p\\\"\" >&2; exit 2; fi; done; exit 0'",
+            "statusMessage": "Checking file protection..."
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'CMD=$(jq -r \".tool_input.command\" <<< \"$(cat)\"); for p in \"rm -rf /\" \"rm -rf ~\" \"drop table\" \"DROP TABLE\" \"truncate table\" \"TRUNCATE TABLE\" \"push.*--force\" \"--force.*push\" \"reset --hard origin\"; do if echo \"$CMD\" | grep -qiE \"$p\"; then echo \"Blocked: destructive pattern \\\"$p\\\" detected\" >&2; exit 2; fi; done; exit 0'",
+            "statusMessage": "Checking command safety..."
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'CMD=$(jq -r \".tool_input.command\" <<< \"$(cat)\"); if echo \"$CMD\" | grep -qE \"^git commit\"; then MSG=$(echo \"$CMD\" | grep -oP \"(?<=-m \\\")[^\\\"]+|(?<=-m \\x27)[^\\x27]+\" || echo \"\"); if [ -n \"$MSG\" ] && [ ${#MSG} -lt 10 ]; then echo \"Commit message too short (min 10 chars). Be descriptive.\" >&2; exit 2; fi; fi; exit 0'",
+            "statusMessage": "Checking commit message..."
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'FILE=$(jq -r \".tool_input.file_path\" <<< \"$(cat)\"); EXT=\"${FILE##*.}\"; case \"$EXT\" in {{FORMATTER_GLOB}}) {{FORMATTER_COMMAND}} \"$FILE\" 2>/dev/null;; esac; exit 0'",
+            "timeout": 15,
+            "statusMessage": "Auto-formatting..."
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'jq -r \".tool_input.command\" <<< \"$(cat)\" | while IFS= read -r cmd; do echo \"$(date +%Y-%m-%dT%H:%M:%S) [$(pwd)] $cmd\" >> ~/.claude/command-audit.log; done; exit 0'",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'INPUT=$(cat); TOOL=$(echo \"$INPUT\" | jq -r \".tool_name\"); ERROR=$(echo \"$INPUT\" | jq -r \".error // empty\" | head -3); CMD=$(echo \"$INPUT\" | jq -r \".tool_input.command // .tool_input.file_path // empty\" | head -1); mkdir -p \"${CLAUDE_PROJECT_DIR:-.}/.claude/logs\"; echo \"{\\\"ts\\\":\\\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\\\",\\\"tool\\\":\\\"$TOOL\\\",\\\"input\\\":\\\"$(echo $CMD | tr '\"' \"'\" | cut -c1-100)\\\",\\\"error\\\":\\\"$(echo $ERROR | tr '\"' \"'\" | tr \"\\n\" \" \" | cut -c1-200)\\\"}\" >> \"${CLAUDE_PROJECT_DIR:-.}/.claude/logs/tool-failures.jsonl\"; exit 0'",
+            "statusMessage": "Logging error pattern...",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'INPUT=$(cat); TRANSCRIPT=$(echo \"$INPUT\" | jq -r \".transcript_path // empty\"); if [ -n \"$TRANSCRIPT\" ] && [ -f \"$TRANSCRIPT\" ]; then BACKUP_DIR=\"${CLAUDE_PROJECT_DIR:-.}/.claude/backups\"; mkdir -p \"$BACKUP_DIR\"; cp \"$TRANSCRIPT\" \"$BACKUP_DIR/transcript_$(date +%Y%m%d_%H%M%S).jsonl\"; ls -t \"$BACKUP_DIR\"/transcript_*.jsonl 2>/dev/null | tail -n +6 | xargs rm -f 2>/dev/null; fi; exit 0'",
+            "statusMessage": "Backing up transcript..."
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "Evaluate if Claude should stop. Context: $ARGUMENTS\n\nCheck:\n1. Were ALL user-requested tasks completed (not just attempted)?\n2. Any unresolved errors or failed operations?\n3. If code was changed, was it verified (no obvious type errors, no broken imports)?\n4. Any TODO/FIXME comments added but not resolved?\n\nIMPORTANT: If stop_hook_active is true in the input, this is a second pass — be lenient and only block for critical unfinished work. Never block twice in a row for the same reason.\n\nRespond {\"ok\": true} to allow stopping, or {\"ok\": false, \"reason\": \"what remains\"} to continue.",
+            "timeout": 30,
+            "statusMessage": "Verifying work completion..."
+          },
+          {
+            "type": "agent",
+            "prompt": "Check if meaningful code changes were made in this session by running: git diff --stat HEAD 2>/dev/null\n\nIf there are staged or unstaged changes to source code files (not just config/formatting):\n1. Read the current CHANGELOG.md if it exists\n2. Add entries under [Unreleased] following Keep a Changelog format (Added/Changed/Fixed/Removed)\n3. If CHANGELOG.md doesn't exist, create it with a proper header and the current changes\n\nIf changes are trivial (only formatting, only comments, only config), skip and respond {\"ok\": true}.\nIf stop_hook_active is true, respond {\"ok\": true} immediately — do not update CHANGELOG on second pass.\n\nContext: $ARGUMENTS",
+            "timeout": 60,
+            "statusMessage": "Updating CHANGELOG..."
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "A subagent just finished its work. Review the output in $ARGUMENTS.\n\nCheck the last_assistant_message field:\n1. Did the subagent actually complete its assigned task (not just describe findings)?\n2. Did it leave placeholder code, TODO comments, or incomplete implementations?\n3. If it was supposed to write/edit files, did it actually do so?\n\nIf complete, respond {\"ok\": true}.\nIf incomplete, respond {\"ok\": false, \"reason\": \"specific description of what the subagent still needs to do\"}.",
+            "timeout": 30,
+            "statusMessage": "Verifying subagent work..."
+          }
+        ]
+      }
+    ],
+    "TeammateIdle": [
+      {
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "A teammate just became idle. Context: $ARGUMENTS\n\nCheck:\n1. Are all their assigned tasks completed?\n2. Are there unclaimed tasks in the shared task list they could pick up?\n3. Should they assist another teammate who is blocked?\n\nRespond {\"ok\": true} to let them stop, or {\"ok\": false, \"reason\": \"description of remaining work\"} to assign more.",
+            "timeout": 30,
+            "statusMessage": "Checking teammate workload..."
+          }
+        ]
+      }
+    ],
+    "TaskCompleted": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'INPUT=$(cat); TASK=$(echo \"$INPUT\" | jq -r \".task_id // empty\"); AGENT=$(echo \"$INPUT\" | jq -r \".agent_name // empty\"); mkdir -p \"${CLAUDE_PROJECT_DIR:-.}/.claude/logs\"; echo \"$(date +%Y-%m-%dT%H:%M:%S) TASK_DONE: $TASK by $AGENT\" >> \"${CLAUDE_PROJECT_DIR:-.}/.claude/logs/team-activity.log\"; exit 0'",
+            "statusMessage": "Logging task completion...",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "permission_prompt",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "osascript -e 'display notification \"Claude needs your attention\" with title \"Claude Code\" sound name \"Ping\"'"
+          }
+        ]
+      },
+      {
+        "matcher": "idle_prompt",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "osascript -e 'display notification \"Task completed\" with title \"Claude Code\" sound name \"Glass\"'"
+          }
+        ]
+      }
+    ]
+  },
+  "skipDangerousModePermissionPrompt": true,
+  "effortLevel": "high"
+}
