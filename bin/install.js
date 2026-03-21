@@ -297,6 +297,37 @@ function installBaseFiles(targetDir, repoRoot, isGlobal) {
     }),
   );
 
+  // 5. Agents (subagent specializations)
+  const agentsSrc = path.join(repoRoot, "system", "agents");
+  if (fs.existsSync(agentsSrc)) {
+    const agentsDest = isGlobal
+      ? path.join(targetDir, "agents")
+      : path.join(targetDir, ".claude", "agents");
+    steps.push(...copyDir(agentsSrc, agentsDest, { skipExisting: true }));
+  }
+
+  return steps;
+}
+
+// ─── Install only recommended agents (filtered by recommendation) ──────────
+
+function installRecommendedAgents(targetDir, repoRoot, recommendedAgents) {
+  const agentsSrc = path.join(repoRoot, "system", "agents");
+  const agentsDest = path.join(targetDir, ".claude", "agents");
+  const steps = [];
+
+  if (!fs.existsSync(agentsSrc) || !recommendedAgents || recommendedAgents.length === 0) {
+    return steps;
+  }
+
+  for (const agentKey of recommendedAgents) {
+    const srcFile = path.join(agentsSrc, `${agentKey}.md`);
+    if (fs.existsSync(srcFile)) {
+      const destFile = path.join(agentsDest, `${agentKey}.md`);
+      steps.push(copyFile(srcFile, destFile, { skipExisting: true }));
+    }
+  }
+
   return steps;
 }
 
@@ -540,6 +571,13 @@ Options:
     // Generate configured files (only for local installs)
     if (!isGlobal) {
       generateConfiguredFiles(config, targetDir, repoRoot, isGlobal);
+
+      // Install recommended agents
+      const recAgents = config.recommended ? config.recommended.subagents : [];
+      if (recAgents && recAgents.length > 0) {
+        installRecommendedAgents(targetDir, repoRoot, recAgents);
+      }
+
       writeConfig(targetDir, config);
     }
 
@@ -733,6 +771,17 @@ Options:
     false,
   );
   s2.stop("Configuration files generated");
+
+  // 9b2: Install recommended agents
+  const recAgents = finalSetup.subagents || [];
+  if (recAgents.length > 0) {
+    const sAgents = p.spinner();
+    sAgents.start("Installing agent specializations...");
+    const agentSteps = installRecommendedAgents(installTargetDir, repoRoot, recAgents);
+    const agentCount = agentSteps.filter((s) => s.status === "created").length;
+    sAgents.stop(`${agentCount} agent specializations installed`);
+    configSteps.push(...agentSteps);
+  }
 
   // 9c: MCP servers
   if (finalSetup.mcps.length > 0) {
