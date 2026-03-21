@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Mobile Developer and Data Engineer Agent Specializations**:
+  - `system/agents/mobile-developer.md` - React Native, Flutter, Expo, Swift/SwiftUI, Kotlin, platform guidelines
+  - `system/agents/data-engineer.md` - ETL pipelines, data modeling, SQL optimization, pandas/polars, Apache Spark, data validation
+  - `bin/lib/specializations.js` - Registered both specializations with domain-specific tags and stack mappings
+- **Secret Detection and TDD Enforcement Hooks**:
+  - `system/templates/settings.json.tmpl` - PreToolUse/Bash hook for detecting secrets in git commits/pushes (API keys, credentials, tokens)
+  - `system/templates/settings.json.tmpl` - Stop Prompt hook for enforcing test-driven development practices with `stop_hook_active` bypass
+  - `system/templates/CLAUDE.md.tmpl` - Documentation of active hooks and their enforcement rules
+- **CLI Tool Check with Guided Installation and Authentication**:
+  - `bin/lib/cli-tools.js` - Tool definitions (git, gh, supabase, vercel, docker, uv, ruff, xcodebuild) with status detection and platform-aware installation
+  - `bin/lib/ui.js` - `showCliToolCheck()` interactive UI with Clack for status display, installation guidance, and authentication checks
+  - `bin/install.js` - CLI tool check integration into setup flow with interactive mode and report-only mode for `--yes` flag
+  - `bin/lib/template.js` - `{{AVAILABLE_TOOLS}}` template substitution for dynamic tool availability
+  - `system/templates/CLAUDE.md.tmpl` - Available CLI Tools section with live detection
 - **Intelligent Setup Recommender Engine**:
   - `bin/lib/languages.js` - 15+ language definitions with setup instructions
   - `bin/lib/app-types.js` - 9 application type definitions with intent tags (Web App, API/Backend, Mobile, Desktop, CLI, Automation/Agent, Data/ML, Library/SDK, Other)
