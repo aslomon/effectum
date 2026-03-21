@@ -155,15 +155,11 @@ async function askAppType() {
  */
 async function askDescription() {
   const value = await p.text({
-    message: "Describe what you want to build (one sentence)",
+    message: "Describe what you want to build (optional, press Enter to skip)",
     placeholder: "e.g. An internal CRM dashboard with auth and analytics",
-    validate: (v) => {
-      if (!v.trim())
-        return "A short description helps generate better recommendations";
-    },
   });
   handleCancel(value);
-  return value;
+  return value || "";
 }
 
 // ─── Step 5: Language ───────────────────────────────────────────────────────
