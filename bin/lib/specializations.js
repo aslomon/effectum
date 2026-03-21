@@ -94,6 +94,16 @@ const SUBAGENT_SPECS = [
     label: "Code Reviewer",
     tags: ["testing-heavy", "docs-needed"],
   },
+  {
+    key: "mobile-developer",
+    label: "Mobile Developer",
+    tags: ["native-ui", "frontend-heavy", "swift"],
+  },
+  {
+    key: "data-engineer",
+    label: "Data Engineer",
+    tags: ["data-pipeline", "compute-heavy", "analytics"],
+  },
 ];
 
 /**
@@ -116,7 +126,7 @@ const STACK_SUBAGENTS = {
     "test-automator",
     "api-designer",
   ],
-  "swift-ios": ["ui-designer", "test-automator"],
+  "swift-ios": ["ui-designer", "test-automator", "mobile-developer"],
   generic: ["debugger", "test-automator"],
 };
 
