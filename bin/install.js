@@ -543,17 +543,19 @@ Options:
       writeConfig(targetDir, config);
     }
 
-    // MCP servers
-    if (args.withMcp) {
-      const mcpResults = installMcpServers(config.mcpServers);
+    // MCP servers — always install recommended MCPs (or explicit --with-mcp)
+    const mcpKeys = config.mcpServers || (config.recommended ? config.recommended.mcps : []) || [];
+    if (mcpKeys.length > 0 || args.withMcp) {
+      const keysToInstall = mcpKeys.length > 0 ? mcpKeys : MCP_SERVERS.map((s) => s.key);
+      const mcpResults = installMcpServers(keysToInstall);
       const settingsPath = isGlobal
         ? path.join(homeClaudeDir, "settings.json")
         : path.join(targetDir, ".claude", "settings.json");
       addMcpToSettings(settingsPath, mcpResults, targetDir);
     }
 
-    // Playwright
-    if (args.withPlaywright) {
+    // Playwright — install if recommended or explicit
+    if (args.withPlaywright || config.playwrightBrowsers) {
       installPlaywrightBrowsers();
       if (!isGlobal) ensurePlaywrightConfig(process.cwd());
     }
