@@ -72,6 +72,10 @@
 | `/ralph-loop`     | Full Auto      | Iterative autonomous implementation      |
 
 
+## Available CLI Tools
+
+{{AVAILABLE_TOOLS}}
+
 ## Context7 — Always Use for Research
 
 - Always use Context7 MCP (`resolve_library_id` -> `get_library_docs`) when:
@@ -96,6 +100,8 @@ The following hooks run automatically. Do NOT duplicate their behavior:
 - **Guardrails Injection**: At session start and after compaction, `~/.claude/guardrails.md` (global) and `$PROJECT/.claude/guardrails.md` (project) are loaded. Follow them strictly.
 - **Transcript Backup**: Transcripts are backed up before context compaction to `.claude/backups/`.
 - **Protected Files**: `.env`, `.env.local`, `.env.production`, `secrets/`, `.git/`, lock files cannot be written to. Use Bash for env file operations if absolutely needed.
+- **Secret Detection**: Before `git commit` and `git push`, staged changes are scanned for API keys, tokens, and passwords. Blocked if secrets found.
+- **TDD Enforcement**: Before stopping, checks that test files were modified alongside source files. Blocks if source changed without tests.
 - **Destructive Command Blocker**: `rm -rf /`, `DROP TABLE`, `--force push`, `reset --hard` are blocked.
 - **Desktop Notifications**: User gets OS notifications on permission prompts and task completion.
 

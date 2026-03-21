@@ -71,6 +71,11 @@
             "type": "command",
             "command": "bash -c 'CMD=$(jq -r \".tool_input.command\" <<< \"$(cat)\"); if echo \"$CMD\" | grep -qE \"^git commit\"; then MSG=$(echo \"$CMD\" | grep -oP \"(?<=-m \\\")[^\\\"]+|(?<=-m \\x27)[^\\x27]+\" || echo \"\"); if [ -n \"$MSG\" ] && [ ${#MSG} -lt 10 ]; then echo \"Commit message too short (min 10 chars). Be descriptive.\" >&2; exit 2; fi; fi; exit 0'",
             "statusMessage": "Checking commit message..."
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'CMD=$(jq -r \".tool_input.command\" <<< \"$(cat)\"); if echo \"$CMD\" | grep -qE \"^git (commit|push)\"; then DIFF=$(git diff --cached --diff-filter=ACM 2>/dev/null || git diff HEAD 2>/dev/null); if echo \"$DIFF\" | grep -qEi \"(sk-[a-zA-Z0-9]{20,}|sk_live_|sk_test_|AKIA[A-Z0-9]{16}|ghp_[a-zA-Z0-9]{36}|gho_[a-zA-Z0-9]{36}|glpat-[a-zA-Z0-9-]{20}|xox[bpras]-[a-zA-Z0-9-]+|password\\s*[:=]\\s*[\\x27\\\"][^\\x27\\\"]{8,})\"; then echo \"Potential secret detected in staged changes! Review before committing.\" >&2; exit 2; fi; fi; exit 0'",
+            "statusMessage": "Scanning for secrets..."
           }
         ]
       }
@@ -129,6 +134,12 @@
             "prompt": "Evaluate if Claude should stop. Context: $ARGUMENTS\n\nCheck:\n1. Were ALL user-requested tasks completed (not just attempted)?\n2. Any unresolved errors or failed operations?\n3. If code was changed, was it verified (no obvious type errors, no broken imports)?\n4. Any TODO/FIXME comments added but not resolved?\n\nIMPORTANT: If stop_hook_active is true in the input, this is a second pass — be lenient and only block for critical unfinished work. Never block twice in a row for the same reason.\n\nRespond {\"ok\": true} to allow stopping, or {\"ok\": false, \"reason\": \"what remains\"} to continue.",
             "timeout": 30,
             "statusMessage": "Verifying work completion..."
+          },
+          {
+            "type": "prompt",
+            "prompt": "Check if tests were written for code changes. Run: git diff --name-only HEAD 2>/dev/null\n\nAnalyze the changed files:\n1. Identify source code files (not config, not docs, not tests)\n2. Check if corresponding test files were also changed or created\n3. If source files changed but NO test files changed, respond {\"ok\": false, \"reason\": \"Source files were modified but no tests were written. Write tests before stopping.\"}\n4. If tests exist for the changes, or only config/docs changed, respond {\"ok\": true}\n5. If stop_hook_active is true in input, be lenient — only block for completely untested new features.\n\nContext: $ARGUMENTS",
+            "timeout": 30,
+            "statusMessage": "Checking test coverage..."
           },
           {
             "type": "agent",
