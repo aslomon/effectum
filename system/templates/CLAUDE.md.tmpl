@@ -57,6 +57,14 @@
 - Clean dead code periodically (use /refactor-clean)
 - Only commit when explicitly asked. Prefer specific file staging over `git add .`
 
+## Task Registry (MANDATORY when present)
+
+- If a `tasks.md` file exists in the project (usually `workshop/projects/*/tasks.md`), you MUST use it.
+- Before starting work: read `tasks.md` to find the next TODO or STALE task.
+- After completing a task: update its status in `tasks.md` immediately (TODO → IN_PROGRESS → DONE).
+- NEVER skip updating `tasks.md`. It is the source of truth for what has been done.
+- Task statuses: 📋 TODO | 🔄 IN_PROGRESS | ✅ DONE | ⚠️ STALE | ❌ CANCELLED
+
 ## Available Commands
 
 | Command           | Phase          | Function                                 |

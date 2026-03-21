@@ -78,14 +78,16 @@ If `prd_path` is set (lifecycle mode):
    - If "restart": Output instructions to run `/prd:update` and start a new loop with the delta handoff.
    - **Do NOT silently continue with stale requirements.**
 
-#### Task Registry Read
+#### Task Registry Read (MANDATORY)
 
-If `tasks_path` is set:
+**You MUST check for and use a task registry if one exists.**
 
-1. Read `tasks.md` to understand the current task landscape.
-2. Identify the next task to work on: first `⚠️ STALE` task, then first `📋 TODO` task.
-3. Skip `✅ DONE` and `❌ CANCELLED` tasks.
-4. Use the task context to inform the next implementation step.
+1. Look for `tasks.md` in the project: `workshop/projects/*/tasks.md` or `tasks.md` in the project root. If found, set `tasks_path`.
+2. If `tasks_path` is set, read it at the START of every iteration.
+3. Identify the next task to work on: first `⚠️ STALE` task, then first `📋 TODO` task.
+4. Skip `✅ DONE` and `❌ CANCELLED` tasks.
+5. The current task determines what you implement this iteration. Do NOT skip ahead.
+6. If no `tasks.md` exists but the prompt references ACs, create one from the ACs before starting.
 
 ### 3b. Determine Next Step
 
@@ -124,15 +126,18 @@ Update `.claude/ralph-loop.local.md`:
 - Update `errors_consecutive` (reset to 0 on success, increment on failure).
 - Update `last_error` with the most recent error message (if any).
 
-#### Task Registry Sync
+#### Task Registry Sync (MANDATORY)
 
-If `tasks_path` is set and a task was worked on this iteration:
+**You MUST update the task registry after EVERY iteration where you worked on a task.**
 
-1. Update the task status in `tasks.md`:
-   - When starting a task: `📋 TODO` → `🔄 IN_PROGRESS`
-   - When a task's AC is implemented and verified: `🔄 IN_PROGRESS` → `✅ DONE`
-   - For STALE tasks after rework is complete: `⚠️ STALE` → `✅ DONE`
-2. Write the updated task registry to disk.
+1. Open `tasks.md` and update the task you worked on:
+   - When you START working on a task: change `📋 TODO` → `🔄 IN_PROGRESS`
+   - When a task's AC is fully implemented AND tests pass: change `🔄 IN_PROGRESS` → `✅ DONE`
+   - For STALE tasks after rework is complete and tests pass: change `⚠️ STALE` → `✅ DONE`
+2. Write the file to disk immediately. Do NOT batch updates.
+3. This is NOT optional. If you implemented code for a task, you MUST update `tasks.md` in the same iteration.
+
+**Verification:** At the end of each iteration, confirm that `tasks.md` reflects what you just did. If it doesn't, fix it before proceeding.
 
 #### Network Map Status Sync
 
