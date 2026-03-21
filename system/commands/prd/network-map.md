@@ -2,21 +2,36 @@
 
 You create or update the visual network map of a project as a Mermaid diagram.
 
-## Step 1: Identify Project
+## Step 1: Parse Arguments
 
-Interpret `$ARGUMENTS` as project-slug.
+Interpret `$ARGUMENTS`:
 
-- If empty: List available projects, ask the user.
-- Validate that `workshop/projects/{slug}/` exists.
+- **Project slug**: Required. The project identifier (e.g., `auth-system`).
+- **`--validate` flag**: Optional. When present, run validation checks instead of generating/updating the map.
+
+If no arguments: List available projects, ask the user.
 
 ## Step 2: Load Project Data
 
 Read all relevant files:
 
-- All PRDs under `workshop/projects/{slug}/prds/*.md`
+- All PRDs under `workshop/projects/{slug}/prds/*.md` — **parse YAML frontmatter** for `features[]` and `connections[]`
 - `workshop/projects/{slug}/vision.md` if present
 - `workshop/projects/{slug}/requirements-map.md` if present
 - `workshop/projects/{slug}/network-map.mmd` if present (existing map)
+- `workshop/projects/{slug}/tasks.md` if present (for status synchronization)
+
+### Frontmatter-Driven Generation
+
+When PRDs have YAML frontmatter, use it as the **primary source** for deterministic map generation:
+
+1. **Nodes**: Each entry in `features[]` across all PRDs becomes a node. Use the `id` as the node ID and `label` as the display text.
+2. **Status**: Map feature `status` to CSS class: `planned` → `:::planned`, `in-progress` → `:::inProgress`, `done` → `:::done`.
+3. **Connections**: Each entry in `connections[]` becomes an edge. Use `type: hard` for solid arrows (`-->`), `type: soft` for dashed arrows (`-.->`)..
+4. **PRD Grouping**: Group features by their parent PRD using `subgraph PRD-{number} [PRD-{number}: {title}]`.
+5. **Cross-PRD dependencies**: `depends_on[]` in frontmatter generates edges between PRD subgraphs.
+
+This ensures the map is always consistent with the PRD frontmatter. Freetext analysis is only used as a fallback for PRDs without frontmatter.
 
 ## Step 3: Load Conventions
 
@@ -55,13 +70,44 @@ Create the diagram according to the conventions from the guide:
 
 Write the updated Network Map to `workshop/projects/{slug}/network-map.mmd`.
 
-## Step 8: Display Result
+## Step 8: Validate (if `--validate` flag)
+
+When `--validate` is passed, skip map generation and instead perform these checks:
+
+### Validation Checks
+
+1. **Circular dependencies**: Walk the dependency graph (both feature connections and PRD `depends_on`). Report any cycles found.
+2. **Isolated nodes**: Find features that have zero incoming AND zero outgoing connections. These may be missing relationships.
+3. **Missing PRD assignments**: Find features in the map that don't belong to any PRD subgraph.
+4. **Orphaned references**: Find `connections[]` entries in frontmatter that reference feature IDs that don't exist in any PRD's `features[]`.
+5. **Status consistency**: Cross-check feature status in frontmatter against task status in `tasks.md`. Flag mismatches (e.g., feature is `planned` but all its tasks are `DONE`).
+6. **Completeness**: Check that every feature in every PRD's frontmatter appears as a node in the network map.
+
+### Validation Output
+
+```
+## Network Map Validation: {project-slug}
+
+✅ No circular dependencies
+⚠️ 2 isolated nodes: [FEAT_X, FEAT_Y]
+✅ All features assigned to PRDs
+❌ 1 orphaned reference: FEAT_Z referenced in PRD-002 connections but not defined
+⚠️ 1 status mismatch: AUTH is "planned" in frontmatter but all tasks are DONE
+✅ Map is complete — all features present
+
+Overall: {PASS | WARN | FAIL}
+```
+
+Report FAIL if circular dependencies or orphaned references are found. Report WARN for isolated nodes or status mismatches. Report PASS if all checks pass.
+
+## Step 9: Display Result
 
 Show the user:
 
-1. The complete Mermaid source in a code block.
+1. The complete Mermaid source in a code block (if generating/updating).
 2. A brief summary: number of features, PRDs, connections, identified dependencies.
-3. Notes on potential issues (circular dependencies, isolated nodes, too many connections).
+3. Validation results (if `--validate` was used, or always run basic checks after generation).
+4. Notes on potential issues (circular dependencies, isolated nodes, too many connections).
 
 ## Communication
 
