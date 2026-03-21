@@ -19,6 +19,13 @@ const {
   getAllMcps,
   getAllSubagents,
 } = require("./recommendation");
+const {
+  checkAllTools,
+  formatToolStatus,
+  formatInstallInstructions,
+  installTool,
+  checkAuth,
+} = require("./cli-tools");
 
 /** @type {import("@clack/prompts")} */
 let p;
@@ -495,6 +502,106 @@ async function askGitBranch() {
   return { create: true, name };
 }
 
+// ─── CLI Tool Check ─────────────────────────────────────────────────────────
+
+/**
+ * Run CLI tool check and offer installation/auth for missing tools.
+ * @param {string} stack - selected stack key
+ * @returns {Promise<{ tools: Array<object>, missing: Array<object>, installed: Array<object> }>}
+ */
+async function showCliToolCheck(stack) {
+  const result = checkAllTools(stack);
+
+  p.note(formatToolStatus(result.tools), "CLI Tool Check");
+
+  if (result.missing.length === 0) {
+    p.log.success("All CLI tools are installed.");
+  } else {
+    p.log.warn(`${result.missing.length} tool(s) not found.`);
+
+    const action = await p.select({
+      message: "How would you like to handle missing tools?",
+      options: [
+        {
+          value: "install",
+          label: "Install all missing",
+          hint: "Run install commands automatically",
+        },
+        {
+          value: "show",
+          label: "Show commands only",
+          hint: "Display install commands for manual use",
+        },
+        {
+          value: "skip",
+          label: "Skip",
+          hint: "Continue without installing",
+        },
+      ],
+      initialValue: "show",
+    });
+    handleCancel(action);
+
+    if (action === "install") {
+      for (const tool of result.missing) {
+        const s = p.spinner();
+        s.start(`Installing ${tool.key}...`);
+        const installResult = installTool(tool);
+        if (installResult.ok) {
+          tool.installed = true;
+          s.stop(`${tool.key} installed`);
+        } else {
+          s.stop(
+            `${tool.key} failed: ${installResult.error || "unknown error"}`,
+          );
+        }
+      }
+    } else if (action === "show") {
+      p.note(formatInstallInstructions(result.missing), "Install Commands");
+    }
+  }
+
+  // Auth check for installed tools that need auth
+  const authTools = result.tools.filter((t) => t.installed && t.auth);
+
+  if (authTools.length > 0) {
+    const authResults = authTools.map((t) => {
+      const authStatus = checkAuth(t);
+      return { ...t, ...authStatus };
+    });
+
+    const unauthenticated = authResults.filter(
+      (t) => t.needsAuth && !t.authenticated,
+    );
+
+    if (unauthenticated.length > 0) {
+      const authLines = authResults.map((t) => {
+        const icon = t.authenticated ? "\u2705" : "\u274C";
+        return `  ${icon} ${t.key}${!t.authenticated ? ` — run: ${t.authSetup}` : ""}`;
+      });
+      p.note(authLines.join("\n"), "Auth Status");
+
+      const runAuth = await p.confirm({
+        message:
+          "Would you like to run auth commands for unauthenticated tools?",
+        initialValue: false,
+      });
+      handleCancel(runAuth);
+
+      if (runAuth) {
+        p.log.info(
+          "Auth commands require interactive input. Run these manually:\n" +
+            unauthenticated.map((t) => `  ${t.key}: ${t.authSetup}`).join("\n"),
+        );
+      }
+    } else {
+      p.log.success("All tools are authenticated.");
+    }
+  }
+
+  return result;
+}
+
 // ─── Display helpers ────────────────────────────────────────────────────────
 
 /**
@@ -561,6 +668,8 @@ module.exports = {
   askSetupMode,
   askCustomize,
   askManual,
+  // CLI tool check
+  showCliToolCheck,
   // Legacy / utility prompts
   askMcpServers,
   askPlaywright,

@@ -9,6 +9,7 @@ const fs = require("fs");
 const path = require("path");
 const { FORMATTER_MAP } = require("./constants");
 const { LANGUAGE_INSTRUCTIONS } = require("./languages");
+const { getToolsForStack, checkTool } = require("./cli-tools");
 
 /**
  * Build a substitution map from user config and parsed stack sections.
@@ -22,6 +23,18 @@ function buildSubstitutionMap(config, stackSections) {
     LANGUAGE_INSTRUCTIONS[config.language] ||
     config.customLanguage ||
     LANGUAGE_INSTRUCTIONS.english;
+
+  // Build AVAILABLE_TOOLS section from detected CLI tools
+  const tools = getToolsForStack(config.stack);
+  const toolLines = tools.map((t) => {
+    const installed = checkTool(t.bin);
+    const status = installed ? "installed" : "not installed";
+    return `- **${t.key}** (${status}): ${t.why}`;
+  });
+  const availableTools =
+    toolLines.length > 0
+      ? toolLines.join("\n")
+      : "No CLI tools configured. Run the installer to detect and configure tools.";
 
   return {
     PROJECT_NAME: config.projectName,
@@ -39,6 +52,7 @@ function buildSubstitutionMap(config, stackSections) {
     PACKAGE_MANAGER: config.packageManager,
     TOOL_SPECIFIC_GUARDRAILS:
       stackSections.TOOL_SPECIFIC_GUARDRAILS || "[Not configured]",
+    AVAILABLE_TOOLS: availableTools,
   };
 }
 

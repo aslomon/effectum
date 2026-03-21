@@ -53,6 +53,7 @@ const {
   askLanguage,
   askAutonomy,
   showRecommendation,
+  showCliToolCheck,
   askSetupMode,
   askCustomize,
   askManual,
@@ -61,6 +62,7 @@ const {
   showSummary,
   showOutro,
 } = require("./lib/ui");
+const { checkAllTools, formatToolStatus } = require("./lib/cli-tools");
 
 // ─── File helpers ─────────────────────────────────────────────────────────────
 
@@ -343,7 +345,11 @@ function installRecommendedAgents(targetDir, repoRoot, recommendedAgents) {
   const agentsDest = path.join(targetDir, ".claude", "agents");
   const steps = [];
 
-  if (!fs.existsSync(agentsSrc) || !recommendedAgents || recommendedAgents.length === 0) {
+  if (
+    !fs.existsSync(agentsSrc) ||
+    !recommendedAgents ||
+    recommendedAgents.length === 0
+  ) {
     return steps;
   }
 
@@ -592,6 +598,22 @@ Options:
       process.exit(0);
     }
 
+    // CLI tool check (report only, no install in non-interactive mode)
+    const toolCheck = checkAllTools(config.stack);
+    if (toolCheck.missing.length > 0) {
+      console.log("\n  CLI Tool Check:");
+      console.log(formatToolStatus(toolCheck.tools));
+      console.log(
+        `\n  ${toolCheck.missing.length} tool(s) not installed. Run installer interactively to install.`,
+      );
+    }
+
+    // Store tool status in config
+    config.detectedTools = toolCheck.tools.map((t) => ({
+      key: t.key,
+      installed: t.installed,
+    }));
+
     // Install base files
     installBaseFiles(targetDir, repoRoot, isGlobal);
 
@@ -609,9 +631,13 @@ Options:
     }
 
     // MCP servers — always install recommended MCPs (or explicit --with-mcp)
-    const mcpKeys = config.mcpServers || (config.recommended ? config.recommended.mcps : []) || [];
+    const mcpKeys =
+      config.mcpServers ||
+      (config.recommended ? config.recommended.mcps : []) ||
+      [];
     if (mcpKeys.length > 0 || args.withMcp) {
-      const keysToInstall = mcpKeys.length > 0 ? mcpKeys : MCP_SERVERS.map((s) => s.key);
+      const keysToInstall =
+        mcpKeys.length > 0 ? mcpKeys : MCP_SERVERS.map((s) => s.key);
       const mcpResults = installMcpServers(keysToInstall);
       const settingsPath = isGlobal
         ? path.join(homeClaudeDir, "settings.json")
@@ -700,6 +726,9 @@ Options:
 
   showRecommendation(rec);
 
+  // ── CLI Tool Check ────────────────────────────────────────────────────────
+  const cliToolResult = await showCliToolCheck(stack);
+
   // ── Step 8: Decision ──────────────────────────────────────────────────────
   const setupMode = await askSetupMode();
 
@@ -733,6 +762,10 @@ Options:
     packageManager: detected.packageManager,
     formatter: formatterDef.name,
     mcpServers: finalSetup.mcps,
+    detectedTools: cliToolResult.tools.map((t) => ({
+      key: t.key,
+      installed: t.installed,
+    })),
     playwrightBrowsers: wantPlaywright,
     installScope: "local",
     recommended: {
@@ -804,7 +837,11 @@ Options:
   if (recAgents.length > 0) {
     const sAgents = p.spinner();
     sAgents.start("Installing agent specializations...");
-    const agentSteps = installRecommendedAgents(installTargetDir, repoRoot, recAgents);
+    const agentSteps = installRecommendedAgents(
+      installTargetDir,
+      repoRoot,
+      recAgents,
+    );
     const agentCount = agentSteps.filter((s) => s.status === "created").length;
     sAgents.stop(`${agentCount} agent specializations installed`);
     configSteps.push(...agentSteps);
