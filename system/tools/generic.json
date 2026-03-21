@@ -1,0 +1,20 @@
+{
+  "name": "Generic Tools",
+  "description": "Minimal optional tools for generic or undetected stacks.",
+  "tools": [
+    {
+      "key": "jq",
+      "bin": "jq",
+      "displayName": "jq",
+      "category": "optional",
+      "why": "JSON processing on the command line",
+      "priority": 5,
+      "autoInstall": true,
+      "install": {
+        "darwin": "brew install jq",
+        "linux": "sudo apt install -y jq"
+      },
+      "check": "jq --version"
+    }
+  ]
+}

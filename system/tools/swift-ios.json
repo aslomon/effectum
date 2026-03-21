@@ -1,0 +1,33 @@
+{
+  "name": "Swift / iOS Tools",
+  "description": "Tools for Swift and iOS/macOS development.",
+  "tools": [
+    {
+      "key": "xcode-select",
+      "bin": "xcodebuild",
+      "displayName": "Xcode Command Line Tools",
+      "category": "stack",
+      "why": "iOS/macOS build toolchain",
+      "priority": 0,
+      "autoInstall": false,
+      "install": {
+        "darwin": "xcode-select --install"
+      },
+      "check": "xcodebuild -version",
+      "manualUrl": "https://developer.apple.com/xcode/"
+    },
+    {
+      "key": "swift-format",
+      "bin": "swift-format",
+      "displayName": "swift-format",
+      "category": "stack",
+      "why": "Swift code formatting",
+      "priority": 2,
+      "autoInstall": true,
+      "install": {
+        "darwin": "brew install swift-format"
+      },
+      "check": "swift-format --version"
+    }
+  ]
+}

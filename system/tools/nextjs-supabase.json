@@ -1,0 +1,56 @@
+{
+  "name": "Next.js + Supabase Tools",
+  "description": "Tools for Next.js with Supabase stack projects.",
+  "tools": [
+    {
+      "key": "pnpm",
+      "bin": "pnpm",
+      "displayName": "pnpm",
+      "category": "stack",
+      "why": "Fast, disk-efficient package manager for Node.js",
+      "priority": 1,
+      "autoInstall": true,
+      "install": {
+        "all": "npm i -g pnpm"
+      },
+      "check": "pnpm --version"
+    },
+    {
+      "key": "supabase",
+      "bin": "supabase",
+      "displayName": "Supabase CLI",
+      "category": "stack",
+      "why": "Database migrations, type generation, edge functions",
+      "priority": 2,
+      "autoInstall": true,
+      "install": {
+        "darwin": "brew install supabase/tap/supabase",
+        "linux": "npm i -g supabase"
+      },
+      "check": "supabase --version",
+      "auth": {
+        "check": "supabase projects list 2>&1 | head -1",
+        "setup": "supabase login",
+        "url": "https://supabase.com/dashboard/account/tokens"
+      }
+    },
+    {
+      "key": "vercel",
+      "bin": "vercel",
+      "displayName": "Vercel CLI",
+      "category": "stack",
+      "why": "Deployment to Vercel",
+      "priority": 3,
+      "autoInstall": true,
+      "install": {
+        "all": "npm i -g vercel"
+      },
+      "check": "vercel --version",
+      "auth": {
+        "check": "vercel whoami",
+        "setup": "vercel login",
+        "url": "https://vercel.com/account/tokens"
+      }
+    }
+  ]
+}

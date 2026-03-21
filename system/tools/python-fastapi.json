@@ -1,0 +1,47 @@
+{
+  "name": "Python + FastAPI Tools",
+  "description": "Tools for Python with FastAPI stack projects.",
+  "tools": [
+    {
+      "key": "uv",
+      "bin": "uv",
+      "displayName": "uv",
+      "category": "stack",
+      "why": "Fast Python package management",
+      "priority": 1,
+      "autoInstall": true,
+      "install": {
+        "all": "curl -LsSf https://astral.sh/uv/install.sh | sh"
+      },
+      "check": "uv --version"
+    },
+    {
+      "key": "ruff",
+      "bin": "ruff",
+      "displayName": "Ruff",
+      "category": "stack",
+      "why": "Python linting and formatting",
+      "priority": 2,
+      "autoInstall": true,
+      "install": {
+        "all": "pip install ruff"
+      },
+      "check": "ruff --version"
+    },
+    {
+      "key": "docker",
+      "bin": "docker",
+      "displayName": "Docker",
+      "category": "stack",
+      "why": "Container management, local dev environment",
+      "priority": 5,
+      "autoInstall": false,
+      "install": {
+        "darwin": "brew install --cask docker",
+        "linux": "sudo apt install -y docker.io"
+      },
+      "check": "docker --version",
+      "manualUrl": "https://docs.docker.com/get-docker/"
+    }
+  ]
+}

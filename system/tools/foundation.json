@@ -1,0 +1,56 @@
+{
+  "name": "Foundation Tools",
+  "description": "Always-required tools regardless of stack. Loaded for every project.",
+  "tools": [
+    {
+      "key": "git",
+      "bin": "git",
+      "displayName": "Git",
+      "category": "foundation",
+      "why": "Version control — required for all projects",
+      "priority": 0,
+      "autoInstall": true,
+      "install": {
+        "darwin": "xcode-select --install",
+        "linux": "sudo apt install -y git"
+      },
+      "check": "git --version",
+      "auth": {
+        "check": "git config user.name && git config user.email",
+        "setup": "git config --global user.name \"Your Name\" && git config --global user.email \"you@example.com\""
+      }
+    },
+    {
+      "key": "gh",
+      "bin": "gh",
+      "displayName": "GitHub CLI",
+      "category": "foundation",
+      "why": "GitHub: Issues, PRs, Code Search, CI status",
+      "priority": 1,
+      "autoInstall": true,
+      "install": {
+        "darwin": "brew install gh",
+        "linux": "sudo apt install -y gh"
+      },
+      "check": "gh --version",
+      "auth": {
+        "check": "gh auth status",
+        "setup": "gh auth login",
+        "url": "https://github.com/settings/tokens"
+      }
+    },
+    {
+      "key": "claude",
+      "bin": "claude",
+      "displayName": "Claude Code",
+      "category": "foundation",
+      "why": "AI coding agent — the core of the autonomous workflow",
+      "priority": 0,
+      "autoInstall": true,
+      "install": {
+        "all": "npm i -g @anthropic-ai/claude-code"
+      },
+      "check": "claude --version"
+    }
+  ]
+}

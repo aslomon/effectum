@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Effectum Tool Definition",
+  "description": "Schema for tool definition files in system/tools/. Each file defines tools for a specific stack or category.",
+  "type": "object",
+  "required": ["tools"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Human-readable name for this tool set (e.g., 'Foundation Tools')"
+    },
+    "description": {
+      "type": "string",
+      "description": "Brief description of when these tools are used"
+    },
+    "tools": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "bin",
+          "displayName",
+          "category",
+          "why",
+          "priority"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "Unique identifier for the tool (e.g., 'git', 'supabase')"
+          },
+          "bin": {
+            "type": "string",
+            "description": "Binary name to check in PATH (e.g., 'git', 'supabase')"
+          },
+          "displayName": {
+            "type": "string",
+            "description": "Human-readable name (e.g., 'Supabase CLI')"
+          },
+          "category": {
+            "type": "string",
+            "enum": ["system", "foundation", "stack", "optional"],
+            "description": "Tool category: system (OS-level), foundation (always needed), stack (stack-specific), optional (nice-to-have)"
+          },
+          "why": {
+            "type": "string",
+            "description": "Human-readable reason why this tool is needed"
+          },
+          "priority": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10,
+            "description": "Installation priority (0 = highest, 10 = lowest). Determines install order."
+          },
+          "autoInstall": {
+            "type": "boolean",
+            "default": true,
+            "description": "If false, tool is recommended with a link but not auto-installed (e.g., Docker, Xcode)"
+          },
+          "install": {
+            "type": "object",
+            "properties": {
+              "darwin": {
+                "type": "string",
+                "description": "macOS install command"
+              },
+              "linux": {
+                "type": "string",
+                "description": "Linux install command"
+              },
+              "all": {
+                "type": "string",
+                "description": "Cross-platform install command"
+              }
+            },
+            "description": "Platform-specific install commands. 'all' is used as fallback."
+          },
+          "check": {
+            "type": "string",
+            "description": "Command to verify the tool is working (e.g., 'git --version'). Falls back to 'which <bin>'."
+          },
+          "manualUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL for manual installation instructions (used when autoInstall is false)"
+          },
+          "auth": {
+            "type": "object",
+            "properties": {
+              "check": {
+                "type": "string",
+                "description": "Command to check auth status (exit 0 = authenticated)"
+              },
+              "setup": {
+                "type": "string",
+                "description": "Command to set up authentication"
+              },
+              "url": {
+                "type": "string",
+                "format": "uri",
+                "description": "URL where user can create tokens/credentials"
+              }
+            },
+            "required": ["check", "setup"],
+            "description": "Authentication configuration. Omit if tool needs no auth."
+          }
+        }
+      }
+    }
+  }
+}
