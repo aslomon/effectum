@@ -306,6 +306,33 @@ function installBaseFiles(targetDir, repoRoot, isGlobal) {
     steps.push(...copyDir(agentsSrc, agentsDest, { skipExisting: true }));
   }
 
+  // 6. Skills
+  const skillsSrc = path.join(repoRoot, "system", "skills");
+  if (fs.existsSync(skillsSrc)) {
+    const skillsDest = isGlobal
+      ? path.join(targetDir, "skills")
+      : path.join(targetDir, ".claude", "skills");
+    steps.push(...copyDir(skillsSrc, skillsDest, { skipExisting: true }));
+  }
+
+  // 7. Teams (profiles for Agent Teams)
+  const teamsSrc = path.join(repoRoot, "system", "teams");
+  if (fs.existsSync(teamsSrc)) {
+    const teamsDest = isGlobal
+      ? path.join(targetDir, "teams")
+      : path.join(targetDir, ".claude", "teams");
+    steps.push(...copyDir(teamsSrc, teamsDest, { skipExisting: true }));
+  }
+
+  // 8. Hook scripts
+  const hooksSrc = path.join(repoRoot, "system", "hooks");
+  if (fs.existsSync(hooksSrc)) {
+    const hooksDest = isGlobal
+      ? path.join(targetDir, "hooks")
+      : path.join(targetDir, ".claude", "hooks");
+    steps.push(...copyDir(hooksSrc, hooksDest, { skipExisting: true }));
+  }
+
   return steps;
 }
 
