@@ -9,6 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **PRD Lifecycle Management System**:
+  - **Task Registry Template** (`workshop/templates/tasks.md`) - Auto-managed task registry with status tracking (TODO/IN_PROGRESS/DONE/STALE/CANCELLED), stable task IDs, and automatic status transitions
+  - **Delta Handoff Template** (`workshop/templates/delta-handoff.md`) - Structured handoff format with Protection Rules, Stale/New/Cancelled sections, Regression Mandate, and Hard Remove Policy
+  - **PRD Update Command** (`system/commands/prd/update.md`) - 15-step workflow for semantic section diffs, change classification (ADDITIVE/MODIFIED/REMOVED/DESIGN/STRUCTURAL), impact analysis, Git checkpoints, Task Registry + Network Map updates, and Delta Handoff generation
+  - **Enhanced PRD Template** (`workshop/templates/prd.md`) - YAML Frontmatter with id, version, status, features[], connections[], and Changelog table
+  - **Frontmatter Schema Documentation** (`workshop/knowledge/01-prd-template.md`) - Complete documentation of Frontmatter fields, Feature Status values, Version Bumping Rules, and Changelog conventions
+  - **Network Map Auto-Sync** (`workshop/knowledge/06-network-map-guide.md`) - Documented auto-sync behavior, frontmatter-driven deterministic generation, and validation checks
+  - **PRD Lifecycle Command Integration**:
+    - `/prd:new` - Auto-generates Frontmatter + Stage 1 Network Map
+    - `/prd:handoff` - Initializes Task Registry on first handoff (1 task per Acceptance Criterion)
+    - `/prd:network-map` - Added `--validate` flag (circular deps, isolated nodes, orphaned refs, status mismatches)
+  - **Ralph Loop PRD Integration** (`system/commands/ralph-loop.md`) - PRD-Hash change detection (pauses on changes), Task Registry sync (TODO→IN_PROGRESS→DONE), Network Map status sync (planned→inProgress→done)
+
 - **Extensible JSON-Based Tool Management System**:
   - `system/tools/_schema.json` - JSON Schema documentation for tool definitions
   - `system/tools/foundation.json` - Always-loaded foundation tools (git, gh, claude)
@@ -89,6 +102,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **PRD Commands Integration**: Updated `/prd:new`, `/prd:handoff`, `/prd:network-map` to integrate with PRD Lifecycle Management:
+  - `/prd:new` - Auto-generates YAML Frontmatter and Stage 1 Network Map on creation
+  - `/prd:handoff` - Initializes Task Registry with one task per Acceptance Criterion on first handoff
+  - `/prd:network-map` - Added `--validate` flag for validation checks (circular dependencies, isolated nodes, orphaned references, status mismatches)
+- **Ralph Loop Command**: Enhanced with PRD change detection, task registry sync, and network map status sync
+- **CLAUDE.md Command Registration**: Updated command table to include `/prd:update` command documentation
 - **CLI Rewrite**: Complete rewrite of `bin/install.js` with 9-step intelligent recommendation flow
 - **Config Schema**: Updated to v0.4.0 with `appType`, `description`, `recommended`, and `mode` fields
 - **Constants Module**: Delegated language and app-type definitions to specialized modules with backward-compatible re-exports
