@@ -4,6 +4,82 @@ This template produces PRDs that can be handed directly to Claude Code, GSD, or 
 
 ---
 
+## PRD Frontmatter
+
+Every PRD starts with a YAML frontmatter block. This structured metadata enables machine-readable PRD processing, automatic versioning, task registry synchronization, and deterministic network map generation.
+
+### Schema
+
+```yaml
+---
+id: PRD-001 # Unique identifier within the project
+title: "Feature Name" # Human-readable title
+version: 1.0 # Semver-like version (1.0, 1.1, 1.2)
+status: drafting # drafting | ready | in-progress | done | archived
+last_updated: 2026-03-21 # ISO date of last modification
+depends_on: [] # List of PRD IDs this depends on (e.g., [PRD-001])
+features: # Feature registry for task tracking and network map
+  - { id: AUTH, label: "Authentication Module", status: planned }
+  - { id: LOGIN, label: "Login Flow", status: planned }
+connections: # Cross-feature and cross-PRD dependencies
+  - { from: AUTH, to: DASHBOARD, type: hard, label: "requires auth" }
+---
+```
+
+### Field Reference
+
+| Field          | Type   | Required | Description                                                                                                                    |
+| -------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `id`           | string | Yes      | Format: `PRD-{NUMBER}`. Must be unique within the project.                                                                     |
+| `title`        | string | Yes      | Human-readable feature name. Used in task registry and handoff prompts.                                                        |
+| `version`      | number | Yes      | Starts at `1.0`. Bumped by `/prd:update`: minor for additive/modified changes, major reserved for breaking restructures.       |
+| `status`       | enum   | Yes      | One of: `drafting`, `ready`, `in-progress`, `done`, `archived`. Updated by workflow commands.                                  |
+| `last_updated` | date   | Yes      | ISO 8601 date (`YYYY-MM-DD`). Auto-updated by `/prd:new` and `/prd:update`.                                                    |
+| `depends_on`   | list   | Yes      | PRD IDs that must be completed before this PRD can be implemented. Empty list `[]` if none.                                    |
+| `features`     | list   | Yes      | Each feature has `id` (uppercase, unique), `label` (human-readable), and `status` (`planned`, `in-progress`, `done`).          |
+| `connections`  | list   | Yes      | Each connection has `from` (feature ID), `to` (feature ID), `type` (`hard` or `soft`), and `label` (relationship description). |
+
+### Feature Status Values
+
+| Status        | Meaning                  | Set By                    |
+| ------------- | ------------------------ | ------------------------- |
+| `planned`     | Not yet implemented      | `/prd:new`, `/prd:update` |
+| `in-progress` | Currently being built    | Ralph Loop                |
+| `done`        | Implemented and verified | Ralph Loop                |
+
+### Version Bumping Rules
+
+| Change Type                 | Version Bump | Example   |
+| --------------------------- | ------------ | --------- |
+| ADDITIVE (new AC/feature)   | Minor (+0.1) | 1.0 → 1.1 |
+| MODIFIED (changed AC)       | Minor (+0.1) | 1.1 → 1.2 |
+| REMOVED (deleted AC)        | Minor (+0.1) | 1.2 → 1.3 |
+| DESIGN (UI-only)            | Minor (+0.1) | 1.3 → 1.4 |
+| STRUCTURAL (data model/API) | Minor (+0.1) | 1.4 → 1.5 |
+
+### Changelog Section
+
+Immediately after the frontmatter, every PRD contains a `## Changelog` section:
+
+```markdown
+## Changelog
+
+| Version | Date       | Summary                                                              |
+| ------- | ---------- | -------------------------------------------------------------------- |
+| 1.2     | 2026-03-25 | Added Google OAuth (AC7), rate-limited password reset (AC3 modified) |
+| 1.1     | 2026-03-22 | Added session management (AC4), removed SMS login (AC5)              |
+| 1.0     | 2026-03-20 | Initial PRD                                                          |
+```
+
+Rules:
+
+- Newest entries at the top
+- `/prd:update` adds entries automatically
+- Removed ACs are marked as `~~REMOVED in vX.Y~~` with reason in the AC list, not deleted from the file
+- The changelog provides a human-readable history; git provides the machine-readable diff
+
+---
+
 ## Standard PRD Template
 
 ````markdown

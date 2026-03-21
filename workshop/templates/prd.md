@@ -1,4 +1,23 @@
-# PRD: [Feature Name]
+---
+id: PRD-{NUMBER}
+title: "{Feature Name}"
+version: 1.0
+status: drafting # drafting | ready | in-progress | done | archived
+last_updated: { DATE }
+depends_on: []
+features:
+  - { id: FEAT_ID, label: "Feature Label", status: planned }
+connections:
+  - { from: FEAT_ID, to: OTHER_ID, type: hard, label: "relationship" }
+---
+
+# PRD: {Feature Name}
+
+## Changelog
+
+| Version | Date   | Summary     |
+| ------- | ------ | ----------- |
+| 1.0     | {DATE} | Initial PRD |
 
 ## Problem
 
