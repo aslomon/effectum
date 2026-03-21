@@ -1,113 +1,49 @@
 /**
- * CLI tool definitions, detection, installation, and auth checking.
+ * CLI tool detection, installation, and auth checking.
  *
- * Each tool specifies:
- *   - key/bin: identifier and binary name
- *   - install: platform-specific install commands (darwin/linux/all)
- *   - auth/authSetup: commands to check and configure authentication
- *   - why: human-readable reason for the tool
- *   - foundation: true if always recommended regardless of stack
- *   - stacks: array of stack keys where this tool is relevant
+ * Tool definitions are loaded dynamically from JSON files in system/tools/
+ * via the tool-loader module. This module provides the runtime operations:
+ * check, install, auth, and formatting.
  */
 "use strict";
 
 const { spawnSync } = require("child_process");
 const os = require("os");
+const { loadToolDefinitions, getSystemBasics } = require("./tool-loader");
 
-// ─── Tool definitions ────────────────────────────────────────────────────────
+// ─── Platform ────────────────────────────────────────────────────────────────
 
-const CLI_TOOLS = [
-  // Foundation (always recommended)
-  {
-    key: "git",
-    bin: "git",
-    install: {
-      darwin: "xcode-select --install",
-      linux: "sudo apt install -y git",
-    },
-    auth: "git config user.name && git config user.email",
-    authSetup:
-      'git config --global user.name "Your Name" && git config --global user.email "you@example.com"',
-    why: "Version control — required for all projects",
-    foundation: true,
-  },
-  {
-    key: "gh",
-    bin: "gh",
-    install: { darwin: "brew install gh", linux: "sudo apt install -y gh" },
-    auth: "gh auth status",
-    authSetup: "gh auth login",
-    why: "GitHub: Issues, PRs, Code Search, CI status",
-    foundation: true,
-  },
-  // Stack-specific
-  {
-    key: "supabase",
-    bin: "supabase",
-    install: {
-      darwin: "brew install supabase/tap/supabase",
-      linux: "npm i -g supabase",
-    },
-    auth: "supabase projects list",
-    authSetup: "supabase login",
-    why: "Database migrations, type generation, edge functions",
-    stacks: ["nextjs-supabase"],
-  },
-  {
-    key: "vercel",
-    bin: "vercel",
-    install: { all: "npm i -g vercel" },
-    auth: "vercel whoami",
-    authSetup: "vercel login",
-    why: "Deployment to Vercel",
-    stacks: ["nextjs-supabase"],
-  },
-  {
-    key: "docker",
-    bin: "docker",
-    install: {
-      darwin: "brew install --cask docker",
-      linux: "sudo apt install -y docker.io",
-    },
-    auth: null,
-    why: "Container management, local dev environment",
-    stacks: ["python-fastapi", "generic"],
-  },
-  {
-    key: "uv",
-    bin: "uv",
-    install: { all: "curl -LsSf https://astral.sh/uv/install.sh | sh" },
-    auth: null,
-    why: "Fast Python package management",
-    stacks: ["python-fastapi"],
-  },
-  {
-    key: "ruff",
-    bin: "ruff",
-    install: { all: "pip install ruff" },
-    auth: null,
-    why: "Python linting and formatting",
-    stacks: ["python-fastapi"],
-  },
-  {
-    key: "xcodebuild",
-    bin: "xcodebuild",
-    install: { darwin: "xcode-select --install" },
-    auth: null,
-    why: "iOS/macOS build toolchain",
-    stacks: ["swift-ios"],
-  },
-];
+/**
+ * Get the platform key for install commands.
+ * @returns {"darwin"|"linux"}
+ */
+function getPlatform() {
+  const p = os.platform();
+  return p === "darwin" ? "darwin" : "linux";
+}
 
 // ─── Tool check ──────────────────────────────────────────────────────────────
 
 /**
  * Check if a CLI tool is installed by looking up its binary.
- * @param {string} bin - binary name (e.g. "git", "gh")
+ * Uses the tool's `check` command if available, otherwise falls back to `which`.
+ * @param {object|string} toolOrBin - tool object or binary name
  * @returns {boolean}
  */
-function checkTool(bin) {
+function checkTool(toolOrBin) {
+  const bin = typeof toolOrBin === "string" ? toolOrBin : toolOrBin.bin;
+  const checkCmd =
+    typeof toolOrBin === "object" && toolOrBin.check ? toolOrBin.check : null;
+
   try {
+    if (checkCmd) {
+      const result = spawnSync("bash", ["-c", checkCmd], {
+        timeout: 5000,
+        stdio: "pipe",
+        encoding: "utf8",
+      });
+      return result.status === 0;
+    }
     const result = spawnSync("which", [bin], {
       timeout: 5000,
       stdio: "pipe",
@@ -119,28 +55,48 @@ function checkTool(bin) {
   }
 }
 
+// ─── Tool retrieval ──────────────────────────────────────────────────────────
+
 /**
- * Get the relevant tools for a given stack.
+ * Get the relevant tools for a given stack, loaded from JSON definitions.
  * Foundation tools are always included.
- * @param {string} stack - stack key (e.g. "nextjs-supabase")
+ * @param {string} stack - stack key (e.g., "nextjs-supabase")
+ * @param {string} [targetDir] - project directory for community overrides
  * @returns {Array<object>}
  */
-function getToolsForStack(stack) {
-  return CLI_TOOLS.filter(
-    (tool) => tool.foundation || (tool.stacks && tool.stacks.includes(stack)),
-  );
+function getToolsForStack(stack, targetDir) {
+  return loadToolDefinitions(stack, targetDir);
 }
 
 /**
  * Check all relevant tools for a stack and return status.
  * @param {string} stack
- * @returns {{ tools: Array<{ key: string, bin: string, installed: boolean, why: string, install: object, auth: string|null, authSetup: string|null }>, missing: Array<object>, installed: Array<object> }}
+ * @param {string} [targetDir] - project directory for community overrides
+ * @returns {{ tools: Array<object>, missing: Array<object>, installed: Array<object> }}
  */
-function checkAllTools(stack) {
-  const relevant = getToolsForStack(stack);
+function checkAllTools(stack, targetDir) {
+  const relevant = getToolsForStack(stack, targetDir);
   const results = relevant.map((tool) => ({
     ...tool,
-    installed: checkTool(tool.bin),
+    installed: checkTool(tool),
+  }));
+
+  return {
+    tools: results,
+    missing: results.filter((t) => !t.installed),
+    installed: results.filter((t) => t.installed),
+  };
+}
+
+/**
+ * Check system basics (Homebrew, Git, Node.js, Claude Code).
+ * @returns {{ tools: Array<object>, missing: Array<object>, installed: Array<object> }}
+ */
+function checkSystemBasics() {
+  const basics = getSystemBasics();
+  const results = basics.map((tool) => ({
+    ...tool,
+    installed: checkTool(tool),
   }));
 
   return {
@@ -151,15 +107,6 @@ function checkAllTools(stack) {
 }
 
 // ─── Tool installation ───────────────────────────────────────────────────────
-
-/**
- * Get the platform key for install commands.
- * @returns {"darwin"|"linux"}
- */
-function getPlatform() {
-  const p = os.platform();
-  return p === "darwin" ? "darwin" : "linux";
-}
 
 /**
  * Get the install command for a tool on the current platform.
@@ -202,20 +149,51 @@ function installTool(tool) {
   }
 }
 
+/**
+ * Categorize tools into auto-installable and manual-only groups.
+ * @param {Array<object>} tools - tools with `installed` status
+ * @returns {{ autoInstall: Array<object>, manual: Array<object> }}
+ */
+function categorizeForInstall(tools) {
+  const missing = tools.filter((t) => !t.installed);
+  const platform = getPlatform();
+
+  return {
+    autoInstall: missing.filter((t) => {
+      if (t.autoInstall === false) return false;
+      const cmd = t.install ? t.install[platform] || t.install.all : null;
+      return !!cmd;
+    }),
+    manual: missing.filter((t) => {
+      if (t.autoInstall === false) return true;
+      const cmd = t.install ? t.install[platform] || t.install.all : null;
+      return !cmd;
+    }),
+  };
+}
+
 // ─── Auth checking ───────────────────────────────────────────────────────────
 
 /**
  * Check if a tool is authenticated.
+ * Supports both legacy format (auth as string) and new format (auth as object).
  * @param {object} tool
  * @returns {{ authenticated: boolean, needsAuth: boolean }}
  */
 function checkAuth(tool) {
-  if (!tool.auth) {
+  const authCheck =
+    typeof tool.auth === "object" && tool.auth !== null
+      ? tool.auth.check
+      : typeof tool.auth === "string"
+        ? tool.auth
+        : null;
+
+  if (!authCheck) {
     return { authenticated: true, needsAuth: false };
   }
 
   try {
-    const result = spawnSync("bash", ["-c", tool.auth], {
+    const result = spawnSync("bash", ["-c", authCheck], {
       timeout: 10000,
       stdio: "pipe",
       encoding: "utf8",
@@ -229,6 +207,50 @@ function checkAuth(tool) {
   }
 }
 
+/**
+ * Get the auth setup command for a tool.
+ * @param {object} tool
+ * @returns {string|null}
+ */
+function getAuthSetup(tool) {
+  if (typeof tool.auth === "object" && tool.auth !== null) {
+    return tool.auth.setup || null;
+  }
+  return tool.authSetup || null;
+}
+
+/**
+ * Get the auth URL for a tool (for creating tokens).
+ * @param {object} tool
+ * @returns {string|null}
+ */
+function getAuthUrl(tool) {
+  if (typeof tool.auth === "object" && tool.auth !== null) {
+    return tool.auth.url || null;
+  }
+  return null;
+}
+
+/**
+ * Check auth status for all installed tools that need auth.
+ * @param {Array<object>} tools - tools with `installed` status
+ * @returns {Array<object>} - tools with auth status added
+ */
+function checkAllAuth(tools) {
+  return tools
+    .filter((t) => t.installed)
+    .map((tool) => {
+      const authResult = checkAuth(tool);
+      return {
+        ...tool,
+        ...authResult,
+        authSetupCmd: getAuthSetup(tool),
+        authUrl: getAuthUrl(tool),
+      };
+    })
+    .filter((t) => t.needsAuth);
+}
+
 // ─── Formatting helpers ──────────────────────────────────────────────────────
 
 /**
@@ -240,7 +262,8 @@ function formatToolStatus(tools) {
   return tools
     .map((t) => {
       const icon = t.installed ? "\u2705" : "\u274C";
-      return `  ${icon} ${t.key} — ${t.why}`;
+      const name = t.displayName || t.key;
+      return `  ${icon} ${name} — ${t.why}`;
     })
     .join("\n");
 }
@@ -254,8 +277,61 @@ function formatInstallInstructions(missing) {
   const platform = getPlatform();
   return missing
     .map((t) => {
-      const cmd = t.install[platform] || t.install.all || "N/A";
-      return `  ${t.key}: ${cmd}`;
+      const cmd = t.install
+        ? t.install[platform] || t.install.all || "N/A"
+        : "N/A";
+      const name = t.displayName || t.key;
+      return `  ${name}: ${cmd}`;
+    })
+    .join("\n");
+}
+
+/**
+ * Format a consolidated installation plan.
+ * @param {{ autoInstall: Array<object>, manual: Array<object> }} plan
+ * @returns {string}
+ */
+function formatInstallPlan(plan) {
+  const lines = [];
+
+  if (plan.autoInstall.length > 0) {
+    lines.push("Will install:");
+    for (const tool of plan.autoInstall) {
+      const name = tool.displayName || tool.key;
+      const cmd = getInstallCommand(tool);
+      lines.push(`  ${name} — ${cmd}`);
+    }
+  }
+
+  if (plan.manual.length > 0) {
+    if (lines.length > 0) lines.push("");
+    lines.push("Manual setup needed:");
+    for (const tool of plan.manual) {
+      const name = tool.displayName || tool.key;
+      const url = tool.manualUrl || getInstallCommand(tool) || "see docs";
+      lines.push(`  ${name} — ${url}`);
+    }
+  }
+
+  return lines.join("\n");
+}
+
+/**
+ * Format auth status for display.
+ * @param {Array<object>} authResults
+ * @returns {string}
+ */
+function formatAuthStatus(authResults) {
+  return authResults
+    .map((t) => {
+      const icon = t.authenticated ? "\u2705" : "\u274C";
+      const name = t.displayName || t.key;
+      let line = `  ${icon} ${name}`;
+      if (!t.authenticated && t.authSetupCmd) {
+        line += ` — run: ${t.authSetupCmd}`;
+        if (t.authUrl) line += ` (${t.authUrl})`;
+      }
+      return line;
     })
     .join("\n");
 }
@@ -268,21 +344,28 @@ function formatInstallInstructions(missing) {
 function buildAvailableToolsSection(tools) {
   const lines = tools.map((t) => {
     const status = t.installed ? "installed" : "not installed";
-    return `- **${t.key}** (${status}): ${t.why}`;
+    const name = t.displayName || t.key;
+    return `- **${name}** (${status}): ${t.why}`;
   });
   return lines.join("\n");
 }
 
 module.exports = {
-  CLI_TOOLS,
   checkTool,
   getToolsForStack,
   checkAllTools,
+  checkSystemBasics,
   getPlatform,
   getInstallCommand,
   installTool,
+  categorizeForInstall,
   checkAuth,
+  getAuthSetup,
+  getAuthUrl,
+  checkAllAuth,
   formatToolStatus,
   formatInstallInstructions,
+  formatInstallPlan,
+  formatAuthStatus,
   buildAvailableToolsSection,
 };

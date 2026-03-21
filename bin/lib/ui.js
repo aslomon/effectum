@@ -21,10 +21,14 @@ const {
 } = require("./recommendation");
 const {
   checkAllTools,
+  checkSystemBasics,
   formatToolStatus,
   formatInstallInstructions,
+  formatInstallPlan,
+  formatAuthStatus,
   installTool,
-  checkAuth,
+  categorizeForInstall,
+  checkAllAuth,
 } = require("./cli-tools");
 
 /** @type {import("@clack/prompts")} */
@@ -502,103 +506,159 @@ async function askGitBranch() {
   return { create: true, name };
 }
 
-// ─── CLI Tool Check ─────────────────────────────────────────────────────────
+// ─── System Basics Check (Phase 1) ──────────────────────────────────────────
+
+/**
+ * Check system basics (Homebrew, Git, Node.js, Claude Code) before config.
+ * Offers to install missing basics.
+ * @returns {Promise<void>}
+ */
+async function showSystemCheck() {
+  const result = checkSystemBasics();
+
+  p.note(formatToolStatus(result.tools), "System Basics");
+
+  if (result.missing.length === 0) {
+    p.log.success("All system basics are installed.");
+    return;
+  }
+
+  p.log.warn(`${result.missing.length} system tool(s) not found.`);
+
+  for (const tool of result.missing) {
+    const name = tool.displayName || tool.key;
+    const wantInstall = await p.confirm({
+      message: `Install ${name}? (${tool.why})`,
+      initialValue: true,
+    });
+    handleCancel(wantInstall);
+
+    if (wantInstall) {
+      const s = p.spinner();
+      s.start(`Installing ${name}...`);
+      const installResult = installTool(tool);
+      if (installResult.ok) {
+        tool.installed = true;
+        s.stop(`${name} installed`);
+      } else {
+        s.stop(`${name} failed: ${installResult.error || "unknown error"}`);
+        p.log.warn(`You can install ${name} manually later.`);
+      }
+    }
+  }
+}
+
+// ─── Consolidated Installation Plan (Phase 3) ──────────────────────────────
+
+/**
+ * Show consolidated installation plan for stack tools and install with one confirmation.
+ * @param {string} stack - selected stack key
+ * @param {string} [targetDir] - project directory for community overrides
+ * @returns {Promise<{ tools: Array<object>, missing: Array<object>, installed: Array<object> }>}
+ */
+async function showInstallPlan(stack, targetDir) {
+  const result = checkAllTools(stack, targetDir);
+
+  p.note(formatToolStatus(result.tools), "Stack Tools");
+
+  if (result.missing.length === 0) {
+    p.log.success("All stack tools are installed.");
+    return result;
+  }
+
+  // Categorize missing tools
+  const plan = categorizeForInstall(result.tools);
+
+  // Show the consolidated plan
+  p.note(formatInstallPlan(plan), "Installation Plan");
+
+  // Auto-install with one confirmation
+  if (plan.autoInstall.length > 0) {
+    const names = plan.autoInstall
+      .map((t) => t.displayName || t.key)
+      .join(", ");
+    const confirm = await p.confirm({
+      message: `Install ${plan.autoInstall.length} tool(s)? (${names})`,
+      initialValue: true,
+    });
+    handleCancel(confirm);
+
+    if (confirm) {
+      for (const tool of plan.autoInstall) {
+        const name = tool.displayName || tool.key;
+        const s = p.spinner();
+        s.start(`Installing ${name}...`);
+        const installResult = installTool(tool);
+        if (installResult.ok) {
+          // Update in result too
+          const match = result.tools.find((t) => t.key === tool.key);
+          if (match) match.installed = true;
+          s.stop(`${name} installed`);
+        } else {
+          s.stop(`${name} failed: ${installResult.error || "unknown error"}`);
+        }
+      }
+    }
+  }
+
+  if (plan.manual.length > 0) {
+    p.log.info("Manual setup required for the tools listed above.");
+  }
+
+  return result;
+}
+
+// ─── Auth Flow (Phase 4) ────────────────────────────────────────────────────
+
+/**
+ * Check auth status for installed tools and guide through authentication.
+ * @param {Array<object>} tools - tools with `installed` status
+ * @returns {Promise<void>}
+ */
+async function showAuthCheck(tools) {
+  const authResults = checkAllAuth(tools);
+
+  if (authResults.length === 0) return;
+
+  p.note(formatAuthStatus(authResults), "Auth Status");
+
+  const unauthenticated = authResults.filter((t) => !t.authenticated);
+
+  if (unauthenticated.length === 0) {
+    p.log.success("All tools are authenticated.");
+    return;
+  }
+
+  p.log.warn(`${unauthenticated.length} tool(s) need authentication.`);
+
+  const runAuth = await p.confirm({
+    message: "Show auth commands for unauthenticated tools?",
+    initialValue: true,
+  });
+  handleCancel(runAuth);
+
+  if (runAuth) {
+    const lines = unauthenticated.map((t) => {
+      const name = t.displayName || t.key;
+      let line = `  ${name}: ${t.authSetupCmd}`;
+      if (t.authUrl) line += `\n    Token: ${t.authUrl}`;
+      return line;
+    });
+    p.note(lines.join("\n"), "Run these commands manually");
+  }
+}
+
+// ─── Legacy CLI Tool Check (kept for backward compat) ───────────────────────
 
 /**
  * Run CLI tool check and offer installation/auth for missing tools.
+ * @deprecated Use showSystemCheck + showInstallPlan + showAuthCheck instead.
  * @param {string} stack - selected stack key
  * @returns {Promise<{ tools: Array<object>, missing: Array<object>, installed: Array<object> }>}
  */
 async function showCliToolCheck(stack) {
-  const result = checkAllTools(stack);
-
-  p.note(formatToolStatus(result.tools), "CLI Tool Check");
-
-  if (result.missing.length === 0) {
-    p.log.success("All CLI tools are installed.");
-  } else {
-    p.log.warn(`${result.missing.length} tool(s) not found.`);
-
-    const action = await p.select({
-      message: "How would you like to handle missing tools?",
-      options: [
-        {
-          value: "install",
-          label: "Install all missing",
-          hint: "Run install commands automatically",
-        },
-        {
-          value: "show",
-          label: "Show commands only",
-          hint: "Display install commands for manual use",
-        },
-        {
-          value: "skip",
-          label: "Skip",
-          hint: "Continue without installing",
-        },
-      ],
-      initialValue: "show",
-    });
-    handleCancel(action);
-
-    if (action === "install") {
-      for (const tool of result.missing) {
-        const s = p.spinner();
-        s.start(`Installing ${tool.key}...`);
-        const installResult = installTool(tool);
-        if (installResult.ok) {
-          tool.installed = true;
-          s.stop(`${tool.key} installed`);
-        } else {
-          s.stop(
-            `${tool.key} failed: ${installResult.error || "unknown error"}`,
-          );
-        }
-      }
-    } else if (action === "show") {
-      p.note(formatInstallInstructions(result.missing), "Install Commands");
-    }
-  }
-
-  // Auth check for installed tools that need auth
-  const authTools = result.tools.filter((t) => t.installed && t.auth);
-
-  if (authTools.length > 0) {
-    const authResults = authTools.map((t) => {
-      const authStatus = checkAuth(t);
-      return { ...t, ...authStatus };
-    });
-
-    const unauthenticated = authResults.filter(
-      (t) => t.needsAuth && !t.authenticated,
-    );
-
-    if (unauthenticated.length > 0) {
-      const authLines = authResults.map((t) => {
-        const icon = t.authenticated ? "\u2705" : "\u274C";
-        return `  ${icon} ${t.key}${!t.authenticated ? ` — run: ${t.authSetup}` : ""}`;
-      });
-      p.note(authLines.join("\n"), "Auth Status");
-
-      const runAuth = await p.confirm({
-        message:
-          "Would you like to run auth commands for unauthenticated tools?",
-        initialValue: false,
-      });
-      handleCancel(runAuth);
-
-      if (runAuth) {
-        p.log.info(
-          "Auth commands require interactive input. Run these manually:\n" +
-            unauthenticated.map((t) => `  ${t.key}: ${t.authSetup}`).join("\n"),
-        );
-      }
-    } else {
-      p.log.success("All tools are authenticated.");
-    }
-  }
-
+  const result = await showInstallPlan(stack);
+  await showAuthCheck(result.tools);
   return result;
 }
 
@@ -668,7 +728,10 @@ module.exports = {
   askSetupMode,
   askCustomize,
   askManual,
-  // CLI tool check
+  // Tool check flow
+  showSystemCheck,
+  showInstallPlan,
+  showAuthCheck,
   showCliToolCheck,
   // Legacy / utility prompts
   askMcpServers,

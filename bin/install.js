@@ -53,7 +53,9 @@ const {
   askLanguage,
   askAutonomy,
   showRecommendation,
-  showCliToolCheck,
+  showSystemCheck,
+  showInstallPlan,
+  showAuthCheck,
   askSetupMode,
   askCustomize,
   askManual,
@@ -62,7 +64,15 @@ const {
   showSummary,
   showOutro,
 } = require("./lib/ui");
-const { checkAllTools, formatToolStatus } = require("./lib/cli-tools");
+const {
+  checkAllTools,
+  checkSystemBasics,
+  formatToolStatus,
+  categorizeForInstall,
+  formatInstallPlan,
+  checkAllAuth,
+  formatAuthStatus,
+} = require("./lib/cli-tools");
 
 // ─── File helpers ─────────────────────────────────────────────────────────────
 
@@ -598,18 +608,41 @@ Options:
       process.exit(0);
     }
 
+    // System basics check (report only in non-interactive mode)
+    const sysCheck = checkSystemBasics();
+    if (sysCheck.missing.length > 0) {
+      console.log("\n  System Basics:");
+      console.log(formatToolStatus(sysCheck.tools));
+      console.log(
+        `\n  ${sysCheck.missing.length} system tool(s) not installed. Run installer interactively to install.`,
+      );
+    }
+
     // CLI tool check (report only, no install in non-interactive mode)
     const toolCheck = checkAllTools(config.stack);
     if (toolCheck.missing.length > 0) {
-      console.log("\n  CLI Tool Check:");
+      const plan = categorizeForInstall(toolCheck.tools);
+      console.log("\n  Stack Tools:");
       console.log(formatToolStatus(toolCheck.tools));
+      if (plan.autoInstall.length > 0 || plan.manual.length > 0) {
+        console.log("\n  Installation Plan:");
+        console.log(formatInstallPlan(plan));
+      }
       console.log(
         `\n  ${toolCheck.missing.length} tool(s) not installed. Run installer interactively to install.`,
       );
     }
 
+    // Auth check (report only in non-interactive mode)
+    const authResults = checkAllAuth(toolCheck.tools);
+    const unauthenticated = authResults.filter((t) => !t.authenticated);
+    if (unauthenticated.length > 0) {
+      console.log("\n  Auth Status:");
+      console.log(formatAuthStatus(authResults));
+    }
+
     // Store tool status in config
-    config.detectedTools = toolCheck.tools.map((t) => ({
+    config.detectedTools = [...sysCheck.tools, ...toolCheck.tools].map((t) => ({
       key: t.key,
       installed: t.installed,
     }));
@@ -699,6 +732,9 @@ Options:
     process.exit(0);
   }
 
+  // ── Phase 1: System Basics Check ──────────────────────────────────────────
+  await showSystemCheck();
+
   // ── Step 2: Project Basics ────────────────────────────────────────────────
   const projectName = await askProjectName(detected.projectName);
   const stack = await askStack(detected.stack);
@@ -726,8 +762,8 @@ Options:
 
   showRecommendation(rec);
 
-  // ── CLI Tool Check ────────────────────────────────────────────────────────
-  const cliToolResult = await showCliToolCheck(stack);
+  // ── Phase 3: Consolidated Tool Plan ───────────────────────────────────────
+  const cliToolResult = await showInstallPlan(stack, installTargetDir);
 
   // ── Step 8: Decision ──────────────────────────────────────────────────────
   const setupMode = await askSetupMode();
@@ -875,7 +911,10 @@ Options:
     );
   }
 
-  // 9e: Save config
+  // 9e: Auth check
+  await showAuthCheck(cliToolResult.tools);
+
+  // 9f: Save config
   const configPath = writeConfig(installTargetDir, config);
   configSteps.push({ status: "created", dest: configPath });
 
