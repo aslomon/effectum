@@ -231,17 +231,18 @@ chore(templates): add constraint section
 
 ### PRD Workshop
 
-| Command           | Purpose                            |
-| ----------------- | ---------------------------------- |
-| /prd:new          | Start new project or PRD           |
-| /prd:discuss      | Deep-dive on a specific PRD        |
-| /prd:review       | Quality review + readiness scoring |
-| /prd:network-map  | Create/update Mermaid network map  |
-| /prd:handoff      | Export PRD to target project       |
-| /prd:status       | Dashboard of all projects          |
-| /prd:resume       | Resume existing work               |
-| /prd:express      | Quick PRD from clear input         |
-| /prd:decompose    | Split scope into multiple PRDs     |
-| /prd:prompt       | Generate handoff prompt            |
-| /workshop:init    | Create project workspace           |
-| /workshop:archive | Archive completed project          |
+| Command           | Purpose                                                    |
+| ----------------- | ---------------------------------------------------------- |
+| /prd:new          | Start new project or PRD (auto-generates frontmatter)      |
+| /prd:update       | Update PRD — semantic diff, impact analysis, delta handoff |
+| /prd:discuss      | Deep-dive on a specific PRD                                |
+| /prd:review       | Quality review + readiness scoring                         |
+| /prd:network-map  | Create/update Mermaid network map (`--validate`)           |
+| /prd:handoff      | Export PRD to target project + init task registry          |
+| /prd:status       | Dashboard of all projects                                  |
+| /prd:resume       | Resume existing work                                       |
+| /prd:express      | Quick PRD from clear input                                 |
+| /prd:decompose    | Split scope into multiple PRDs                             |
+| /prd:prompt       | Generate handoff prompt                                    |
+| /workshop:init    | Create project workspace                                   |
+| /workshop:archive | Archive completed project                                  |

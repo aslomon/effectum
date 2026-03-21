@@ -411,3 +411,41 @@ This map shows at a glance:
 - The Tasks node is a complexity hotspot (5+ connections)
 - Claude API is only needed by PRD-003 (AI Layer)
 - Build order: Auth → Core → AI + Notifications (parallel)
+
+---
+
+## Auto-Sync Behavior
+
+The network map is automatically updated by several workflow commands. You rarely need to edit it manually.
+
+### When Auto-Sync Happens
+
+| Trigger                 | What Changes                                                       | Command                       |
+| ----------------------- | ------------------------------------------------------------------ | ----------------------------- |
+| PRD created             | New feature nodes added with `:::planned`, grouped in PRD subgraph | `/prd:new`                    |
+| PRD updated             | New nodes added, removed nodes deleted, connections updated        | `/prd:update`                 |
+| Implementation starts   | Feature node flips from `:::planned` to `:::inProgress`            | Ralph Loop                    |
+| Implementation complete | Feature node flips from `:::inProgress` to `:::done`               | Ralph Loop                    |
+| Validation requested    | No changes — reports issues found                                  | `/prd:network-map --validate` |
+
+### Frontmatter-Driven Generation
+
+When PRDs have YAML frontmatter (the default since v0.6), the network map is generated deterministically from frontmatter data:
+
+1. **Nodes** come from `features[]` across all PRDs in the project.
+2. **Edges** come from `connections[]` across all PRDs.
+3. **Subgraph boundaries** come from PRD `id` groupings.
+4. **Cross-PRD edges** come from `depends_on[]`.
+5. **Status colors** come from feature `status` field.
+
+This means: if you update the frontmatter, the map updates automatically on the next `/prd:network-map` or `/prd:update` run. You don't need to manually edit the `.mmd` file.
+
+### Validation
+
+Run `/prd:network-map {slug} --validate` to check for:
+
+- **Circular dependencies** between features or PRDs
+- **Isolated nodes** with no connections (possible missing relationships)
+- **Orphaned references** in connections that point to non-existent features
+- **Status mismatches** between frontmatter and task registry
+- **Completeness** — all frontmatter features present in the map
