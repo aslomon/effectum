@@ -9,6 +9,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Extensible JSON-Based Tool Management System**:
+  - `system/tools/_schema.json` - JSON Schema documentation for tool definitions
+  - `system/tools/foundation.json` - Always-loaded foundation tools (git, gh, claude)
+  - `system/tools/nextjs-supabase.json` - Stack-specific tools for Next.js + Supabase (pnpm, supabase, vercel)
+  - `system/tools/python-fastapi.json` - Stack-specific tools for Python + FastAPI (uv, ruff, docker)
+  - `system/tools/swift-ios.json` - Stack-specific tools for Swift/iOS (xcode-select, swift-format)
+  - `system/tools/generic.json` - Optional generic tools (jq)
+  - Each tool definition includes: key, bin, displayName, category, why, priority, autoInstall, install (per-platform), check, auth, manualUrl
+- **Dynamic Tool Loader**:
+  - `bin/lib/tool-loader.js` - Dynamically loads and merges JSON tool definitions
+  - Merge order: foundation → stack → `.effectum/tools/` → `~/.effectum/tools/` (last wins)
+  - `getSystemBasics()` for pre-configuration system checks (Homebrew, Git, Node, Claude)
+  - `listAvailableStacks()` for discovery of available stack configurations
+  - Extensible: new stacks require only new JSON file, zero code changes
+- **Refactored Installer with Tool-Loader Integration**:
+  - New installation flow: System Check → Configuration → Consolidated Tool Plan → Auth Check → File Installation
+  - `bin/lib/cli-tools.js` - Refactored to use tool-loader instead of hardcoded definitions
+  - `categorizeForInstall()` - Separates auto-installable tools from manual-only tools (Docker, Xcode)
+  - `checkAllAuth()` and `formatAuthStatus()` - Authentication status checking and formatting
+  - `bin/lib/ui.js` - New modular UI functions: `showSystemCheck()`, `showInstallPlan()`, `showAuthCheck()` (replacing monolithic `showCliToolCheck()`)
+  - `--yes` mode improvements: checks all dependencies, reports status, but doesn't block on unauthenticated tools
+
+### Added (Previous Sessions)
+
 - **Mobile Developer and Data Engineer Agent Specializations**:
   - `system/agents/mobile-developer.md` - React Native, Flutter, Expo, Swift/SwiftUI, Kotlin, platform guidelines
   - `system/agents/data-engineer.md` - ETL pipelines, data modeling, SQL optimization, pandas/polars, Apache Spark, data validation
