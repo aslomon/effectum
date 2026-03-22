@@ -12,6 +12,7 @@
 
 _Effectum (Latin): the result, the accomplishment — that which has been brought to completion._
 
+[![npm](https://img.shields.io/npm/v/@aslomon/effectum.svg)](https://www.npmjs.com/package/@aslomon/effectum)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Built%20for-Claude%20Code-blueviolet)](https://claude.ai/claude-code)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
@@ -24,6 +25,8 @@ _Effectum (Latin): the result, the accomplishment — that which has been brough
 </div>
 
 ---
+
+> Built by Jason Salomon-Rinnert. Works for me — might work for you. MIT licensed, PRs welcome.
 
 ## Why I built this
 
@@ -365,6 +368,8 @@ Customize everything<br>
 
 Each preset configures build commands, test frameworks, linters, formatters, and architecture rules for your stack.
 
+**Community presets coming**: Go+Echo, Rust+Actix, Django/FastAPI. [Open a PR.](CONTRIBUTING.md)
+
 ---
 
 ## 🎚️ Three Autonomy Levels
@@ -391,7 +396,6 @@ Effectum is useful, but it's honest about what it can't do yet:
 - **PRD Workshop requires Claude Code slash commands** — you can't use it from the web interface or API directly.
 - **Ralph Loop effectiveness depends on PRD quality** — garbage in, garbage out. A vague spec produces vague code, even autonomously.
 - **MCP servers need npm/Node.js** — if you're in a restricted environment without npm access, MCP setup will fail.
-- **No test suite yet** — ironic for a TDD tool. It's on the list.
 
 ---
 
