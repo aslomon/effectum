@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Project Onboarding System**:
+  - **`/onboard` Command** (`system/commands/onboard.md`) - Reverse-engineers existing codebases into Effectum PRDs via 6 parallel analysis agents (Stack, Architecture, API, Database, Frontend, Tests), self-test loop (7 tests, max 5 iterations), PRD generation per feature area, automatic `/onboard:review`, and user-driven correction flow with file output
+  - **`/onboard:review` Command** (`system/commands/onboard/review.md`) - Consistency review with 6 checks: cross-PRD consistency, duplicate features, simplification opportunities, scope clarity, naming conventions, full coverage; supports `--fix` and `--strict` flags, works standalone or as part of `/onboard`
+  - **Updated PRD Template** (`workshop/knowledge/01-prd-template.md`) - Added `implemented` status and `onboarded` field to frontmatter schema with documentation of onboarded PRDs as protection rules
+
 - **PRD Lifecycle Management System**:
   - **Task Registry Template** (`workshop/templates/tasks.md`) - Auto-managed task registry with status tracking (TODO/IN_PROGRESS/DONE/STALE/CANCELLED), stable task IDs, and automatic status transitions
   - **Delta Handoff Template** (`workshop/templates/delta-handoff.md`) - Structured handoff format with Protection Rules, Stale/New/Cancelled sections, Regression Mandate, and Hard Remove Policy
