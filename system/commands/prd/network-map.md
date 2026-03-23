@@ -115,6 +115,17 @@ Follow the language settings defined in CLAUDE.md.
 All file content must be written in English.
 User-facing communication uses the language configured in CLAUDE.md.
 
+## Step 8b: Sanitize Mermaid Syntax
+
+Before writing the `.mmd` file, ensure valid Mermaid syntax:
+
+1. **Wrap labels containing special characters in double quotes:**
+   - Labels with `/` (paths): `NODE["/docs/getting-started"]` not `NODE[/docs/getting-started]`
+   - Labels with `&`, `<`, `>`, `(`, `)`: must be quoted
+2. **Node IDs must be alphanumeric + underscore only** — no dots, slashes, or hyphens in IDs
+3. **Validate subgraph names don't conflict with node IDs**
+4. **Test:** The generated Mermaid must parse without errors on mermaid.live
+
 ## Step 9: Generate HTML Viewer
 
 After writing the `.mmd` file, ALWAYS generate an interactive HTML viewer:
