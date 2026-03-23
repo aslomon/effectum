@@ -26,7 +26,7 @@ const fs = require("fs");
 const path = require("path");
 const os = require("os");
 const { spawnSync } = require("child_process");
-const { detectAll } = require("./lib/detect");
+const { detectAll, detectionToStackKey, loadPresets } = require("./lib/detect");
 const { loadStackPreset } = require("./lib/stack-parser");
 const {
   buildSubstitutionMap,
@@ -63,6 +63,11 @@ const {
   askGitBranch,
   showSummary,
   showOutro,
+  // Modular stack composition
+  confirmDetectedStack,
+  askMissingComponents,
+  askPresetOrCustom,
+  askModularStack,
 } = require("./lib/ui");
 const {
   checkAllTools,
@@ -693,11 +698,14 @@ Options:
   printBanner();
 
   const detected = detectAll(process.cwd());
+  const { detection } = detected;
 
   if (detected.stack) {
-    p.log.info(
-      `Detected: ${detected.stack} project (${detected.packageManager})`,
-    );
+    const parts = [`${detected.stack} project`];
+    if (detection.framework.id) parts[0] = `${detection.framework.id}`;
+    if (detection.database.id) parts.push(detection.database.id);
+    parts.push(`(${detected.packageManager})`);
+    p.log.info(`Detected: ${parts.join(" + ")}`);
   }
 
   // ── Step 1: Install Scope ─────────────────────────────────────────────────
@@ -735,9 +743,82 @@ Options:
   // ── Phase 1: System Basics Check ──────────────────────────────────────────
   await showSystemCheck();
 
-  // ── Step 2: Project Basics ────────────────────────────────────────────────
+  // ── Step 2: Project Basics + Smart Stack Selection ────────────────────────
   const projectName = await askProjectName(detected.projectName);
-  const stack = await askStack(detected.stack);
+
+  // Confidence-based stack selection
+  let stack;
+  let modularSelection = null;
+
+  if (detection.overallConfidence === "certain") {
+    // Certain: show detected stack, confirm with Enter
+    const confirmed = await confirmDetectedStack(detection);
+    if (confirmed) {
+      stack = detected.stack || detectionToStackKey(detection) || "generic";
+      modularSelection = {
+        ecosystem: detection.ecosystem,
+        framework: detection.framework.id,
+        database: detection.database.id,
+        auth: detection.auth.id,
+        deploy: detection.deploy.id,
+        orm: detection.orm.id,
+      };
+    } else {
+      // User wants to change — start modular flow with detected values as prefill
+      modularSelection = await askModularStack({
+        ecosystem: detection.ecosystem,
+        framework: detection.framework.id,
+        database: detection.database.id,
+        auth: detection.auth.id,
+        deploy: detection.deploy.id,
+        orm: detection.orm.id,
+      });
+      stack =
+        detectionToStackKey({
+          ecosystem: modularSelection.ecosystem,
+          framework: { id: modularSelection.framework },
+          database: { id: modularSelection.database },
+        }) || "generic";
+    }
+  } else if (detection.overallConfidence === "partial") {
+    // Partial: pre-fill detected, ask only missing parts
+    p.log.info("Partial stack detected — asking for missing components.");
+    modularSelection = await askMissingComponents(detection);
+    stack =
+      detectionToStackKey({
+        ecosystem: modularSelection.ecosystem,
+        framework: { id: modularSelection.framework },
+        database: { id: modularSelection.database },
+      }) || "generic";
+  } else {
+    // None: preset or build your own
+    const presets = loadPresets(installTargetDir);
+    if (presets.length > 0) {
+      const choice = await askPresetOrCustom(presets);
+      if (choice.mode === "preset" && choice.preset) {
+        stack = choice.preset.stack || "generic";
+        modularSelection = {
+          ecosystem: choice.preset.ecosystem,
+          framework: choice.preset.framework,
+          database: choice.preset.database,
+          auth: choice.preset.auth,
+          deploy: choice.preset.deploy,
+          orm: choice.preset.orm,
+        };
+      } else {
+        modularSelection = await askModularStack(null);
+        stack =
+          detectionToStackKey({
+            ecosystem: modularSelection.ecosystem,
+            framework: { id: modularSelection.framework },
+            database: { id: modularSelection.database },
+          }) || "generic";
+      }
+    } else {
+      // Fallback to legacy stack selector
+      stack = await askStack(detected.stack);
+    }
+  }
 
   // ── Step 3: App Type ──────────────────────────────────────────────────────
   const appType = await askAppType();
@@ -813,6 +894,19 @@ Options:
       agentTeams: finalSetup.agentTeams,
     },
     mode: setupMode,
+    // Modular detection result (new format, backward compatible)
+    ...(modularSelection
+      ? {
+          modular: {
+            ecosystem: modularSelection.ecosystem,
+            framework: modularSelection.framework,
+            database: modularSelection.database,
+            auth: modularSelection.auth,
+            deploy: modularSelection.deploy,
+            orm: modularSelection.orm,
+          },
+        }
+      : {}),
   };
 
   // ── Dry run ───────────────────────────────────────────────────────────────
