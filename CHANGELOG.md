@@ -9,6 +9,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Modular Stack Selection + Smart Auto-Detection System**:
+  - **Detection Rules** (`system/detect/`) - 5 JSON rule files covering JavaScript (27 rules), Python (13), Go (7), Swift (5), Dart (5) for ecosystem, framework, database, auth, deploy, and ORM detection
+  - **Quick-Start Presets** (`system/presets/`) - 8 preset definitions (nextjs-supabase, nextjs-firebase, nextjs-prisma, django-postgres, fastapi-postgres, go-echo-postgres, swift-swiftui, flutter-firebase)
+  - **Template Blocks** (`system/blocks/`) - 14 CLAUDE.md template block files organized by category: ecosystem (3), framework (4), database (4), deploy (3)
+  - **Refactored Detection Engine** (`bin/lib/detect.js`):
+    - 5 new parsers: `parsePackageJson`, `parsePythonDeps`, `parseGoMod`, `parsePubspecYaml`, `parseSwiftPackage`
+    - New `detectModular()` function returning structured `{ ecosystem, framework, database, auth, deploy, orm, confidence }`
+    - Confidence levels: `certain` (framework+database+auth detected), `partial` (some detected), `none`
+    - Auth inference (supabase → supabase-auth, firebase → firebase-auth)
+    - Extended package manager detection (go, cargo, flutter, dart)
+    - 24 new tests for modular detection
+  - **Block-Based Template Composition** (`bin/lib/template.js`):
+    - `loadBlock()` and `composeBlocks()` functions for dynamic CLAUDE.md generation from `system/blocks/`
+  - **Enhanced UI Functions** (`bin/lib/ui.js`):
+    - `confirmDetectedStack()` - Confirm auto-detected stack with option to change
+    - `askMissingComponents()` - Ask for missing modular components after partial detection
+    - `askPresetOrCustom()` - Choose between preset or custom configuration
+    - `askModularStack()` - 4-step interactive flow for modular stack selection with smart defaults and platform-aware filtering
+  - **Installer Integration** (`bin/install.js`):
+    - Confidence-based skip logic: `certain` (confirm/change), `partial` (pre-fill detected, ask missing), `none` (preset or modular flow)
+    - Stores `modular` selection in `.effectum.json` alongside legacy `stack` key
+    - Non-interactive `--yes` mode uses smart defaults
+  - **Extended Constants** (`bin/lib/constants.js`) - Added django-postgres/rust-actix to FORMATTER_MAP; new ECOSYSTEM_CHOICES, FRAMEWORK_CHOICES (per ecosystem), DATABASE_CHOICES, AUTH_CHOICES, DEPLOY_CHOICES
 - **Project Onboarding System**:
   - **`/onboard` Command** (`system/commands/onboard.md`) - Reverse-engineers existing codebases into Effectum PRDs via 6 parallel analysis agents (Stack, Architecture, API, Database, Frontend, Tests), self-test loop (7 tests, max 5 iterations), PRD generation per feature area, automatic `/onboard:review`, and user-driven correction flow with file output
   - **`/onboard:review` Command** (`system/commands/onboard/review.md`) - Consistency review with 6 checks: cross-PRD consistency, duplicate features, simplification opportunities, scope clarity, naming conventions, full coverage; supports `--fix` and `--strict` flags, works standalone or as part of `/onboard`
@@ -122,6 +145,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Framework Detection**: Fixed Next.js-only projects being incorrectly detected as `nextjs-supabase` preset; now correctly detects as `framework: nextjs, database: unknown`
 - **Placeholder Substitution**: All 9+ placeholders correctly substituted in generated files
 - **Zero Leftover Placeholders**: Verification that no `{{...}}` remain in generated files
 - **Autonomy Mode Mapping**: Correct mapping of `conservative→default`, `standard→default`, `full→bypassPermissions`

@@ -114,3 +114,24 @@ Show the user:
 Follow the language settings defined in CLAUDE.md.
 All file content must be written in English.
 User-facing communication uses the language configured in CLAUDE.md.
+
+## Step 9: Generate HTML Viewer
+
+After writing the `.mmd` file, ALWAYS generate an interactive HTML viewer:
+
+1. Read `system/templates/network-map-viewer.html` as template
+2. Replace `{{PROJECT_NAME}}` with the project name
+3. Replace `{{GENERATED_AT}}` with current timestamp
+4. Replace `{{MERMAID_CONTENT}}` with the content of `network-map.mmd`
+5. Write to `workshop/projects/{slug}/network-map.html`
+6. Open the HTML file in the default browser: `open network-map.html` (macOS) or `xdg-open network-map.html` (Linux)
+
+The HTML viewer includes:
+- Dark/Light theme toggle
+- Top-Bottom / Left-Right direction switch
+- SVG export button
+- Legend (Planned / In Progress / Done)
+
+## Step 10: Also Generate on /onboard
+
+When called as part of `/onboard`, the HTML viewer is generated automatically after the Network Map is written. The user can immediately see the visual map in their browser.
