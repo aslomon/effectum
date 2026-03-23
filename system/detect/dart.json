@@ -1,0 +1,37 @@
+{
+  "ecosystem": "dart",
+  "configFiles": ["pubspec.yaml"],
+  "parser": "pubspecYaml",
+  "rules": [
+    {
+      "dep": "flutter",
+      "detects": "flutter",
+      "category": "framework",
+      "weight": 10
+    },
+    {
+      "dep": "firebase_core",
+      "detects": "firebase",
+      "category": "database",
+      "weight": 10
+    },
+    {
+      "dep": "cloud_firestore",
+      "detects": "firebase",
+      "category": "database",
+      "weight": 10
+    },
+    {
+      "dep": "firebase_auth",
+      "detects": "firebase-auth",
+      "category": "auth",
+      "weight": 9
+    },
+    {
+      "dep": "supabase_flutter",
+      "detects": "supabase",
+      "category": "database",
+      "weight": 10
+    }
+  ]
+}

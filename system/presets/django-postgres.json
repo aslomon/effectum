@@ -1,0 +1,15 @@
+{
+  "id": "django-postgres",
+  "label": "Django + PostgreSQL + Docker",
+  "hint": "Python web apps with Django ORM and DRF",
+  "ecosystem": "python",
+  "framework": "django",
+  "database": "postgresql",
+  "auth": null,
+  "deploy": "docker",
+  "orm": null,
+  "packageManager": "uv",
+  "formatter": { "command": "ruff format", "name": "Ruff", "glob": "py" },
+  "stack": "django-postgres",
+  "toolsFile": "django-postgres"
+}

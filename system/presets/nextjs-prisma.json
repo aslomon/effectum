@@ -1,0 +1,19 @@
+{
+  "id": "nextjs-prisma",
+  "label": "Next.js + Prisma + Vercel",
+  "hint": "Full-stack TypeScript with Prisma ORM and PostgreSQL",
+  "ecosystem": "javascript",
+  "framework": "nextjs",
+  "database": "postgresql",
+  "auth": null,
+  "deploy": "vercel",
+  "orm": "prisma",
+  "packageManager": "pnpm",
+  "formatter": {
+    "command": "npx prettier --write",
+    "name": "Prettier",
+    "glob": "ts|tsx|js|jsx|json|css|md"
+  },
+  "stack": "nextjs-supabase",
+  "toolsFile": "nextjs-supabase"
+}

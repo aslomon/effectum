@@ -1,0 +1,49 @@
+{
+  "ecosystem": "go",
+  "configFiles": ["go.mod"],
+  "parser": "goMod",
+  "rules": [
+    {
+      "dep": "github.com/labstack/echo",
+      "detects": "echo",
+      "category": "framework",
+      "weight": 10
+    },
+    {
+      "dep": "github.com/gin-gonic/gin",
+      "detects": "gin",
+      "category": "framework",
+      "weight": 10
+    },
+    {
+      "dep": "github.com/gofiber/fiber",
+      "detects": "fiber",
+      "category": "framework",
+      "weight": 10
+    },
+    {
+      "dep": "gorm.io/gorm",
+      "detects": "gorm",
+      "category": "orm",
+      "weight": 8
+    },
+    {
+      "dep": "github.com/jackc/pgx",
+      "detects": "pgx",
+      "category": "database",
+      "weight": 8
+    },
+    {
+      "dep": "github.com/lib/pq",
+      "detects": "postgresql",
+      "category": "database",
+      "weight": 7
+    },
+    {
+      "dep": "github.com/golang-migrate/migrate",
+      "detects": "postgresql",
+      "category": "database",
+      "weight": 6
+    }
+  ]
+}

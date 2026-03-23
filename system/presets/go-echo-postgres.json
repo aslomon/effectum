@@ -1,0 +1,15 @@
+{
+  "id": "go-echo-postgres",
+  "label": "Go + Echo + PostgreSQL",
+  "hint": "Go backend APIs with Echo v4, GORM, PostgreSQL",
+  "ecosystem": "go",
+  "framework": "echo",
+  "database": "postgresql",
+  "auth": null,
+  "deploy": "docker",
+  "orm": "gorm",
+  "packageManager": "go",
+  "formatter": { "command": "gofmt -w", "name": "gofmt", "glob": "go" },
+  "stack": "go-echo",
+  "toolsFile": "go-echo"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "flutter-firebase",
+  "label": "Flutter + Firebase",
+  "hint": "Cross-platform mobile apps with Firebase backend",
+  "ecosystem": "dart",
+  "framework": "flutter",
+  "database": "firebase",
+  "auth": "firebase-auth",
+  "deploy": "appstore",
+  "orm": null,
+  "packageManager": "flutter",
+  "formatter": {
+    "command": "dart format",
+    "name": "dart format",
+    "glob": "dart"
+  },
+  "stack": "generic",
+  "toolsFile": "generic"
+}

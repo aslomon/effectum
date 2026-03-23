@@ -1,0 +1,19 @@
+{
+  "id": "swift-swiftui",
+  "label": "Swift + SwiftUI",
+  "hint": "Native Apple apps with SwiftData, SPM",
+  "ecosystem": "swift",
+  "framework": "swiftui",
+  "database": "swiftdata",
+  "auth": null,
+  "deploy": "appstore",
+  "orm": null,
+  "packageManager": "swift package (SPM)",
+  "formatter": {
+    "command": "swift-format format -i",
+    "name": "swift-format",
+    "glob": "swift"
+  },
+  "stack": "swift-ios",
+  "toolsFile": "swift-ios"
+}

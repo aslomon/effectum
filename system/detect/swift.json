@@ -1,0 +1,37 @@
+{
+  "ecosystem": "swift",
+  "configFiles": ["Package.swift"],
+  "parser": "swiftPackage",
+  "rules": [
+    {
+      "dep": "SwiftUI",
+      "detects": "swiftui",
+      "category": "framework",
+      "weight": 10
+    },
+    {
+      "dep": "Vapor",
+      "detects": "vapor",
+      "category": "framework",
+      "weight": 10
+    },
+    {
+      "dep": "vapor/vapor",
+      "detects": "vapor",
+      "category": "framework",
+      "weight": 10
+    },
+    {
+      "dep": "CoreData",
+      "detects": "coredata",
+      "category": "database",
+      "weight": 8
+    },
+    {
+      "dep": "SwiftData",
+      "detects": "swiftdata",
+      "category": "database",
+      "weight": 8
+    }
+  ]
+}

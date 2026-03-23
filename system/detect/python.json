@@ -1,0 +1,85 @@
+{
+  "ecosystem": "python",
+  "configFiles": ["pyproject.toml", "requirements.txt"],
+  "parser": "pythonDeps",
+  "rules": [
+    {
+      "dep": "fastapi",
+      "detects": "fastapi",
+      "category": "framework",
+      "weight": 10
+    },
+    {
+      "dep": "django",
+      "detects": "django",
+      "category": "framework",
+      "weight": 10
+    },
+    {
+      "dep": "flask",
+      "detects": "flask",
+      "category": "framework",
+      "weight": 10
+    },
+    {
+      "dep": "sqlalchemy",
+      "detects": "sqlalchemy",
+      "category": "orm",
+      "weight": 8
+    },
+    {
+      "dep": "prisma",
+      "detects": "prisma-python",
+      "category": "orm",
+      "weight": 8
+    },
+    {
+      "dep": "psycopg2",
+      "detects": "postgresql",
+      "category": "database",
+      "weight": 7
+    },
+    {
+      "dep": "psycopg2-binary",
+      "detects": "postgresql",
+      "category": "database",
+      "weight": 7
+    },
+    {
+      "dep": "psycopg",
+      "detects": "postgresql",
+      "category": "database",
+      "weight": 7
+    },
+    {
+      "dep": "asyncpg",
+      "detects": "postgresql",
+      "category": "database",
+      "weight": 7
+    },
+    {
+      "dep": "pymongo",
+      "detects": "mongodb",
+      "category": "database",
+      "weight": 8
+    },
+    {
+      "dep": "motor",
+      "detects": "mongodb",
+      "category": "database",
+      "weight": 8
+    },
+    {
+      "dep": "supabase",
+      "detects": "supabase",
+      "category": "database",
+      "weight": 10
+    },
+    {
+      "dep": "alembic",
+      "detects": "sqlalchemy",
+      "category": "orm",
+      "weight": 6
+    }
+  ]
+}

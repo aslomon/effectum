@@ -1,0 +1,19 @@
+{
+  "id": "nextjs-supabase",
+  "label": "Next.js + Supabase + Vercel",
+  "hint": "Full-stack TypeScript with Tailwind, Shadcn, Supabase",
+  "ecosystem": "javascript",
+  "framework": "nextjs",
+  "database": "supabase",
+  "auth": "supabase-auth",
+  "deploy": "vercel",
+  "orm": null,
+  "packageManager": "pnpm",
+  "formatter": {
+    "command": "npx prettier --write",
+    "name": "Prettier",
+    "glob": "ts|tsx|js|jsx|json|css|md"
+  },
+  "stack": "nextjs-supabase",
+  "toolsFile": "nextjs-supabase"
+}

@@ -1,0 +1,15 @@
+{
+  "id": "fastapi-postgres",
+  "label": "FastAPI + PostgreSQL + Docker",
+  "hint": "Python async APIs with Pydantic and SQLAlchemy",
+  "ecosystem": "python",
+  "framework": "fastapi",
+  "database": "postgresql",
+  "auth": null,
+  "deploy": "docker",
+  "orm": "sqlalchemy",
+  "packageManager": "uv",
+  "formatter": { "command": "ruff format", "name": "Ruff", "glob": "py" },
+  "stack": "python-fastapi",
+  "toolsFile": "python-fastapi"
+}

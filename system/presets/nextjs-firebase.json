@@ -1,0 +1,19 @@
+{
+  "id": "nextjs-firebase",
+  "label": "Next.js + Firebase + Vercel",
+  "hint": "Full-stack TypeScript with Firebase backend",
+  "ecosystem": "javascript",
+  "framework": "nextjs",
+  "database": "firebase",
+  "auth": "firebase-auth",
+  "deploy": "vercel",
+  "orm": null,
+  "packageManager": "pnpm",
+  "formatter": {
+    "command": "npx prettier --write",
+    "name": "Prettier",
+    "glob": "ts|tsx|js|jsx|json|css|md"
+  },
+  "stack": "nextjs-supabase",
+  "toolsFile": "nextjs-supabase"
+}

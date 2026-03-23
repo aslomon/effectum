@@ -1,0 +1,144 @@
+{
+  "ecosystem": "javascript",
+  "configFiles": ["package.json"],
+  "parser": "packageJson",
+  "rules": [
+    {
+      "dep": "next",
+      "detects": "nextjs",
+      "category": "framework",
+      "weight": 10
+    },
+    {
+      "dep": "react",
+      "detects": "react",
+      "category": "framework",
+      "weight": 5
+    },
+    { "dep": "vue", "detects": "vue", "category": "framework", "weight": 10 },
+    { "dep": "nuxt", "detects": "nuxt", "category": "framework", "weight": 10 },
+    {
+      "dep": "express",
+      "detects": "express",
+      "category": "framework",
+      "weight": 8
+    },
+    {
+      "dep": "fastify",
+      "detects": "fastify",
+      "category": "framework",
+      "weight": 8
+    },
+    { "dep": "expo", "detects": "expo", "category": "framework", "weight": 10 },
+    {
+      "dep": "react-native",
+      "detects": "react-native",
+      "category": "framework",
+      "weight": 9
+    },
+    {
+      "dep": "@supabase/supabase-js",
+      "detects": "supabase",
+      "category": "database",
+      "weight": 10
+    },
+    {
+      "dep": "@supabase/ssr",
+      "detects": "supabase",
+      "category": "database",
+      "weight": 10
+    },
+    {
+      "dep": "firebase",
+      "detects": "firebase",
+      "category": "database",
+      "weight": 10
+    },
+    {
+      "dep": "firebase-admin",
+      "detects": "firebase",
+      "category": "database",
+      "weight": 10
+    },
+    {
+      "dep": "convex",
+      "detects": "convex",
+      "category": "database",
+      "weight": 10
+    },
+    { "dep": "prisma", "detects": "prisma", "category": "orm", "weight": 8 },
+    {
+      "dep": "@prisma/client",
+      "detects": "prisma",
+      "category": "orm",
+      "weight": 8
+    },
+    {
+      "dep": "drizzle-orm",
+      "detects": "drizzle",
+      "category": "orm",
+      "weight": 8
+    },
+    {
+      "dep": "mongoose",
+      "detects": "mongodb",
+      "category": "database",
+      "weight": 8
+    },
+    {
+      "dep": "mongodb",
+      "detects": "mongodb",
+      "category": "database",
+      "weight": 7
+    },
+    {
+      "dep": "next-auth",
+      "detects": "nextauth",
+      "category": "auth",
+      "weight": 10
+    },
+    {
+      "dep": "@auth/core",
+      "detects": "nextauth",
+      "category": "auth",
+      "weight": 10
+    },
+    {
+      "dep": "@clerk/nextjs",
+      "detects": "clerk",
+      "category": "auth",
+      "weight": 10
+    },
+    {
+      "dep": "@clerk/clerk-react",
+      "detects": "clerk",
+      "category": "auth",
+      "weight": 10
+    },
+    {
+      "dep": "@supabase/auth-helpers-nextjs",
+      "detects": "supabase-auth",
+      "category": "auth",
+      "weight": 9
+    },
+    {
+      "dep": "firebase-auth",
+      "detects": "firebase-auth",
+      "category": "auth",
+      "weight": 9
+    },
+    { "dep": "vercel", "detects": "vercel", "category": "deploy", "weight": 6 },
+    {
+      "dep": "@vercel/analytics",
+      "detects": "vercel",
+      "category": "deploy",
+      "weight": 7
+    },
+    {
+      "dep": "@netlify/functions",
+      "detects": "netlify",
+      "category": "deploy",
+      "weight": 7
+    }
+  ]
+}
