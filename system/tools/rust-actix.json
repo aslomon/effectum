@@ -1,0 +1,60 @@
+{
+  "name": "Rust + Actix-Web Tools",
+  "description": "Tools for Rust with Actix-web 4 stack projects.",
+  "tools": [
+    {
+      "key": "rust",
+      "bin": "rustc",
+      "displayName": "Rust",
+      "category": "stack",
+      "why": "Rust toolchain — compiler, cargo package manager, std library",
+      "priority": 1,
+      "autoInstall": false,
+      "install": {
+        "all": "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"
+      },
+      "check": "rustc --version",
+      "manualUrl": "https://rustup.rs"
+    },
+    {
+      "key": "cargo-watch",
+      "bin": "cargo-watch",
+      "displayName": "cargo-watch",
+      "category": "stack",
+      "why": "Hot reload for local development — reruns cargo on file changes",
+      "priority": 2,
+      "autoInstall": true,
+      "install": {
+        "all": "cargo install cargo-watch"
+      },
+      "check": "cargo watch --version"
+    },
+    {
+      "key": "sqlx-cli",
+      "bin": "sqlx",
+      "displayName": "sqlx-cli",
+      "category": "stack",
+      "why": "Database migrations and compile-time SQL snapshot management",
+      "priority": 3,
+      "autoInstall": true,
+      "install": {
+        "darwin": "cargo install sqlx-cli --no-default-features --features rustls,postgres",
+        "linux": "cargo install sqlx-cli --no-default-features --features rustls,postgres"
+      },
+      "check": "sqlx --version"
+    },
+    {
+      "key": "cargo-audit",
+      "bin": "cargo-audit",
+      "displayName": "cargo-audit",
+      "category": "stack",
+      "why": "Security vulnerability auditing for Cargo dependencies",
+      "priority": 4,
+      "autoInstall": true,
+      "install": {
+        "all": "cargo install cargo-audit"
+      },
+      "check": "cargo audit --version"
+    }
+  ]
+}
