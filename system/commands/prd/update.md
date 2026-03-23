@@ -153,14 +153,20 @@ Generate the delta handoff prompt at: `workshop/projects/{slug}/prompts/{number}
 
 Fill in all sections:
 
-1. **Protection Rules**: List all DONE tasks and their test locations.
-2. **Stale Tasks**: For each STALE task, show the before/after AC text and what changed.
+1. **Protection Rules**: List all DONE tasks and their test locations. If no explicit automated test exists yet, say so clearly (e.g. `No explicit automated test located yet`) — never invent a test path.
+2. **Stale Tasks**: For each STALE task, show the before/after AC text and what changed. Preserve original typography from the PRD when quoting snippets (em dashes `—`, curly quotes, etc.).
 3. **New Tasks**: List all new ACs to implement.
 4. **Cancelled Tasks**: List removed ACs with removal reason.
 5. **Quality Gates**: Copy from the PRD.
 6. **Completion Promise**: Use the delta-specific promise.
 
 ## Step 14: Commit Changes
+
+Before staging, run `git status --short` and classify files:
+
+- **Expected generated files**: updated PRD, task registry, network map, delta handoff prompt
+- **Pre-existing unrelated changes**: leave untouched unless the user explicitly asked for them
+- **Untracked scratch/prompt files**: do **not** stage automatically unless they are the generated delta handoff for this update
 
 Stage and show the user what will be committed:
 
