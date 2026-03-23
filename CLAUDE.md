@@ -225,9 +225,11 @@ chore(templates): add constraint section
 
 ### System
 
-| Command | Purpose                                         |
-| ------- | ----------------------------------------------- |
-| /setup  | Install autonomous workflow in a target project |
+| Command         | Purpose                                                                                 |
+| --------------- | --------------------------------------------------------------------------------------- |
+| /setup          | Install autonomous workflow in a target project                                         |
+| /onboard        | Reverse-engineer existing project into Effectum (6 parallel agents, self-tests, review) |
+| /onboard:review | Run consistency review on onboarded PRDs (also runs standalone)                         |
 
 ### PRD Workshop
 
