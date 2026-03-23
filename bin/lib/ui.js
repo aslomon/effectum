@@ -8,7 +8,16 @@
  */
 "use strict";
 
-const { STACK_CHOICES, AUTONOMY_CHOICES, MCP_SERVERS } = require("./constants");
+const {
+  STACK_CHOICES,
+  AUTONOMY_CHOICES,
+  MCP_SERVERS,
+  ECOSYSTEM_CHOICES,
+  FRAMEWORK_CHOICES,
+  DATABASE_CHOICES,
+  AUTH_CHOICES,
+  DEPLOY_CHOICES,
+} = require("./constants");
 const { LANGUAGE_CHOICES } = require("./languages");
 const { APP_TYPE_CHOICES } = require("./app-types");
 const { FOUNDATION_HOOKS } = require("./foundation");
@@ -711,6 +720,253 @@ function showOutro(isGlobal) {
   }
 }
 
+// ─── Modular Stack Composition (confidence-based skip logic) ─────────────────
+
+/**
+ * Confirm a detected stack when confidence is "certain".
+ * Shows detected components and asks user to confirm or change.
+ * @param {object} detection - modular detection result
+ * @returns {Promise<boolean>} true if confirmed, false to change
+ */
+async function confirmDetectedStack(detection) {
+  const parts = [];
+  if (detection.framework.id)
+    parts.push(`Framework: ${detection.framework.id}`);
+  if (detection.database.id) parts.push(`Database: ${detection.database.id}`);
+  if (detection.auth.id) parts.push(`Auth: ${detection.auth.id}`);
+  if (detection.deploy.id) parts.push(`Deploy: ${detection.deploy.id}`);
+  if (detection.orm.id) parts.push(`ORM: ${detection.orm.id}`);
+
+  p.note(parts.join("\n"), `Detected Stack (${detection.ecosystem})`);
+
+  const confirmed = await p.confirm({
+    message: "Use this detected stack?",
+    initialValue: true,
+  });
+  handleCancel(confirmed);
+  return confirmed;
+}
+
+/**
+ * Ask for missing components when detection is partial.
+ * Only asks for components that were not detected.
+ * @param {object} detection - modular detection result
+ * @returns {Promise<object>} completed stack selection
+ */
+async function askMissingComponents(detection) {
+  const result = {
+    ecosystem: detection.ecosystem,
+    framework: detection.framework.id,
+    database: detection.database.id,
+    auth: detection.auth.id,
+    deploy: detection.deploy.id,
+    orm: detection.orm.id,
+  };
+
+  // Ask for framework if not detected
+  if (!result.framework && result.ecosystem) {
+    const choices = FRAMEWORK_CHOICES[result.ecosystem] || [];
+    if (choices.length > 0) {
+      const fw = await p.select({
+        message: "Framework",
+        options: choices.map((c) => ({
+          value: c.value,
+          label: c.label,
+          hint: c.hint,
+        })),
+      });
+      handleCancel(fw);
+      result.framework = fw;
+    }
+  }
+
+  // Ask for database if not detected
+  if (!result.database) {
+    const db = await p.select({
+      message: "Database / Backend",
+      options: DATABASE_CHOICES.map((c) => ({
+        value: c.value,
+        label: c.label,
+        hint: c.hint,
+      })),
+      initialValue:
+        result.ecosystem === "javascript" ? "supabase" : "postgresql",
+    });
+    handleCancel(db);
+    result.database = db === "none" ? null : db;
+  }
+
+  // Ask for auth if not detected
+  if (!result.auth && result.database) {
+    const auth = await p.select({
+      message: "Authentication",
+      options: AUTH_CHOICES.map((c) => ({
+        value: c.value,
+        label: c.label,
+        hint: c.hint,
+      })),
+      initialValue: result.database === "supabase" ? "supabase-auth" : "none",
+    });
+    handleCancel(auth);
+    result.auth = auth === "none" ? null : auth;
+  }
+
+  // Ask for deploy if not detected
+  if (!result.deploy) {
+    const deploy = await p.select({
+      message: "Deployment",
+      options: DEPLOY_CHOICES.map((c) => ({
+        value: c.value,
+        label: c.label,
+        hint: c.hint,
+      })),
+      initialValue: result.ecosystem === "javascript" ? "vercel" : "docker",
+    });
+    handleCancel(deploy);
+    result.deploy = deploy;
+  }
+
+  return result;
+}
+
+/**
+ * Ask user to choose a preset or build their own stack.
+ * @param {Array<object>} presets - loaded preset definitions
+ * @returns {Promise<{ mode: string, preset?: object }>}
+ */
+async function askPresetOrCustom(presets) {
+  const options = [
+    ...presets.map((p) => ({
+      value: p.id,
+      label: p.label,
+      hint: p.hint,
+    })),
+    {
+      value: "__custom__",
+      label: "Build Your Own",
+      hint: "Choose ecosystem, framework, database, deploy step by step",
+    },
+  ];
+
+  const value = await p.select({
+    message: "Quick Preset or Build Your Own?",
+    options,
+  });
+  handleCancel(value);
+
+  if (value === "__custom__") {
+    return { mode: "custom" };
+  }
+
+  const preset = presets.find((p) => p.id === value);
+  return { mode: "preset", preset };
+}
+
+/**
+ * Full 4-step modular stack composition flow.
+ * @param {object|null} prefill - pre-filled values from detection
+ * @returns {Promise<object>} complete stack selection
+ */
+async function askModularStack(prefill) {
+  const result = {
+    ecosystem: prefill ? prefill.ecosystem : null,
+    framework: prefill ? prefill.framework : null,
+    database: prefill ? prefill.database : null,
+    auth: prefill ? prefill.auth : null,
+    deploy: prefill ? prefill.deploy : null,
+    orm: prefill ? prefill.orm : null,
+  };
+
+  // Step 1: Ecosystem
+  if (!result.ecosystem) {
+    const eco = await p.select({
+      message: "Step 1: Ecosystem",
+      options: ECOSYSTEM_CHOICES.map((c) => ({
+        value: c.value,
+        label: c.label,
+        hint: c.hint,
+      })),
+    });
+    handleCancel(eco);
+    result.ecosystem = eco;
+  }
+
+  // Step 2: Framework
+  if (!result.framework) {
+    const choices = FRAMEWORK_CHOICES[result.ecosystem] || [];
+    if (choices.length > 0) {
+      const fw = await p.select({
+        message: "Step 2: Framework",
+        options: choices.map((c) => ({
+          value: c.value,
+          label: c.label,
+          hint: c.hint,
+        })),
+      });
+      handleCancel(fw);
+      result.framework = fw;
+    }
+  }
+
+  // Step 3: Database + Auth
+  if (!result.database) {
+    const db = await p.select({
+      message: "Step 3a: Database / Backend",
+      options: DATABASE_CHOICES.map((c) => ({
+        value: c.value,
+        label: c.label,
+        hint: c.hint,
+      })),
+      initialValue: result.framework === "nextjs" ? "supabase" : "postgresql",
+    });
+    handleCancel(db);
+    result.database = db === "none" ? null : db;
+  }
+
+  if (!result.auth && result.database) {
+    const auth = await p.select({
+      message: "Step 3b: Authentication",
+      options: AUTH_CHOICES.map((c) => ({
+        value: c.value,
+        label: c.label,
+        hint: c.hint,
+      })),
+      initialValue: result.database === "supabase" ? "supabase-auth" : "none",
+    });
+    handleCancel(auth);
+    result.auth = auth === "none" ? null : auth;
+  }
+
+  // Step 4: Deploy
+  if (!result.deploy) {
+    // Filter deploy options based on ecosystem
+    const isNative = ["swift", "dart"].includes(result.ecosystem);
+    const deployOptions = DEPLOY_CHOICES.filter((c) => {
+      if (isNative && c.value === "vercel") return false;
+      if (!isNative && c.value === "appstore") return false;
+      return true;
+    });
+
+    const deploy = await p.select({
+      message: "Step 4: Deployment",
+      options: deployOptions.map((c) => ({
+        value: c.value,
+        label: c.label,
+        hint: c.hint,
+      })),
+      initialValue: isNative
+        ? "appstore"
+        : result.ecosystem === "javascript"
+          ? "vercel"
+          : "docker",
+    });
+    handleCancel(deploy);
+    result.deploy = deploy;
+  }
+
+  return result;
+}
+
 module.exports = {
   initClack,
   getClack,
@@ -728,6 +984,11 @@ module.exports = {
   askSetupMode,
   askCustomize,
   askManual,
+  // Modular stack composition
+  confirmDetectedStack,
+  askMissingComponents,
+  askPresetOrCustom,
+  askModularStack,
   // Tool check flow
   showSystemCheck,
   showInstallPlan,

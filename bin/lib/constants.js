@@ -68,10 +68,20 @@ const FORMATTER_MAP = {
     name: "Ruff",
     glob: "py",
   },
+  "django-postgres": {
+    command: "ruff format",
+    name: "Ruff",
+    glob: "py",
+  },
   "go-echo": {
     command: "gofmt -w",
     name: "gofmt",
     glob: "go",
+  },
+  "rust-actix": {
+    command: "rustfmt",
+    name: "rustfmt",
+    glob: "rs",
   },
   "swift-ios": {
     command: "swift-format format -i",
@@ -142,9 +152,19 @@ const STACK_CHOICES = [
     hint: "Backend APIs with Pydantic, SQLAlchemy, Alembic",
   },
   {
+    value: "django-postgres",
+    label: "Django + PostgreSQL",
+    hint: "Python web apps with Django ORM, DRF, PostgreSQL",
+  },
+  {
     value: "go-echo",
     label: "Go + Echo",
     hint: "Backend APIs with Echo v4, GORM, PostgreSQL, Air",
+  },
+  {
+    value: "rust-actix",
+    label: "Rust + Actix-Web",
+    hint: "High-performance APIs with SQLx, PostgreSQL",
   },
   {
     value: "swift-ios",
@@ -156,6 +176,140 @@ const STACK_CHOICES = [
     label: "Generic",
     hint: "Stack-agnostic baseline — customize after setup",
   },
+];
+
+/** Ecosystem choices for modular composition Step 1 */
+const ECOSYSTEM_CHOICES = [
+  {
+    value: "javascript",
+    label: "JavaScript / TypeScript",
+    hint: "Next.js, React, Vue, Express, Fastify",
+  },
+  { value: "python", label: "Python", hint: "Django, FastAPI, Flask" },
+  { value: "go", label: "Go", hint: "Echo, Gin, Fiber" },
+  { value: "swift", label: "Swift", hint: "SwiftUI, Vapor" },
+  { value: "dart", label: "Dart / Flutter", hint: "Flutter, Firebase" },
+  { value: "rust", label: "Rust", hint: "Actix-web, Axum" },
+  { value: "custom", label: "Custom", hint: "Specify your own" },
+];
+
+/** Framework choices filtered by ecosystem (Step 2) */
+const FRAMEWORK_CHOICES = {
+  javascript: [
+    {
+      value: "nextjs",
+      label: "Next.js",
+      hint: "Full-stack React with App Router",
+    },
+    { value: "react", label: "React (Vite)", hint: "SPA with Vite bundler" },
+    { value: "vue", label: "Vue / Nuxt", hint: "Vue.js or Nuxt framework" },
+    { value: "express", label: "Express", hint: "Minimal Node.js backend" },
+    { value: "fastify", label: "Fastify", hint: "Fast Node.js backend" },
+    {
+      value: "expo",
+      label: "Expo / React Native",
+      hint: "Cross-platform mobile",
+    },
+    { value: "custom", label: "Custom", hint: "Specify your own" },
+  ],
+  python: [
+    {
+      value: "django",
+      label: "Django",
+      hint: "Batteries-included web framework",
+    },
+    {
+      value: "fastapi",
+      label: "FastAPI",
+      hint: "Async API framework with Pydantic",
+    },
+    { value: "flask", label: "Flask", hint: "Lightweight web framework" },
+    { value: "custom", label: "Custom", hint: "Specify your own" },
+  ],
+  go: [
+    { value: "echo", label: "Echo", hint: "High-performance HTTP framework" },
+    { value: "gin", label: "Gin", hint: "Popular HTTP web framework" },
+    { value: "fiber", label: "Fiber", hint: "Express-inspired web framework" },
+    { value: "custom", label: "Custom", hint: "Specify your own" },
+  ],
+  swift: [
+    { value: "swiftui", label: "SwiftUI", hint: "Native Apple UI framework" },
+    { value: "vapor", label: "Vapor", hint: "Server-side Swift" },
+    { value: "custom", label: "Custom", hint: "Specify your own" },
+  ],
+  dart: [
+    { value: "flutter", label: "Flutter", hint: "Cross-platform UI toolkit" },
+    { value: "custom", label: "Custom", hint: "Specify your own" },
+  ],
+  rust: [
+    {
+      value: "actix",
+      label: "Actix-web",
+      hint: "High-performance async web framework",
+    },
+    { value: "axum", label: "Axum", hint: "Tokio-based web framework" },
+    { value: "custom", label: "Custom", hint: "Specify your own" },
+  ],
+};
+
+/** Database choices filtered by framework (Step 3) */
+const DATABASE_CHOICES = [
+  {
+    value: "supabase",
+    label: "Supabase",
+    hint: "PostgreSQL + Auth + Storage + Realtime",
+  },
+  {
+    value: "firebase",
+    label: "Firebase",
+    hint: "Firestore + Auth + Cloud Functions",
+  },
+  { value: "convex", label: "Convex", hint: "Reactive backend platform" },
+  { value: "postgresql", label: "PostgreSQL", hint: "Raw PostgreSQL" },
+  { value: "mongodb", label: "MongoDB", hint: "Document database" },
+  { value: "prisma", label: "Prisma + PostgreSQL", hint: "Type-safe ORM" },
+  { value: "drizzle", label: "Drizzle + PostgreSQL", hint: "TypeScript ORM" },
+  { value: "sqlalchemy", label: "SQLAlchemy", hint: "Python SQL toolkit" },
+  { value: "gorm", label: "GORM", hint: "Go ORM library" },
+  { value: "none", label: "None", hint: "No database" },
+];
+
+/** Auth choices (Step 3) */
+const AUTH_CHOICES = [
+  {
+    value: "supabase-auth",
+    label: "Supabase Auth",
+    hint: "Built-in with Supabase",
+  },
+  {
+    value: "firebase-auth",
+    label: "Firebase Auth",
+    hint: "Built-in with Firebase",
+  },
+  {
+    value: "nextauth",
+    label: "NextAuth / Auth.js",
+    hint: "Flexible auth for Next.js",
+  },
+  { value: "clerk", label: "Clerk", hint: "Drop-in auth components" },
+  { value: "custom", label: "Custom", hint: "Roll your own" },
+  { value: "none", label: "None", hint: "No auth" },
+];
+
+/** Deploy choices (Step 4) */
+const DEPLOY_CHOICES = [
+  {
+    value: "vercel",
+    label: "Vercel",
+    hint: "Serverless, edge, preview deploys",
+  },
+  { value: "netlify", label: "Netlify", hint: "JAMstack deployment" },
+  { value: "railway", label: "Railway", hint: "Simple cloud hosting" },
+  { value: "flyio", label: "Fly.io", hint: "Global edge deployment" },
+  { value: "docker", label: "Docker", hint: "Container deployment" },
+  { value: "aws", label: "AWS", hint: "Amazon Web Services" },
+  { value: "appstore", label: "App Store", hint: "Apple/Google app stores" },
+  { value: "custom", label: "Custom", hint: "Specify your own" },
 ];
 
 /** @type {Array<{ value: string, label: string, hint: string }>} */
@@ -183,6 +337,11 @@ module.exports = {
   MCP_SERVERS,
   STACK_CHOICES,
   AUTONOMY_CHOICES,
+  ECOSYSTEM_CHOICES,
+  FRAMEWORK_CHOICES,
+  DATABASE_CHOICES,
+  AUTH_CHOICES,
+  DEPLOY_CHOICES,
   // Re-exported from languages.js / app-types.js
   LANGUAGE_CHOICES,
   LANGUAGE_INSTRUCTIONS,

@@ -2,6 +2,8 @@
  * Template substitution engine.
  * Reads template files, replaces all {{PLACEHOLDER}} tokens with values
  * from the stack preset and user config.
+ *
+ * Supports block-based CLAUDE.md generation from system/blocks/.
  */
 "use strict";
 
@@ -10,6 +12,97 @@ const path = require("path");
 const { FORMATTER_MAP } = require("./constants");
 const { LANGUAGE_INSTRUCTIONS } = require("./languages");
 const { getToolsForStack, checkTool } = require("./cli-tools");
+
+// ─── Block Loading ──────────────────────────────────────────────────────────
+
+/**
+ * Find the system/blocks/ directory.
+ * @param {string} [targetDir]
+ * @param {string} [repoRoot]
+ * @returns {string|null}
+ */
+function findBlocksDir(targetDir, repoRoot) {
+  const candidates = [];
+  if (targetDir) {
+    candidates.push(path.join(targetDir, ".effectum", "blocks"));
+  }
+  if (repoRoot) {
+    candidates.push(path.join(repoRoot, "system", "blocks"));
+  }
+  // Fallback: derive from this file's location
+  const defaultRoot = path.resolve(__dirname, "..", "..");
+  candidates.push(path.join(defaultRoot, "system", "blocks"));
+  for (const dir of candidates) {
+    if (fs.existsSync(dir)) return dir;
+  }
+  return null;
+}
+
+/**
+ * Load a template block file.
+ * @param {string} category - e.g. 'ecosystem', 'framework', 'database', 'deploy'
+ * @param {string} id - e.g. 'javascript', 'nextjs', 'supabase', 'vercel'
+ * @param {string} [targetDir]
+ * @param {string} [repoRoot]
+ * @returns {string|null}
+ */
+function loadBlock(category, id, targetDir, repoRoot) {
+  if (!id) return null;
+  const blocksDir = findBlocksDir(targetDir, repoRoot);
+  if (!blocksDir) return null;
+
+  const filePath = path.join(blocksDir, category, `${id}.md`);
+  if (fs.existsSync(filePath)) {
+    return fs.readFileSync(filePath, "utf8").trim();
+  }
+  return null;
+}
+
+/**
+ * Compose CLAUDE.md content from blocks based on detection result.
+ * Falls back to stack preset sections if blocks are not available.
+ * @param {object} detection - modular detection result
+ * @param {string} [targetDir]
+ * @param {string} [repoRoot]
+ * @returns {Record<string, string>} block sections keyed by placeholder name
+ */
+function composeBlocks(detection, targetDir, repoRoot) {
+  const blocks = {};
+
+  // Load blocks based on detection components
+  const ecosystem = detection.ecosystem;
+  const framework = detection.framework ? detection.framework.id : null;
+  const database = detection.database ? detection.database.id : null;
+  const deploy = detection.deploy ? detection.deploy.id : null;
+
+  const ecosystemBlock = loadBlock("ecosystem", ecosystem, targetDir, repoRoot);
+  const frameworkBlock = loadBlock("framework", framework, targetDir, repoRoot);
+  const databaseBlock = loadBlock("database", database, targetDir, repoRoot);
+  const deployBlock = loadBlock("deploy", deploy, targetDir, repoRoot);
+
+  // Compose TECH_STACK from blocks
+  const techParts = [];
+  if (ecosystemBlock) techParts.push(ecosystemBlock);
+  if (frameworkBlock) techParts.push(frameworkBlock);
+  if (databaseBlock) techParts.push(databaseBlock);
+  if (deployBlock) techParts.push(deployBlock);
+
+  if (techParts.length > 0) {
+    blocks.BLOCK_CONTENT = techParts.join("\n\n");
+  }
+
+  // Compose guardrails from framework + database blocks
+  const guardrailParts = [];
+  if (frameworkBlock) guardrailParts.push(frameworkBlock);
+  if (databaseBlock) guardrailParts.push(databaseBlock);
+  if (guardrailParts.length > 0) {
+    blocks.BLOCK_GUARDRAILS = guardrailParts.join("\n\n");
+  }
+
+  return blocks;
+}
+
+// ─── Substitution Map ───────────────────────────────────────────────────────
 
 /**
  * Build a substitution map from user config and parsed stack sections.
@@ -120,4 +213,8 @@ module.exports = {
   findRemainingPlaceholders,
   renderTemplate,
   findTemplatePath,
+  // Block-based composition
+  loadBlock,
+  composeBlocks,
+  findBlocksDir,
 };
