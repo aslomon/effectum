@@ -1,0 +1,61 @@
+{
+  "name": "Go + Echo Tools",
+  "description": "Tools for Go with Echo v4 stack projects.",
+  "tools": [
+    {
+      "key": "go",
+      "bin": "go",
+      "displayName": "Go",
+      "category": "stack",
+      "why": "Go toolchain — compiler, test runner, module management",
+      "priority": 1,
+      "autoInstall": false,
+      "install": {
+        "darwin": "brew install go",
+        "linux": "apt install golang"
+      },
+      "check": "go version"
+    },
+    {
+      "key": "golangci-lint",
+      "bin": "golangci-lint",
+      "displayName": "golangci-lint",
+      "category": "stack",
+      "why": "Comprehensive linter suite for Go — runs staticcheck, errcheck, gosec, and more",
+      "priority": 2,
+      "autoInstall": true,
+      "install": {
+        "darwin": "brew install golangci-lint",
+        "linux": "curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin latest"
+      },
+      "check": "golangci-lint version"
+    },
+    {
+      "key": "air",
+      "bin": "air",
+      "displayName": "Air",
+      "category": "stack",
+      "why": "Live reload for Go apps during local development",
+      "priority": 3,
+      "autoInstall": true,
+      "install": {
+        "all": "go install github.com/air-verse/air@latest"
+      },
+      "check": "air -v"
+    },
+    {
+      "key": "migrate",
+      "bin": "migrate",
+      "displayName": "golang-migrate",
+      "category": "stack",
+      "why": "Database schema migrations with up/down versioning",
+      "priority": 4,
+      "autoInstall": true,
+      "install": {
+        "darwin": "brew install golang-migrate",
+        "linux": "go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest"
+      },
+      "check": "migrate -version"
+    }
+  ]
+}

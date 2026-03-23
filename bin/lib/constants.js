@@ -68,6 +68,11 @@ const FORMATTER_MAP = {
     name: "Ruff",
     glob: "py",
   },
+  "go-echo": {
+    command: "gofmt -w",
+    name: "gofmt",
+    glob: "go",
+  },
   "swift-ios": {
     command: "swift-format format -i",
     name: "swift-format",
@@ -135,6 +140,11 @@ const STACK_CHOICES = [
     value: "python-fastapi",
     label: "Python + FastAPI",
     hint: "Backend APIs with Pydantic, SQLAlchemy, Alembic",
+  },
+  {
+    value: "go-echo",
+    label: "Go + Echo",
+    hint: "Backend APIs with Echo v4, GORM, PostgreSQL, Air",
   },
   {
     value: "swift-ios",
