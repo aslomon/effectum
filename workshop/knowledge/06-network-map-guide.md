@@ -449,3 +449,57 @@ Run `/prd:network-map {slug} --validate` to check for:
 - **Orphaned references** in connections that point to non-existent features
 - **Status mismatches** between frontmatter and task registry
 - **Completeness** — all frontmatter features present in the map
+
+---
+
+## Mermaid Syntax Safety Rules (MANDATORY)
+
+When generating any Mermaid diagram, ALWAYS follow these rules to prevent parser errors:
+
+### 1. Quote Labels with Special Characters
+Labels containing `/`, `&`, `<`, `>`, `(`, `)`, `#`, or `@` MUST be wrapped in double quotes:
+
+```mermaid
+%% WRONG — will cause parse error:
+DOCS_HOME[/docs/getting-started]:::done
+
+%% CORRECT:
+DOCS_HOME["/docs/getting-started"]:::done
+```
+
+### 2. Node IDs: Alphanumeric + Underscore Only
+Node IDs must contain only letters, numbers, and underscores. No dots, slashes, hyphens, or spaces:
+
+```mermaid
+%% WRONG:
+docs-home[Label]
+api.users[Label]
+
+%% CORRECT:
+DOCS_HOME[Label]
+API_USERS[Label]
+```
+
+### 3. Edge Labels with Special Characters
+Edge labels containing special characters must also be quoted:
+
+```mermaid
+%% WRONG:
+A -->|POST /api/users| B
+
+%% CORRECT:
+A -->|"POST /api/users"| B
+```
+
+### 4. Subgraph Names
+Subgraph names can contain spaces but avoid special characters:
+
+```mermaid
+%% CORRECT:
+subgraph PRD-001 [PRD-001: Authentication System]
+```
+
+### 5. Validate Before Writing
+Before writing any `.mmd` file, mentally check: would this parse on mermaid.live without errors? If unsure, quote all labels.
+
+**Rule of thumb: When in doubt, quote it.**
