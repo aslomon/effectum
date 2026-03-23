@@ -834,7 +834,11 @@ async function askMissingComponents(detection) {
  * @param {Array<object>} presets - loaded preset definitions
  * @returns {Promise<{ mode: string, preset?: object }>}
  */
-async function askPresetOrCustom(presets) {
+/**
+ * @param {Array} presets
+ * @param {string|null} detectedEcosystem - ecosystem inferred from project files (e.g. "javascript", "python")
+ */
+async function askPresetOrCustom(presets, detectedEcosystem) {
   const options = [
     ...presets.map((p) => ({
       value: p.id,
@@ -848,9 +852,23 @@ async function askPresetOrCustom(presets) {
     },
   ];
 
+  // Determine best initial selection:
+  // - If a preset's ecosystem matches the detected ecosystem, pre-select it.
+  // - Otherwise default to "Build Your Own" so we don't mislead the user.
+  let initialValue = "__custom__";
+  if (detectedEcosystem) {
+    const match = presets.find(
+      (preset) =>
+        preset.ecosystem &&
+        preset.ecosystem.toLowerCase() === detectedEcosystem.toLowerCase(),
+    );
+    if (match) initialValue = match.id;
+  }
+
   const value = await p.select({
     message: "Quick Preset or Build Your Own?",
     options,
+    initialValue,
   });
   handleCancel(value);
 

@@ -794,7 +794,7 @@ Options:
     // None: preset or build your own
     const presets = loadPresets(installTargetDir);
     if (presets.length > 0) {
-      const choice = await askPresetOrCustom(presets);
+      const choice = await askPresetOrCustom(presets, detection.ecosystem);
       if (choice.mode === "preset" && choice.preset) {
         stack = choice.preset.stack || "generic";
         modularSelection = {
