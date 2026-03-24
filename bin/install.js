@@ -1038,13 +1038,11 @@ Options:
   showOutro(false);
 }
 
-// Export internals for testing when required as a module
-if (require.main === module) {
-  main().catch((err) => {
-    console.error(`Fatal error: ${err.message}`);
-    process.exit(1);
-  });
-}
+// Always run main() — effectum.js routes here via require()
+main().catch((err) => {
+  console.error(`Fatal error: ${err.message}`);
+  process.exit(1);
+});
 
 module.exports = {
   checkPackageAvailable,
