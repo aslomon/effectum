@@ -248,12 +248,44 @@ function parseSwiftPackage(dir) {
   return deps;
 }
 
+/**
+ * Parse Rust Cargo.toml dependencies.
+ * @param {string} dir
+ * @returns {Set<string>}
+ */
+function parseCargoToml(dir) {
+  const deps = new Set();
+  const filePath = path.join(dir, "Cargo.toml");
+  if (!fs.existsSync(filePath)) return deps;
+  try {
+    const content = fs.readFileSync(filePath, "utf8");
+    let inDeps = false;
+    for (const line of content.split("\n")) {
+      if (/^\[dependencies\]/.test(line) || /^\[dev-dependencies\]/.test(line)) {
+        inDeps = true;
+        continue;
+      }
+      if (/^\[/.test(line) && !/dependencies/.test(line)) {
+        inDeps = false;
+        continue;
+      }
+      if (inDeps) {
+        // Handle both `actix-web = "4"` and `actix-web = { version = "4" }`
+        const match = line.match(/^([a-zA-Z0-9_-]+)\s*=/);
+        if (match) deps.add(match[1]);
+      }
+    }
+  } catch (_) {}
+  return deps;
+}
+
 const PARSERS = {
   packageJson: parsePackageJson,
   pythonDeps: parsePythonDeps,
   goMod: parseGoMod,
   pubspecYaml: parsePubspecYaml,
   swiftPackage: parseSwiftPackage,
+  cargoToml: parseCargoToml,
 };
 
 // ─── Detection Engine ───────────────────────────────────────────────────────
@@ -407,6 +439,7 @@ function detectionToStackKey(detection) {
   if (fw === "django") return "django-postgres";
   if (fw === "fastapi") return "python-fastapi";
   if (fw === "echo" || fw === "gin" || fw === "fiber") return "go-echo";
+  if (fw === "actix" || fw === "axum" || fw === "rocket" || fw === "warp") return "rust-actix";
   if (fw === "swiftui" || fw === "vapor") return "swift-ios";
   if (detection.ecosystem === "dart") return "generic";
 
@@ -414,6 +447,7 @@ function detectionToStackKey(detection) {
   if (fw === "nextjs") return "nextjs-supabase";
   if (detection.ecosystem === "python") return "python-fastapi";
   if (detection.ecosystem === "go") return "go-echo";
+  if (detection.ecosystem === "rust") return "rust-actix";
   if (detection.ecosystem === "swift") return "swift-ios";
 
   return null;

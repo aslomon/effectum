@@ -1,0 +1,61 @@
+{
+  "ecosystem": "rust",
+  "configFiles": ["Cargo.toml"],
+  "parser": "cargoToml",
+  "rules": [
+    {
+      "dep": "actix-web",
+      "detects": "actix",
+      "category": "framework",
+      "weight": 10
+    },
+    {
+      "dep": "axum",
+      "detects": "axum",
+      "category": "framework",
+      "weight": 10
+    },
+    {
+      "dep": "rocket",
+      "detects": "rocket",
+      "category": "framework",
+      "weight": 10
+    },
+    {
+      "dep": "warp",
+      "detects": "warp",
+      "category": "framework",
+      "weight": 10
+    },
+    {
+      "dep": "diesel",
+      "detects": "diesel",
+      "category": "orm",
+      "weight": 8
+    },
+    {
+      "dep": "sqlx",
+      "detects": "sqlx",
+      "category": "database",
+      "weight": 8
+    },
+    {
+      "dep": "sea-orm",
+      "detects": "sea-orm",
+      "category": "orm",
+      "weight": 8
+    },
+    {
+      "dep": "tokio",
+      "detects": "tokio",
+      "category": "runtime",
+      "weight": 6
+    },
+    {
+      "dep": "serde",
+      "detects": "serde",
+      "category": "serialization",
+      "weight": 5
+    }
+  ]
+}
