@@ -14,14 +14,18 @@ const CONFIG_VERSION = "0.4.0";
  * Read .effectum.json from a directory.
  * @param {string} dir
  * @returns {object|null} parsed config or null if not found
+ * @throws {Error} if file exists but contains invalid JSON (message includes 'Config corrupted')
  */
 function readConfig(dir) {
   const filePath = path.join(dir, CONFIG_FILENAME);
   if (!fs.existsSync(filePath)) return null;
+  const raw = fs.readFileSync(filePath, "utf8");
   try {
-    return JSON.parse(fs.readFileSync(filePath, "utf8"));
-  } catch (_) {
-    return null;
+    return JSON.parse(raw);
+  } catch (err) {
+    throw new Error(
+      `Config corrupted: ${filePath} contains invalid JSON — ${err.message}`,
+    );
   }
 }
 

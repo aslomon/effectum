@@ -3,12 +3,19 @@
 /**
  * Unit tests for stack-parser.js
  * Tests: parseStackPreset — section extraction with 3 and 4 backticks.
+ * Tests: loadStackPreset — file loading with generic fallback.
  */
 
-const { test, describe } = require("node:test");
+const { test, describe, beforeEach, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
+const fs = require("fs");
+const path = require("path");
+const os = require("os");
 
-const { parseStackPreset } = require("../bin/lib/stack-parser.js");
+const {
+  parseStackPreset,
+  loadStackPreset,
+} = require("../bin/lib/stack-parser.js");
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -30,7 +37,9 @@ function buildPreset(sections) {
 
 describe("parseStackPreset", () => {
   test("extracts a single section correctly", () => {
-    const content = buildPreset([{ key: "TECH_STACK", value: "Next.js 14 + Supabase" }]);
+    const content = buildPreset([
+      { key: "TECH_STACK", value: "Next.js 14 + Supabase" },
+    ]);
     const result = parseStackPreset(content);
     assert.equal(result.TECH_STACK, "Next.js 14 + Supabase");
   });
@@ -56,7 +65,9 @@ describe("parseStackPreset", () => {
       "STACK_SPECIFIC_GUARDRAILS",
       "TOOL_SPECIFIC_GUARDRAILS",
     ];
-    const content = buildPreset(keys.map((key) => ({ key, value: `value for ${key}` })));
+    const content = buildPreset(
+      keys.map((key) => ({ key, value: `value for ${key}` })),
+    );
     const result = parseStackPreset(content);
     for (const key of keys) {
       assert.ok(key in result, `should extract section: ${key}`);
@@ -89,6 +100,26 @@ describe("parseStackPreset", () => {
     assert.equal(result.MULTI, multiline);
   });
 
+  test("handles CRLF line endings", () => {
+    const content = "## MY_KEY\r\n\r\n```\r\nmy value\r\n```";
+    const result = parseStackPreset(content);
+    assert.equal(result.MY_KEY, "my value");
+  });
+
+  test("handles mixed LF and CRLF line endings", () => {
+    const content = "## MIXED\r\n\n```\r\nvalue here\n```";
+    const result = parseStackPreset(content);
+    assert.equal(result.MIXED, "value here");
+  });
+
+  test("handles CRLF with multiple sections", () => {
+    const content =
+      "## FIRST\r\n\r\n```\r\nfirst val\r\n```\r\n\r\n## SECOND\r\n\r\n````\r\nsecond val\r\n````";
+    const result = parseStackPreset(content);
+    assert.equal(result.FIRST, "first val");
+    assert.equal(result.SECOND, "second val");
+  });
+
   test("returns empty object for empty content", () => {
     const result = parseStackPreset("");
     assert.deepEqual(result, {});
@@ -104,7 +135,10 @@ describe("parseStackPreset", () => {
     const content =
       "## NO_FENCE\nThis has no fence so should be ignored.\n\n## WITH_FENCE\n\n```\nkeep this\n```";
     const result = parseStackPreset(content);
-    assert.ok(!("NO_FENCE" in result), "section without fence should not be extracted");
+    assert.ok(
+      !("NO_FENCE" in result),
+      "section without fence should not be extracted",
+    );
     assert.equal(result.WITH_FENCE, "keep this");
   });
 
@@ -152,8 +186,64 @@ describe("parseStackPreset", () => {
 \`\`\``;
 
     const result = parseStackPreset(content);
-    assert.ok(result.TECH_STACK.includes("Next.js 14 App Router"), "TECH_STACK should include framework");
-    assert.ok(result.TECH_STACK.includes("Supabase (PostgreSQL)"), "TECH_STACK should include DB");
-    assert.ok(result.ARCHITECTURE_PRINCIPLES.includes("Feature-based"), "ARCHITECTURE_PRINCIPLES should include structure");
+    assert.ok(
+      result.TECH_STACK.includes("Next.js 14 App Router"),
+      "TECH_STACK should include framework",
+    );
+    assert.ok(
+      result.TECH_STACK.includes("Supabase (PostgreSQL)"),
+      "TECH_STACK should include DB",
+    );
+    assert.ok(
+      result.ARCHITECTURE_PRINCIPLES.includes("Feature-based"),
+      "ARCHITECTURE_PRINCIPLES should include structure",
+    );
+  });
+});
+
+// ─── loadStackPreset ──────────────────────────────────────────────────────────
+
+describe("loadStackPreset", () => {
+  let tmpDir;
+
+  beforeEach(() => {
+    tmpDir = path.join(
+      os.tmpdir(),
+      `effectum-sp-test-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+    );
+    fs.mkdirSync(tmpDir, { recursive: true });
+  });
+
+  afterEach(() => {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  test("loads a preset file from targetDir/.effectum/stacks/", () => {
+    const stackDir = path.join(tmpDir, ".effectum", "stacks");
+    fs.mkdirSync(stackDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(stackDir, "my-stack.md"),
+      "## TECH_STACK\n\n```\nMy Stack\n```",
+      "utf8",
+    );
+    const result = loadStackPreset("my-stack", tmpDir, "/nonexistent");
+    assert.equal(result.TECH_STACK, "My Stack");
+  });
+
+  test("falls back to generic preset when requested key not found", () => {
+    const stackDir = path.join(tmpDir, ".effectum", "stacks");
+    fs.mkdirSync(stackDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(stackDir, "generic.md"),
+      "## TECH_STACK\n\n```\nGeneric Stack\n```",
+      "utf8",
+    );
+    const result = loadStackPreset("nonexistent-stack", tmpDir, "/nonexistent");
+    assert.equal(result.TECH_STACK, "Generic Stack");
+  });
+
+  test("returns empty object when neither requested key nor generic found", () => {
+    const result = loadStackPreset("missing", tmpDir, "/nonexistent");
+    assert.deepEqual(result, {});
   });
 });
