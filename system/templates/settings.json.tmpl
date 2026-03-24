@@ -167,9 +167,9 @@
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "A teammate just became idle. Context: $ARGUMENTS\n\nCheck:\n1. Are all their assigned tasks completed?\n2. Are there unclaimed tasks in the shared task list they could pick up?\n3. Should they assist another teammate who is blocked?\n\nRespond {\"ok\": true} to let them stop, or {\"ok\": false, \"reason\": \"description of remaining work\"} to assign more.",
-            "timeout": 30,
-            "statusMessage": "Checking teammate workload..."
+            "prompt": "A teammate just became idle. Context: $ARGUMENTS\n\nPerform these quality checks:\n1. Read the teammate's assigned tasks from tasks.md — are ALL marked ✅ DONE?\n2. Run the project's test command for the teammate's file ownership scope — do tests pass?\n3. Check if the teammate left any TODO/FIXME comments in their owned files.\n4. Are there unclaimed tasks in tasks.md they could pick up?\n5. Should they assist another teammate who is blocked?\n\nIf tasks are incomplete or tests fail, respond {\"ok\": false, \"reason\": \"specific description of remaining work\"}.\nIf all tasks done and tests pass, respond {\"ok\": true}.",
+            "timeout": 45,
+            "statusMessage": "Verifying teammate completion quality..."
           }
         ]
       }
@@ -178,8 +178,14 @@
       {
         "hooks": [
           {
+            "type": "prompt",
+            "prompt": "A teammate completed a task. Context: $ARGUMENTS\n\nValidate:\n1. Read the task's acceptance criteria from the PRD — are they met by the implementation?\n2. Do test files exist for the implemented functionality? Check for corresponding *.test.* files.\n3. Does the code compile without type errors in the task's scope?\n\nIf ACs are met and tests exist, respond {\"ok\": true}.\nIf ACs are not met or tests are missing, respond {\"ok\": false, \"reason\": \"specific description of what's missing\"}.",
+            "timeout": 30,
+            "statusMessage": "Validating task acceptance criteria..."
+          },
+          {
             "type": "command",
-            "command": "bash -c 'INPUT=$(cat); TASK=$(echo \"$INPUT\" | jq -r \".task_id // empty\"); AGENT=$(echo \"$INPUT\" | jq -r \".agent_name // empty\"); mkdir -p \"${CLAUDE_PROJECT_DIR:-.}/.claude/logs\"; echo \"$(date +%Y-%m-%dT%H:%M:%S) TASK_DONE: $TASK by $AGENT\" >> \"${CLAUDE_PROJECT_DIR:-.}/.claude/logs/team-activity.log\"; exit 0'",
+            "command": "bash -c 'INPUT=$(cat); TASK=$(echo \"$INPUT\" | jq -r \".task_id // empty\"); AGENT=$(echo \"$INPUT\" | jq -r \".agent_name // empty\"); STATUS=$(echo \"$INPUT\" | jq -r \".status // empty\"); mkdir -p \"${CLAUDE_PROJECT_DIR:-.}/.claude/logs\"; echo \"$(date +%Y-%m-%dT%H:%M:%S) TASK_DONE: $TASK by $AGENT [status=$STATUS]\" >> \"${CLAUDE_PROJECT_DIR:-.}/.claude/logs/team-activity.log\"; exit 0'",
             "statusMessage": "Logging task completion...",
             "async": true
           }

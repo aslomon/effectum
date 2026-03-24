@@ -328,16 +328,110 @@ function recommendSubagents(tags, stack) {
   return [...result];
 }
 
+// ─── Agent Teams recommendation ─────────────────────────────────────────────
+
+/**
+ * Team profile metadata used for recommendations.
+ * @type {Array<{ key: string, teammate_count: number, stacks: string[] }>}
+ */
+const TEAM_PROFILES = [
+  {
+    key: "web-feature",
+    teammate_count: 3,
+    stacks: ["nextjs-supabase", "nextjs-firebase", "nextjs-prisma"],
+  },
+  {
+    key: "fullstack",
+    teammate_count: 5,
+    stacks: ["nextjs-supabase", "nextjs-firebase", "nextjs-prisma"],
+  },
+  {
+    key: "frontend-only",
+    teammate_count: 3,
+    stacks: ["nextjs-supabase", "nextjs-firebase", "nextjs-prisma"],
+  },
+  {
+    key: "review",
+    teammate_count: 2,
+    stacks: [
+      "nextjs-supabase",
+      "nextjs-firebase",
+      "nextjs-prisma",
+      "python-fastapi",
+    ],
+  },
+  {
+    key: "overnight-build",
+    teammate_count: 4,
+    stacks: ["nextjs-supabase", "nextjs-firebase", "nextjs-prisma"],
+  },
+];
+
+/**
+ * Determine whether Agent Teams should be suggested based on project complexity.
+ *
+ * Criteria (from PRD AC1):
+ *   - Number of ACs > 10
+ *   - Number of distinct modules > 2
+ *   - Number of parallelizable workstreams > 2
+ *
+ * @param {{ acCount: number, moduleCount: number, parallelStreams: number }} metrics
+ * @returns {{ suggestTeams: boolean, reason: string, recommendedProfile: string | null }}
+ */
+function suggestTeams({
+  acCount = 0,
+  moduleCount = 0,
+  parallelStreams = 0,
+} = {}) {
+  const reasons = [];
+  if (acCount > 10) reasons.push(`${acCount} ACs (>10)`);
+  if (moduleCount > 2) reasons.push(`${moduleCount} modules (>2)`);
+  if (parallelStreams > 2)
+    reasons.push(`${parallelStreams} parallel streams (>2)`);
+
+  const suggest = reasons.length >= 2;
+
+  let recommendedProfile = null;
+  if (suggest) {
+    if (acCount >= 12 && moduleCount >= 3) {
+      recommendedProfile =
+        parallelStreams >= 4 ? "overnight-build" : "fullstack";
+    } else if (moduleCount <= 2 && parallelStreams <= 3) {
+      recommendedProfile = "web-feature";
+    } else {
+      recommendedProfile = "fullstack";
+    }
+  }
+
+  return {
+    suggestTeams: suggest,
+    reason: suggest
+      ? `This project may benefit from Agent Teams (experimental): ${reasons.join(", ")}`
+      : "",
+    recommendedProfile,
+  };
+}
+
 // ─── Main recommendation entry point ────────────────────────────────────────
 
 /**
  * Generate a complete recommended setup from user inputs.
  *
- * @param {{ stack: string, appType: string, description: string, autonomyLevel: string, language: string }} input
- * @returns {{ commands: string[], hooks: string[], skills: string[], mcps: string[], subagents: string[], agentTeams: boolean, tags: string[] }}
+ * @param {{ stack: string, appType: string, description: string, autonomyLevel: string, language: string, acCount?: number, moduleCount?: number, parallelStreams?: number }} input
+ * @returns {{ commands: string[], hooks: string[], skills: string[], mcps: string[], subagents: string[], agentTeams: boolean, suggestTeams: boolean, teamsReason: string, recommendedProfile: string | null, tags: string[] }}
  */
-function recommend({ stack, appType, description, autonomyLevel, language }) {
+function recommend({
+  stack,
+  appType,
+  description,
+  autonomyLevel,
+  language,
+  acCount,
+  moduleCount,
+  parallelStreams,
+}) {
   const tags = extractTags({ appType, stack, description });
+  const teams = suggestTeams({ acCount, moduleCount, parallelStreams });
 
   return {
     commands: recommendCommands(tags),
@@ -346,6 +440,9 @@ function recommend({ stack, appType, description, autonomyLevel, language }) {
     mcps: recommendMcps(tags),
     subagents: recommendSubagents(tags, stack),
     agentTeams: false,
+    suggestTeams: teams.suggestTeams,
+    teamsReason: teams.reason,
+    recommendedProfile: teams.recommendedProfile,
     tags,
   };
 }
@@ -380,6 +477,7 @@ function getAllSubagents() {
 module.exports = {
   recommend,
   extractTags,
+  suggestTeams,
   getAllCommands,
   getAllHooks,
   getAllSkills,
@@ -389,4 +487,5 @@ module.exports = {
   HOOK_RULES,
   SKILL_RULES,
   MCP_RULES,
+  TEAM_PROFILES,
 };
