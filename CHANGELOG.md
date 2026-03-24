@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-03-24
+
+### Fixed
+
+- **AC-1:** `readConfig()` now throws a descriptive `Error` with message containing `"Config corrupted"` on invalid JSON instead of silently returning `null`
+- **AC-2:** `loadStackPreset()` falls back to the `generic` preset with a warning log instead of crashing when an unknown stack key is requested
+- **AC-3:** `checkPackageAvailable()` now uses async `spawn` + `Promise.all` for parallel MCP package checks — reduces max wait from ~32s to ≤10s
+- **AC-4:** `deepMerge()` uses concat+deduplicate for `permissions.allow` and `permissions.deny` arrays instead of overriding — preserves user-defined deny rules through `reconfigure`
+- **AC-5:** `parseStackPreset()` regex updated to handle CRLF (`\r\n`) line endings — fixes silent parse failures on Windows
+- **AC-6:** `installBaseFiles()` ensures the `.claude/` directory exists before any file writes — prevents crash on first install
+- **AC-7:** `installPlaywrightBrowsers()` fallback error path now correctly references `result2.stderr` instead of `result.stderr`
+- **AC-8:** `findRepoRoot()` uses `__dirname`-based traversal instead of `require.main?.filename` — works correctly when Effectum is loaded as a library
+
+### Tests
+
+- 184 tests, all passing (up from 156)
+- Added `test/install.test.js` — 28 new integration and unit tests covering `checkPackageAvailable()`, `installBaseFiles()`, `findRepoRoot()`, `installPlaywrightBrowsers()`
+- Extended `test/stack-parser.test.js` — CRLF handling + fallback preset coverage
+- Extended `test/utils.test.js` — permissions array merge coverage
+- Extended `test/config.test.js` — corrupt config error handling
+
 ## [0.9.0] - 2026-03-23
 
 ### Added
