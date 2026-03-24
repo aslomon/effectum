@@ -15,16 +15,32 @@ function ensureDir(dir) {
 }
 
 /**
+ * Keys within `permissions` that should be concat+deduplicated instead of replaced.
+ * @type {Set<string>}
+ */
+const PERMISSIONS_MERGE_KEYS = new Set(["allow", "deny"]);
+
+/**
  * Deep-merge two plain objects. Source wins on conflicts.
- * Arrays are NOT merged — source replaces target.
+ * Arrays are replaced by default, EXCEPT for `permissions.allow` and
+ * `permissions.deny` which are concatenated and deduplicated.
  * @param {object} target
  * @param {object} source
+ * @param {string} [_parentKey] - internal: tracks the parent key for permissions merge logic
  * @returns {object}
  */
-function deepMerge(target, source) {
+function deepMerge(target, source, _parentKey) {
   const out = Object.assign({}, target);
   for (const key of Object.keys(source)) {
+    // Concat+deduplicate permissions.allow and permissions.deny arrays
     if (
+      _parentKey === "permissions" &&
+      PERMISSIONS_MERGE_KEYS.has(key) &&
+      Array.isArray(out[key]) &&
+      Array.isArray(source[key])
+    ) {
+      out[key] = [...new Set([...out[key], ...source[key]])];
+    } else if (
       source[key] &&
       typeof source[key] === "object" &&
       !Array.isArray(source[key]) &&
@@ -32,7 +48,7 @@ function deepMerge(target, source) {
       typeof out[key] === "object" &&
       !Array.isArray(out[key])
     ) {
-      out[key] = deepMerge(out[key], source[key]);
+      out[key] = deepMerge(out[key], source[key], key);
     } else {
       out[key] = source[key];
     }

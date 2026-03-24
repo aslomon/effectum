@@ -41,6 +41,39 @@ describe("deepMerge", () => {
     const result = deepMerge({ a: { nested: true } }, { a: null });
     assert.deepStrictEqual(result, { a: null });
   });
+
+  it("concat+deduplicates permissions.allow arrays", () => {
+    const target = { permissions: { allow: ["read", "write"] } };
+    const source = { permissions: { allow: ["write", "execute"] } };
+    const result = deepMerge(target, source);
+    assert.deepStrictEqual(result.permissions.allow, [
+      "read",
+      "write",
+      "execute",
+    ]);
+  });
+
+  it("concat+deduplicates permissions.deny arrays", () => {
+    const target = { permissions: { deny: ["rm -rf"] } };
+    const source = { permissions: { deny: ["rm -rf", "drop table"] } };
+    const result = deepMerge(target, source);
+    assert.deepStrictEqual(result.permissions.deny, ["rm -rf", "drop table"]);
+  });
+
+  it("still replaces non-permissions arrays normally", () => {
+    const result = deepMerge(
+      { other: { allow: [1, 2] } },
+      { other: { allow: [3] } },
+    );
+    assert.deepStrictEqual(result.other.allow, [3]);
+  });
+
+  it("handles permissions.allow when target has no allow", () => {
+    const target = { permissions: {} };
+    const source = { permissions: { allow: ["read"] } };
+    const result = deepMerge(target, source);
+    assert.deepStrictEqual(result.permissions.allow, ["read"]);
+  });
 });
 
 describe("ensureDir", () => {
