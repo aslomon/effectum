@@ -33,7 +33,13 @@ async function main() {
   p.intro("EFFECTUM — Reconfigure");
 
   // Read existing config
-  const config = readConfig(targetDir);
+  let config;
+  try {
+    config = readConfig(targetDir);
+  } catch (err) {
+    p.log.error(err.message);
+    process.exit(1);
+  }
   if (!config) {
     p.log.error(
       "No .effectum.json found in this directory. Run `npx @aslomon/effectum` first.",

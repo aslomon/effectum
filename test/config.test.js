@@ -37,9 +37,11 @@ describe("readConfig", () => {
     assert.deepStrictEqual(result, data);
   });
 
-  it("returns null for invalid JSON", () => {
+  it("throws with 'Config corrupted' for invalid JSON", () => {
     fs.writeFileSync(path.join(tmpDir, ".effectum.json"), "not json", "utf8");
-    assert.strictEqual(readConfig(tmpDir), null);
+    assert.throws(() => readConfig(tmpDir), {
+      message: /Config corrupted/,
+    });
   });
 });
 
