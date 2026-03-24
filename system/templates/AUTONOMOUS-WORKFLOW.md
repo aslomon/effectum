@@ -926,27 +926,80 @@ Use /plan for the overall architecture, then /tdd per endpoint."
 - Parallel implementation would save significant time
 - Each Teammate has clear file ownership boundaries
 
-### Command Chain with Agent Teams
+The Recommendation Engine automatically suggests Agent Teams when a PRD has >10 ACs, >2 modules, and >2 parallelizable workstreams.
+
+### The `/orchestrate` Command
+
+`/orchestrate` is the central command for Agent Teams workflows. It handles the full lifecycle:
+
+```
+/orchestrate [profile]           -- Create team and start work
+/orchestrate status              -- Show team progress and token usage
+/orchestrate nudge [teammate]    -- Prod a stuck teammate
+/orchestrate shutdown            -- Gracefully terminate all teammates
+```
+
+**Flags:**
+
+| Flag           | Default | Description                                        |
+| -------------- | ------- | -------------------------------------------------- |
+| `--plan-first` | `true`  | Require an approved /plan before spawning the team |
+| `--max-cost`   | none    | Token budget limit — warns at 80%, stops at 100%   |
+| `--dry-run`    | `false` | Show cost estimate without creating the team       |
+
+**Full workflow:**
 
 ```
 /plan -> [approval] -> /tasks (with Teammate assignments) -> /orchestrate [profile] -> [parallel work] -> /verify -> /code-review
 ```
 
-Compare to Classic:
+**What `/orchestrate` does internally:**
+
+1. **Loads the YAML profile** from `system/teams/{profile}.yaml`
+2. **Validates prerequisites** -- checks for approved /plan, existing PRD/tasks
+3. **Estimates cost** -- shows token budget and asks for confirmation
+4. **Creates the team** and spawns teammates with role-specific instructions
+5. **Distributes tasks** from the PRD — maps ACs to teammates based on file ownership
+6. **Monitors progress** via TeammateIdle and TaskCompleted hooks
+7. **Runs quality gates** at phase transitions
+8. **Completes** with /verify + /code-review when all tasks are done
+
+### Team Profiles (YAML)
+
+Predefined profiles in `system/teams/` as YAML files:
+
+| Profile           | Teammates | Use Case                                       |
+| ----------------- | --------- | ---------------------------------------------- |
+| `web-feature`     | 3         | Standard feature: frontend + backend + tests   |
+| `fullstack`       | 5         | Full-stack with DB, API, UI, tests, review     |
+| `frontend-only`   | 3         | UI-only: layout + components + content         |
+| `review`          | 2         | Parallel code review + security audit          |
+| `overnight-build` | 4         | Large unattended build with continuous testing |
+
+Custom profiles can be added in `.effectum/teams/{name}.yaml`.
+
+Each profile defines:
+
+- **Teammates** -- name, agent specialization, role, file ownership, model hint
+- **Phases** -- ordered stages with dependencies and quality gates
+- **Cost estimate** -- expected iteration range and token budget
+- **Hook config** -- per-profile TeammateIdle and TaskCompleted behavior
+
+### Cost Awareness
+
+Agent Teams cost 3-4x more than Subagents (N separate Claude instances). `/orchestrate` always shows a cost estimate before starting:
 
 ```
-/plan -> [approval] -> /tasks -> /tdd (sequential per task) -> /verify -> /code-review
+Teammates: 3
+Estimated iterations: 15–40
+Estimated tokens: 150k–400k
+Estimated cost: $1.50–$4.00
+
+Model recommendation: Opus for Lead, Sonnet for Teammates
+Proceed? (Y/n)
 ```
 
-### Team Profiles
-
-Predefined in `~/.claude/teams/profiles.md`:
-
-- **web-feature** (3): frontend + backend + testing
-- **fullstack** (5): frontend + backend + database + testing + reviewer
-- **frontend-only** (3): layout + components + content
-- **review** (2): quality + security
-- **custom**: user-defined
+Use `--max-cost` to set a token budget. The system warns at 80% and initiates graceful shutdown at 100%.
 
 ### Best Practices
 
@@ -956,7 +1009,8 @@ Predefined in `~/.claude/teams/profiles.md`:
 4. **Database first** -- schema changes must complete before other Teammates start
 5. **Reviewer last** -- code review Teammate begins after implementation is done
 6. **Use task dependencies** -- `blocked by:` prevents premature work
-7. **Monitor costs** -- Agent Teams use N separate Claude instances (N x token cost)
+7. **Monitor costs** -- use `/orchestrate status` to track token usage
+8. **Plan first** -- never skip /plan for Agent Teams workflows (default enforced)
 
 ### Display Modes
 

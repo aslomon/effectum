@@ -2,45 +2,76 @@
 
 ## What Are Agent Teams?
 
-Agent Teams is an experimental Claude Code feature that enables **parallel, coordinated execution by multiple specialized agents** — called *teammates* — within a single task. Instead of one agent sequentially handling every layer of a feature, the orchestrator assigns teammates to specific scopes (e.g., frontend, backend, database, testing) and they work concurrently under shared coordination hooks.
+Agent Teams is an experimental Claude Code feature that enables **parallel, coordinated execution by multiple specialized agents** — called _teammates_ — within a single task. Instead of one agent sequentially handling every layer of a feature, the orchestrator assigns teammates to specific scopes (e.g., frontend, backend, database, testing) and they work concurrently under shared coordination hooks.
 
 Agent Teams is distinct from ad-hoc subagent spawning: teams are declared upfront with explicit file ownership, task dependencies, and role assignments. This prevents conflicts, reduces coordination overhead, and makes large multi-layer features tractable in a single session.
 
 ---
 
-## How Team Profiles Work
+## Team Profile YAML Format
 
-Team profiles are predefined teammate compositions stored in `system/teams/profiles.md`. Each profile maps a workflow type to a set of teammates, where every teammate has:
+Team profiles are YAML files stored in `system/teams/`. Each profile defines a complete team composition with teammates, phases, cost estimates, and hook configuration.
 
-- **A role name** — the internal label used in task assignment and logs
-- **A responsibility description** — what this teammate owns in the feature
-- **An agent specialization** — which agent `.md` file defines the teammate's persona and skills
+### Schema
 
-### Profile format (from `profiles.md`)
+```yaml
+# system/teams/{profile-name}.yaml
+name: profile-name
+description: "Short description of the workflow"
+teammate_count: 3
+min_acs: 6 # Minimum ACs for this profile to be useful
+recommended_for:
+  app_types: [web-app] # Which app types benefit from this profile
+  stacks: [nextjs-supabase] # Which tech stacks this profile supports
 
-```markdown
-## profile-name (N Teammates)
+lead:
+  role: "Orchestrator — distributes tasks, reviews code, synthesizes results"
+  instructions: "Instructions for the team lead"
 
-Short description of the workflow this profile suits.
+teammates:
+  - name: frontend # Internal label for task assignment
+    agent: frontend-developer # Agent specialization (from Claude Code)
+    role: "UI components, pages, styling, responsive design"
+    file_ownership: # Glob patterns — only this teammate edits these
+      - "src/components/"
+      - "src/app/**/page.tsx"
+    model_hint: sonnet # Cost optimization: sonnet for teammates, opus for lead
 
-| Teammate | Role                        | Agent Specialization |
-| -------- | --------------------------- | -------------------- |
-| frontend | UI components, pages        | frontend-developer   |
-| backend  | API routes, services        | backend-developer    |
+  - name: backend
+    agent: backend-developer
+    role: "API routes, services, data layer"
+    file_ownership:
+      - "src/lib/"
+      - "src/app/api/"
+    model_hint: sonnet
 
-**Use when:** <trigger condition>
-**File ownership:** <who owns which directories>
+phases:
+  - name: "Phase 1"
+    tasks_for: [backend] # Which teammates work in this phase
+    quality_gate: "Description of what must be true before next phase"
+  - name: "Phase 2"
+    tasks_for: [backend, frontend]
+    parallel: true # Teammates work concurrently
+    depends_on: ["Phase 1"] # Cannot start until Phase 1 passes
+    quality_gate: "API responds, components render"
+
+cost_estimate:
+  min_iterations: 15
+  max_iterations: 40
+  estimated_tokens: "150k-400k"
+
+hooks:
+  TeammateIdle:
+    check_tasks_completed: true # Verify all assigned tasks are done
+    check_tests_passing: true # Run tests for teammate's scope
+  TaskCompleted:
+    validate_acs_met: true # Check if AC criteria are satisfied
+    validate_tests_exist: true # Ensure test files were created
 ```
 
-### File ownership
+### Custom Profiles
 
-Every profile declares explicit file ownership to prevent teammates from editing the same files simultaneously (which would cause merge conflicts or inconsistent state):
-
-- `frontend` owns `src/components/`, `src/app/` pages
-- `backend` owns `src/lib/`, `src/app/api/`
-- `database` owns `supabase/migrations/`
-- `testing` owns `tests/`, `*.test.*` files
-- `reviewer` is read-only until implementation is complete
+Add custom profiles in `.effectum/teams/{name}.yaml`. These are checked after built-in profiles, so custom profiles can override built-in ones by using the same name.
 
 ---
 
@@ -50,12 +81,13 @@ Every profile declares explicit file ownership to prevent teammates from editing
 
 Standard web feature spanning UI and API layers.
 
-| Teammate | Specialization | Owns |
-|---|---|---|
-| frontend | `frontend-developer` | `src/components/`, `src/app/` pages |
-| backend | `backend-developer` | `src/lib/`, `src/app/api/` |
-| testing | `test-automator` | `tests/`, `*.test.*` files |
+| Teammate | Specialization       | Owns                                    |
+| -------- | -------------------- | --------------------------------------- |
+| frontend | `frontend-developer` | `src/components/`, `src/app/` pages     |
+| backend  | `backend-developer`  | `src/lib/`, `src/app/api/`, `supabase/` |
+| testing  | `test-automator`     | `tests/`, `e2e/`, `**/*.test.*`         |
 
+**Phases:** Database + Types → API + UI (parallel) → Tests
 **Use when:** Adding a feature that requires both UI components and API routes.
 
 ---
@@ -64,17 +96,16 @@ Standard web feature spanning UI and API layers.
 
 Complete full-stack feature including schema changes, API, UI, tests, and code review.
 
-| Teammate | Specialization | Owns |
-|---|---|---|
-| frontend | `frontend-developer` | `src/components/`, `src/app/` pages |
-| backend | `backend-developer` | `src/lib/`, `src/app/api/` |
-| database | `postgres-pro` | `supabase/migrations/` |
-| testing | `test-automator` | `tests/`, `*.test.*` files |
-| reviewer | `code-reviewer` + `security-engineer` | Read-only (produces reports) |
+| Teammate | Specialization       | Owns                         |
+| -------- | -------------------- | ---------------------------- |
+| frontend | `frontend-developer` | `src/components/`, pages     |
+| backend  | `backend-developer`  | `src/lib/`, `src/app/api/`   |
+| database | `postgres-pro`       | `supabase/migrations/`       |
+| testing  | `test-automator`     | `tests/`, `**/*.test.*`      |
+| reviewer | `code-reviewer`      | Read-only (produces reports) |
 
-**Use when:** New feature requiring database schema changes, API design, and UI in a single coordinated workflow.
-
-**Sequencing note:** The `database` teammate must complete migrations before other teammates begin, since they depend on the generated TypeScript types. The `reviewer` teammate starts only after all implementation teammates have finished.
+**Phases:** Database + Types → API + UI (parallel) → Tests → Review
+**Use when:** New feature requiring database schema changes, API design, and UI.
 
 ---
 
@@ -82,13 +113,14 @@ Complete full-stack feature including schema changes, API, UI, tests, and code r
 
 Frontend-focused work without backend changes.
 
-| Teammate | Specialization | Owns |
-|---|---|---|
-| layout | `nextjs-developer` | `src/app/` layouts and pages |
-| components | `react-specialist` | `src/components/` |
-| content | `frontend-developer` | `messages/`, `public/` |
+| Teammate   | Specialization       | Owns                            |
+| ---------- | -------------------- | ------------------------------- |
+| layout     | `nextjs-developer`   | `src/app/` layouts and pages    |
+| components | `react-specialist`   | `src/components/`, `src/hooks/` |
+| content    | `frontend-developer` | `messages/`, `public/`          |
 
-**Use when:** Building pages, landing sections, or UI-only features with no API or schema changes (e.g., a marketing page, a static section, an i18n update).
+**Phases:** Layout + Components (parallel) → Content + Polish
+**Use when:** Building pages, landing sections, or UI-only features with no API or schema changes.
 
 ---
 
@@ -96,52 +128,122 @@ Frontend-focused work without backend changes.
 
 Parallel code review and security audit.
 
-| Teammate | Specialization | Owns |
-|---|---|---|
-| quality | `code-reviewer` | Read-only |
+| Teammate | Specialization      | Owns      |
+| -------- | ------------------- | --------- |
+| quality  | `code-reviewer`     | Read-only |
 | security | `security-engineer` | Read-only |
 
+**Phases:** Parallel Review (both teammates work concurrently)
 **Use when:** Pre-merge review of a large feature branch. Both teammates produce reports rather than code changes.
 
 ---
 
-### `custom` — User-defined
+### `overnight-build` — 4 Teammates
 
-When no predefined profile fits the task, specify teammates explicitly:
+Large feature build designed for unattended execution with continuous testing.
 
-```
-/orchestrate custom "frontend-developer,backend-developer,postgres-pro" "Feature description"
-```
+| Teammate | Specialization       | Owns                            |
+| -------- | -------------------- | ------------------------------- |
+| database | `postgres-pro`       | `supabase/migrations/`          |
+| backend  | `backend-developer`  | `src/lib/`, `src/app/api/`      |
+| frontend | `frontend-developer` | `src/components/`, pages        |
+| testing  | `test-automator`     | `tests/`, `e2e/`, `**/*.test.*` |
+
+**Phases:** Database + Types → API + Testing (parallel) → UI + Testing (parallel) → E2E + Final Verification
+**Use when:** Large features that benefit from unattended execution. The testing teammate works alongside implementation teammates in each phase.
 
 ---
 
 ## When to Use Teams vs. Subagents
 
-| Situation | Use Teams | Use Subagents |
-|---|---|---|
-| Feature spans multiple technical layers (DB + API + UI) | ✅ | — |
-| Parallel work possible with clear file ownership | ✅ | — |
-| 3–6 distinct specialists needed simultaneously | ✅ | — |
-| Pre-merge review: quality + security in parallel | ✅ | — |
-| Single specialist task (e.g., "write tests for this module") | — | ✅ |
-| Sequential dependent tasks | — | ✅ |
-| Quick delegation to one expert | — | ✅ |
-| Exploratory / research task | — | ✅ |
-| Only one or two layers involved | — | ✅ |
+| Situation                                                    | Use Teams | Use Subagents |
+| ------------------------------------------------------------ | --------- | ------------- |
+| Feature spans multiple technical layers (DB + API + UI)      | Yes       | —             |
+| Parallel work possible with clear file ownership             | Yes       | —             |
+| 3-6 distinct specialists needed simultaneously               | Yes       | —             |
+| Pre-merge review: quality + security in parallel             | Yes       | —             |
+| Single specialist task (e.g., "write tests for this module") | —         | Yes           |
+| Sequential dependent tasks                                   | —         | Yes           |
+| Quick delegation to one expert                               | —         | Yes           |
+| Exploratory / research task                                  | —         | Yes           |
+| Only one or two layers involved                              | —         | Yes           |
 
 **Rule of thumb:**
+
 - Use **teams** when the work is genuinely parallel, involves multiple technical domains, and benefits from strict file ownership enforcement.
 - Use **subagents** (via the `Task` tool) for focused, sequential, or single-specialist delegation.
-- Teams with more than 5–6 teammates introduce coordination overhead that typically outweighs the parallelism benefit.
+- Teams with more than 5-6 teammates introduce coordination overhead that typically outweighs the parallelism benefit.
 
-### Coordination hooks that only apply to teams
+### Automatic Recommendation
 
-The following hooks fire exclusively in Agent Teams mode and have no effect when using plain subagents:
+The Recommendation Engine automatically suggests Agent Teams when a PRD meets these criteria:
 
-| Hook | Purpose |
-|---|---|
-| `TeammateIdle` | Fires when a teammate finishes assigned tasks; allows reassignment of unclaimed work |
-| `TaskCompleted` | Fires when a teammate marks a task done; logs to team activity log |
+- **>10 acceptance criteria** — indicates sufficient complexity
+- **>2 distinct modules** — indicates cross-layer work
+- **>2 parallelizable workstreams** — indicates genuine parallelism benefit
+
+When at least 2 of these criteria are met, the setup configurator asks "Enable Agent Teams?" (defaults to No).
+
+---
+
+## The `/orchestrate` Command
+
+`/orchestrate` is the central command for Agent Teams lifecycle management.
+
+### Creating a Team
+
+```bash
+# Use a predefined profile
+/orchestrate web-feature
+
+# Use the fullstack profile
+/orchestrate fullstack
+
+# Dry run — see cost estimate without creating
+/orchestrate fullstack --dry-run
+
+# Set a token budget
+/orchestrate web-feature --max-cost 300000
+
+# Skip plan check (not recommended)
+/orchestrate web-feature --plan-first=false
+```
+
+### Monitoring
+
+```bash
+# Show team status, task progress, token usage
+/orchestrate status
+
+# Prod a stuck teammate
+/orchestrate nudge frontend
+
+# Gracefully shut down all teammates
+/orchestrate shutdown
+```
+
+### What `/orchestrate` Does
+
+1. **Loads the YAML profile** from `system/teams/{profile}.yaml`
+2. **Validates prerequisites** — checks for approved /plan, existing PRD/tasks
+3. **Estimates cost** — shows token budget, asks for confirmation
+4. **Creates the team** via Claude Code's TeamCreate primitive
+5. **Distributes tasks** from the PRD — maps ACs to teammates based on file ownership
+6. **Monitors progress** via TeammateIdle and TaskCompleted hooks
+7. **Enforces phase ordering** — quality gates between phases
+8. **Completes** with /verify + /code-review when all tasks are done
+
+### Workflow
+
+```
+/plan → [approval] → /tasks → /orchestrate [profile] → [parallel work] → /verify → /code-review
+```
+
+Compare to the classic sequential workflow:
+
+```
+/plan → [approval] → /tasks → /tdd (sequential per task) → /verify → /code-review
+```
 
 ---
 
@@ -173,26 +275,79 @@ In `.claude/settings.json` (project) or `~/.claude/settings.json` (global):
 
 The Effectum template ships with `"0"` (disabled) because Agent Teams is experimental. Enable it per project when you want to use `/orchestrate`.
 
-### Invoking a team
+---
 
-Once Agent Teams is enabled, use the `/orchestrate` command:
+## Coordination Hooks
+
+These hooks fire exclusively in Agent Teams mode:
+
+### TeammateIdle
+
+Fires when a teammate finishes their assigned tasks. Performs quality checks:
+
+1. Verifies all assigned tasks are marked `DONE` in tasks.md
+2. Runs tests for the teammate's file ownership scope
+3. Checks for TODO/FIXME comments in owned files
+4. Looks for unclaimed tasks the teammate could pick up
+5. Identifies blocked teammates who need assistance
+
+If checks fail, the teammate is assigned remaining work. If all checks pass, the teammate is released.
+
+### TaskCompleted
+
+Fires when a teammate marks a task as done. Validates:
+
+1. The task's acceptance criteria from the PRD are met
+2. Test files exist for the implemented functionality
+3. The code compiles without type errors
+
+Both hooks are configurable per profile in the YAML `hooks` section.
+
+---
+
+## Cost Awareness
+
+Agent Teams cost 3-4x more tokens than Subagents because each teammate is a separate Claude instance.
+
+### Cost Estimation
+
+`/orchestrate` always shows a cost estimate before creating a team:
 
 ```
-# Use a predefined profile
-/orchestrate web-feature "Add user notification preferences page"
+Teammates: 3
+Estimated iterations: 15–40
+Estimated tokens: 150k–400k
+Estimated cost: $1.50–$4.00
 
-# Use the fullstack profile
-/orchestrate fullstack "Add subscription billing with Stripe"
-
-# Custom team
-/orchestrate custom "nextjs-developer,postgres-pro,test-automator" "Add search with full-text indexing"
+Model recommendation: Opus for Lead, Sonnet for Teammates (cost optimization)
+Proceed? (Y/n)
 ```
 
-### Best practices
+### Budget Control
 
-- **3–5 teammates** is optimal for most workflows. More than 5 creates coordination overhead.
-- **5–6 tasks per teammate** is the sweet spot for throughput.
-- **Define clear file ownership** in custom teams. Ambiguous ownership leads to conflicts.
-- **Database first** — if schema changes are needed, the database teammate must complete before others start (they depend on generated types).
-- **Reviewer last** — the reviewer teammate should start after all implementation teammates finish.
-- **Use `blocked by:`** in task definitions to declare dependencies explicitly. This prevents a teammate from starting work that depends on incomplete upstream tasks.
+Use `--max-cost` to set a token budget:
+
+```bash
+/orchestrate web-feature --max-cost 200000
+```
+
+- At **80% consumed**: warns the lead and all teammates to prioritize
+- At **100% consumed**: initiates graceful shutdown
+
+### Model Recommendations
+
+- **Opus** for the Team Lead (complex coordination, synthesis)
+- **Sonnet** for Teammates (focused implementation, cost-efficient)
+
+---
+
+## Best Practices
+
+1. **3-5 teammates** is optimal for most workflows. More than 5 creates coordination overhead.
+2. **5-6 tasks per teammate** is the sweet spot for throughput.
+3. **Define clear file ownership** — ambiguous ownership leads to conflicts.
+4. **Database first** — if schema changes are needed, the database teammate must complete before others start (they depend on generated types).
+5. **Reviewer last** — the reviewer teammate should start after all implementation teammates finish.
+6. **Use `blocked by:`** in task definitions to declare dependencies explicitly.
+7. **Always run /plan first** — never skip planning for Agent Teams workflows.
+8. **Use `--dry-run`** to preview cost before committing to a team.
