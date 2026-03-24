@@ -94,5 +94,16 @@ describe("findRepoRoot", () => {
   it("returns a path that contains bin/ and system/", () => {
     const root = findRepoRoot();
     assert.ok(fs.existsSync(path.join(root, "bin")));
+    assert.ok(fs.existsSync(path.join(root, "system")));
+  });
+
+  it("uses __dirname and always returns the same root regardless of entry point", () => {
+    // When invoked from tests, require.main.filename is the test runner,
+    // not bin/lib/utils.js. The fix ensures findRepoRoot still works.
+    const root = findRepoRoot();
+    assert.ok(
+      fs.existsSync(path.join(root, "bin", "lib", "utils.js")),
+      "should find bin/lib/utils.js relative to repo root",
+    );
   });
 });

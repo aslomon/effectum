@@ -58,15 +58,12 @@ function deepMerge(target, source, _parentKey) {
 
 /**
  * Find the Effectum repo root (parent of bin/).
+ * Uses __dirname so the result is stable regardless of which script is the entry point.
  * @returns {string}
  */
 function findRepoRoot() {
-  const binDir = path.dirname(require.main?.filename || __filename);
-  // If we're in bin/lib/, go up two levels; if in bin/, go up one
-  if (path.basename(binDir) === "lib") {
-    return path.resolve(binDir, "..", "..");
-  }
-  return path.resolve(binDir, "..");
+  // This file lives in bin/lib/, so repo root is two levels up
+  return path.resolve(__dirname, "..", "..");
 }
 
 module.exports = { ensureDir, deepMerge, findRepoRoot };
