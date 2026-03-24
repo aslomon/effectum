@@ -100,6 +100,26 @@ describe("parseStackPreset", () => {
     assert.equal(result.MULTI, multiline);
   });
 
+  test("handles CRLF line endings", () => {
+    const content = "## MY_KEY\r\n\r\n```\r\nmy value\r\n```";
+    const result = parseStackPreset(content);
+    assert.equal(result.MY_KEY, "my value");
+  });
+
+  test("handles mixed LF and CRLF line endings", () => {
+    const content = "## MIXED\r\n\n```\r\nvalue here\n```";
+    const result = parseStackPreset(content);
+    assert.equal(result.MIXED, "value here");
+  });
+
+  test("handles CRLF with multiple sections", () => {
+    const content =
+      "## FIRST\r\n\r\n```\r\nfirst val\r\n```\r\n\r\n## SECOND\r\n\r\n````\r\nsecond val\r\n````";
+    const result = parseStackPreset(content);
+    assert.equal(result.FIRST, "first val");
+    assert.equal(result.SECOND, "second val");
+  });
+
   test("returns empty object for empty content", () => {
     const result = parseStackPreset("");
     assert.deepEqual(result, {});

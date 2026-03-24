@@ -18,7 +18,7 @@ const path = require("path");
  */
 function parseStackPreset(content) {
   const sections = {};
-  const regex = /^## (\w+)\s*\n+`{3,4}\n([\s\S]*?)`{3,4}/gm;
+  const regex = /^## (\w+)\s*\r?\n(?:\r?\n)*`{3,4}\r?\n([\s\S]*?)`{3,4}/gm;
   let match;
   while ((match = regex.exec(content)) !== null) {
     sections[match[1]] = match[2].trim();
