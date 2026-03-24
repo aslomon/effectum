@@ -25,7 +25,7 @@
 const fs = require("fs");
 const path = require("path");
 const os = require("os");
-const { spawnSync } = require("child_process");
+const { spawnSync, spawn } = require("child_process");
 const { detectAll, detectionToStackKey, loadPresets } = require("./lib/detect");
 const { loadStackPreset } = require("./lib/stack-parser");
 const {
@@ -130,26 +130,35 @@ function parseArgs(argv) {
 // ─── MCP server install helpers ─────────────────────────────────────────────
 
 function checkPackageAvailable(pkg) {
-  try {
-    const result = spawnSync("npm", ["view", pkg, "version"], {
+  return new Promise((resolve) => {
+    const child = spawn("npm", ["view", pkg, "version"], {
       timeout: 8000,
       stdio: "pipe",
-      encoding: "utf8",
     });
-    return result.status === 0 && result.stdout.trim().length > 0;
-  } catch (_) {
-    return false;
-  }
+    let stdout = "";
+    child.stdout.on("data", (data) => {
+      stdout += data.toString();
+    });
+    child.on("error", () => resolve(false));
+    child.on("close", (code) => {
+      resolve(code === 0 && stdout.trim().length > 0);
+    });
+  });
 }
 
-function installMcpServers(selectedKeys) {
-  const results = [];
+async function installMcpServers(selectedKeys) {
   const selected = MCP_SERVERS.filter((s) => selectedKeys.includes(s.key));
 
-  for (const server of selected) {
+  // Check all packages in parallel
+  const availability = await Promise.all(
+    selected.map((s) => checkPackageAvailable(s.package)),
+  );
+
+  const results = [];
+  for (let i = 0; i < selected.length; i++) {
+    const server = selected[i];
     try {
-      const available = checkPackageAvailable(server.package);
-      if (available) {
+      if (availability[i]) {
         results.push({ ...server, ok: true, note: "available via npx" });
       } else {
         const install = spawnSync("npm", ["install", "-g", server.package], {
@@ -676,7 +685,7 @@ Options:
     if (mcpKeys.length > 0 || args.withMcp) {
       const keysToInstall =
         mcpKeys.length > 0 ? mcpKeys : MCP_SERVERS.map((s) => s.key);
-      const mcpResults = installMcpServers(keysToInstall);
+      const mcpResults = await installMcpServers(keysToInstall);
       const settingsPath = isGlobal
         ? path.join(homeClaudeDir, "settings.json")
         : path.join(targetDir, ".claude", "settings.json");
@@ -981,7 +990,7 @@ Options:
   if (finalSetup.mcps.length > 0) {
     const s3 = p.spinner();
     s3.start("Setting up MCP servers...");
-    const mcpResults = installMcpServers(finalSetup.mcps);
+    const mcpResults = await installMcpServers(finalSetup.mcps);
     const settingsPath = path.join(
       installTargetDir,
       ".claude",
@@ -1028,7 +1037,17 @@ Options:
   showOutro(false);
 }
 
-main().catch((err) => {
-  console.error(`Fatal error: ${err.message}`);
-  process.exit(1);
-});
+// Export internals for testing when required as a module
+if (require.main === module) {
+  main().catch((err) => {
+    console.error(`Fatal error: ${err.message}`);
+    process.exit(1);
+  });
+}
+
+module.exports = {
+  checkPackageAvailable,
+  installMcpServers,
+  installBaseFiles,
+  installPlaywrightBrowsers,
+};
