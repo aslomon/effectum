@@ -280,6 +280,7 @@ export default defineConfig({
 
 function installBaseFiles(targetDir, repoRoot, isGlobal) {
   const claudeDir = isGlobal ? targetDir : path.join(targetDir, ".claude");
+  ensureDir(claudeDir);
   const commandsDir = path.join(claudeDir, "commands");
   const steps = [];
 
