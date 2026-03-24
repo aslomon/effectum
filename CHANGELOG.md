@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Agent Teams Orchestration**: 5 YAML team profiles (web-feature, fullstack, frontend-only, review, overnight-build) with agent specializations, file ownership, phased execution, quality gates, and cost estimates
+- **`/orchestrate` Command** — Full lifecycle management: profile loading, prerequisite validation, cost estimation, team creation, PRD-based task distribution, progress monitoring, nudge, and shutdown
+- **`suggestTeams()` Function** — Recommendation engine that suggests optimal team profiles based on code complexity (ACs, module count, parallel streams)
+- **Team Hooks**: Enhanced `TeammateIdle` and `TaskCompleted` hooks for task completion validation and test status verification
+
+### Changed
+
+- **`bin/lib/recommendation.js`** — Integrated `suggestTeams()` logic into recommendation engine output
+- **`system/templates/settings.json.tmpl`** — Added team hook configuration for automatic task validation
+- **`system/templates/AUTONOMOUS-WORKFLOW.md`** — Added Section 9.5 with `/orchestrate` reference, YAML profile table, and cost awareness guidance
+- **`docs/teams.md`** — Complete rewrite with YAML schema, all 5 profile definitions, `/orchestrate` workflow, and automatic recommendation logic
+
 ## [0.10.0] - 2026-03-24
 
 ### Fixed
