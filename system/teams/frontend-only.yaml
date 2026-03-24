@@ -1,0 +1,65 @@
+# Frontend Only — 3 Teammates
+# Frontend-focused work — layout, components, content. No backend changes.
+
+name: frontend-only
+description: "Frontend-focused work — layout, components, content"
+teammate_count: 3
+min_acs: 5
+recommended_for:
+  app_types: [web-app, landing-page]
+  stacks: [nextjs-supabase, nextjs-firebase, nextjs-prisma]
+
+lead:
+  role: "Orchestrator — coordinates frontend work across layout, components, and content"
+  instructions: "Create tasks from the PRD, assign to teammates based on file ownership, ensure design consistency across all three workstreams"
+
+teammates:
+  - name: layout
+    agent: nextjs-developer
+    role: "Page structure, routing, layouts, navigation"
+    file_ownership:
+      - "src/app/**/layout.tsx"
+      - "src/app/**/page.tsx"
+      - "src/app/**/loading.tsx"
+      - "src/app/**/error.tsx"
+    model_hint: sonnet
+
+  - name: components
+    agent: react-specialist
+    role: "UI components, forms, modals, interactive elements"
+    file_ownership:
+      - "src/components/"
+      - "src/hooks/"
+    model_hint: sonnet
+
+  - name: content
+    agent: frontend-developer
+    role: "i18n translations, content, assets, accessibility"
+    file_ownership:
+      - "messages/"
+      - "public/"
+      - "src/styles/"
+    model_hint: sonnet
+
+phases:
+  - name: "Layout + Components (parallel)"
+    tasks_for: [layout, components]
+    parallel: true
+    quality_gate: "Pages render, components display correctly"
+  - name: "Content + Polish"
+    tasks_for: [content]
+    depends_on: ["Layout + Components (parallel)"]
+    quality_gate: "All content in place, accessibility checks pass"
+
+cost_estimate:
+  min_iterations: 10
+  max_iterations: 30
+  estimated_tokens: "100k-300k"
+
+hooks:
+  TeammateIdle:
+    check_tasks_completed: true
+    check_tests_passing: false
+  TaskCompleted:
+    validate_acs_met: true
+    validate_tests_exist: false
