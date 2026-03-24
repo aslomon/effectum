@@ -30,6 +30,8 @@ function parseStackPreset(content) {
  * Load and parse a stack preset file by stack key.
  * Looks in the .effectum/stacks/ directory first (installed copy),
  * then falls back to system/stacks/ (repo source).
+ * If the requested stack key is not found, logs a warning and
+ * falls back to the 'generic' preset.
  * @param {string} stackKey - e.g. 'nextjs-supabase'
  * @param {string} targetDir - project directory
  * @param {string} repoRoot - effectum repo root
@@ -48,9 +50,16 @@ function loadStackPreset(stackKey, targetDir, repoRoot) {
     }
   }
 
-  throw new Error(
-    `Stack preset "${stackKey}" not found. Searched:\n  ${candidates.join("\n  ")}`,
-  );
+  // Fallback to generic preset instead of crashing
+  if (stackKey !== "generic") {
+    console.warn(
+      `Stack preset "${stackKey}" not found — falling back to "generic".`,
+    );
+    return loadStackPreset("generic", targetDir, repoRoot);
+  }
+
+  // generic itself not found — return empty sections
+  return {};
 }
 
 module.exports = { parseStackPreset, loadStackPreset };
