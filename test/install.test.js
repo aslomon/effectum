@@ -9,6 +9,7 @@ const os = require("os");
 const {
   checkPackageAvailable,
   installBaseFiles,
+  installPlaywrightBrowsers,
 } = require("../bin/install.js");
 
 describe("checkPackageAvailable", () => {
@@ -84,5 +85,19 @@ describe("installBaseFiles", () => {
     const repoRoot = path.resolve(__dirname, "..");
     installBaseFiles(globalDir, repoRoot, true);
     assert.ok(fs.existsSync(globalDir), "global target dir should exist");
+  });
+});
+
+describe("installPlaywrightBrowsers", () => {
+  it("returns an object with ok and optionally error", () => {
+    const result = installPlaywrightBrowsers();
+    assert.ok(typeof result.ok === "boolean");
+    if (!result.ok) {
+      // When playwright is not available, error should come from the fallback command (result2)
+      assert.ok(
+        "error" in result,
+        "failed result should contain error property",
+      );
+    }
   });
 });

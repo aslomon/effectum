@@ -238,7 +238,7 @@ function installPlaywrightBrowsers() {
       encoding: "utf8",
     });
     if (result2.status === 0) return { ok: true };
-    return { ok: false, error: result.stderr };
+    return { ok: false, error: result2.stderr };
   } catch (err) {
     return { ok: false, error: err.message };
   }
