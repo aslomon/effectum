@@ -16,7 +16,7 @@ _Effectum (Latin): the result, the accomplishment — that which has been brough
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Built%20for-Claude%20Code-blueviolet)](https://claude.ai/claude-code)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
-[![Version](https://img.shields.io/badge/version-0.9.0-orange)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.10.0-orange)](CHANGELOG.md)
 [![Website](https://img.shields.io/badge/Website-aslomon.github.io%2Feffectum-D97706)](https://aslomon.github.io/effectum/)
 
 <br>
@@ -101,7 +101,7 @@ One command. Everything you need for autonomous Claude Code development.
 | **Project Onboarding**        | 6 parallel analysis agents, 7-point self-test loop, per-area PRDs, interactive HTML network map                     |
 | **19 Agent Specializations**  | Pre-configured agent roles with distinct behaviors for planning, TDD, review, security, and more                    |
 | **22+ Skills**                | Reusable capability blocks attached to agent roles                                                                   |
-| **6 Stack Presets + 8 Quick** | Next.js+Supabase, Python+FastAPI, Swift/SwiftUI, Go+Echo, Django+PostgreSQL, Generic + Firebase, Prisma, Flutter…   |
+| **7 Stack Presets + 8 Quick** | Next.js+Supabase, Python+FastAPI, Swift/SwiftUI, Go+Echo, Django+PostgreSQL, Rust+Actix, Generic + Firebase, Prisma, Flutter…   |
 | **Quality gates**             | 8 automated checks (build, types, lint, tests, security, etc.)                                                       |
 | **Foundation Hooks**          | Always-on: secret detection, TDD enforcement, guardrails                                                             |
 | **Extensible**                | JSON-based tool definitions + detection rules, community presets + blocks                                            |
@@ -254,7 +254,7 @@ One click. Instantly configured.
 
 ## 🔧 The Workflow
 
-17 commands. Each does exactly one thing, and does it well.
+20+ commands. Each does exactly one thing, and does it well.
 
 ### Core Build Cycle
 
@@ -856,7 +856,7 @@ Each specialization is a pre-configured behavior profile that Claude adopts when
 
 The most impactful areas:
 
-- **🎨 Stack presets** — Add Rust+Actix, Laravel, Rails, Bun, etc.
+- **🎨 Stack presets** — Add Laravel, Rails, Bun, .NET, etc. (Rust+Actix already added!)
 - **🔌 Detection rules** — Better auto-detection for more project types
 - **🔧 Workflow commands** — Improve or add new ones
 - **📚 Knowledge base** — Better examples, more techniques
