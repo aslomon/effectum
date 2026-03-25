@@ -26,7 +26,7 @@ const fs = require("fs");
 const path = require("path");
 const os = require("os");
 const { spawnSync, spawn } = require("child_process");
-const { detectAll, detectionToStackKey, loadPresets } = require("./lib/detect");
+const { detectAll, detectionToStackKey, loadPresets, detectAgentsMd } = require("./lib/detect");
 const { loadStackPreset } = require("./lib/stack-parser");
 const {
   buildSubstitutionMap,
@@ -114,6 +114,16 @@ function findRepoRoot() {
 
 function parseArgs(argv) {
   const args = argv.slice(2);
+  // Parse --output-format <value>
+  let outputFormat = "claude-md";
+  const fmtIdx = args.indexOf("--output-format");
+  if (fmtIdx !== -1 && args[fmtIdx + 1]) {
+    outputFormat = args[fmtIdx + 1];
+  }
+  const validFormats = ["claude-md", "agents-md", "both"];
+  if (!validFormats.includes(outputFormat)) {
+    outputFormat = "claude-md";
+  }
   return {
     global: args.includes("--global") || args.includes("-g"),
     local: args.includes("--local") || args.includes("-l"),
@@ -123,6 +133,7 @@ function parseArgs(argv) {
     yes: args.includes("--yes") || args.includes("-y"),
     dryRun: args.includes("--dry-run"),
     help: args.includes("--help") || args.includes("-h"),
+    outputFormat,
     nonInteractive: false,
   };
 }
@@ -510,6 +521,38 @@ function generateConfiguredFiles(config, targetDir, repoRoot, isGlobal) {
   return steps;
 }
 
+// ─── Generate AGENTS.md from blocks ─────────────────────────────────────────
+
+/**
+ * Generate AGENTS.md using generic (non-Claude-specific) template blocks.
+ * @param {object} config - user config
+ * @param {string} targetDir
+ * @param {string} repoRoot
+ * @returns {{ status: string, dest: string }}
+ */
+function generateAgentsMd(config, targetDir, repoRoot) {
+  const { loadBlock } = require("./lib/template");
+  const blockNames = ["foundation", "workflow", "guardrails", "commands"];
+  const parts = [];
+
+  for (const name of blockNames) {
+    const content = loadBlock("agents-md", name, targetDir, repoRoot);
+    if (content) {
+      // Interpolate {{projectName}} and {{stack}}
+      const interpolated = content
+        .replace(/\{\{projectName\}\}/g, config.projectName || "your-project")
+        .replace(/\{\{stack\}\}/g, config.stack || "generic");
+      parts.push(interpolated);
+    }
+  }
+
+  const agentsMdContent = parts.join("\n\n---\n\n") + "\n";
+  const dest = path.join(targetDir, "AGENTS.md");
+  ensureDir(path.dirname(dest));
+  fs.writeFileSync(dest, agentsMdContent, "utf8");
+  return { status: "created", dest };
+}
+
 // ─── Smart defaults for non-interactive mode ────────────────────────────────
 
 function buildSmartDefaults(targetDir) {
@@ -667,7 +710,17 @@ Options:
 
     // Generate configured files (only for local installs)
     if (!isGlobal) {
+      // Determine output format: CLI flag wins, else auto-detect from project
+      const outputFormat = args.outputFormat || "claude-md";
+      const agentsMdDetect = detectAgentsMd(targetDir);
+
+      // Always generate settings.json + guardrails.md (via generateConfiguredFiles)
       generateConfiguredFiles(config, targetDir, repoRoot, isGlobal);
+
+      // Generate AGENTS.md if explicitly requested, or if AGENTS.md already exists in project
+      if (outputFormat === "agents-md" || outputFormat === "both" || agentsMdDetect.agentsMdFound) {
+        generateAgentsMd(config, targetDir, repoRoot);
+      }
 
       // Install recommended agents
       const recAgents = config.recommended ? config.recommended.subagents : [];

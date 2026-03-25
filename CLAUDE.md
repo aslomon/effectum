@@ -1,250 +1,180 @@
-# Autonomous Development System
+# effectum — Claude Code Configuration
 
-You are in the Autonomous Development System repository. This repo serves three purposes:
+## Communication
 
-1. **Installer**: Set up the autonomous development workflow in any project (`/setup`)
-2. **PRD Workshop**: Create agent-ready PRDs that feed into the workflow (`/prd:new`, `/prd:express`)
-3. **Documentation**: Complete reference for the autonomous workflow (`docs/`)
+- Speak English with the user. All code, comments, commits, and docs in English.
+- Be direct. Act autonomously. No unnecessary confirmations.
+- Think step-by-step for complex problems. Use plan mode for multi-file changes.
+- Use subagents (Task tool) for parallel and independent work.
 
-You are an experienced Senior Product Manager, Requirements Engineer, and autonomous Workflow Architect. You collaboratively develop production-ready PRDs (Product Requirements Documents) with the user, which can be directly handed off to AI coding agents (Claude Code with /plan, /tdd, /verify, /code-review, /ralph-loop, GSD, etc.).
+## Tech Stack
 
-## Language
+- Language: [SPECIFY — e.g., TypeScript, Python, Go, Rust, Java]
+- Framework: [SPECIFY — e.g., Express, Django, Gin, Actix, Spring Boot]
+- Database: [SPECIFY — e.g., PostgreSQL, MySQL, SQLite, MongoDB]
+- Testing: [SPECIFY — e.g., Jest, pytest, go test, cargo test]
+- Linting: [SPECIFY — e.g., ESLint, ruff, golangci-lint, clippy]
+- Package Manager: [SPECIFY — e.g., npm, pip, go mod, cargo]
+- Deployment: [SPECIFY — e.g., Docker, Kubernetes, serverless]
 
-Configure the interaction language here. Change this single setting to switch languages.
+## Architecture Principles
 
-- **User interaction language:** German (du/informal)
-- All file content, PRDs, acceptance criteria, user stories, data models, technical specs, file names, and commit messages: **always English**
-- Never mix languages within a document
-- Artifact titles: English
+- Separation of concerns: keep data access, business logic, and presentation in distinct layers.
+- Dependency injection: pass dependencies explicitly. Avoid global state and singletons.
+- Type safety: use the strongest type system your language offers. Avoid escape hatches (any, Object, interface{}).
+- Validation at boundaries: validate all external input (API requests, env vars, file I/O) at the entry point.
+- Error handling: use explicit error types or Result patterns. Never swallow errors silently.
+- Configuration from environment: no hardcoded secrets or environment-specific values in source code.
+- Immutability by default: prefer const/final/readonly. Mutate only when necessary.
+- Tests are first-class: colocate tests with source code. Test behavior, not implementation.
 
-## Session Start
+## Project Structure
 
-When Claude Code opens this repo:
+[Not configured]
 
-1. Read STATUS.md for current PRD Workshop state
-2. Determine user intent:
-   - Mentions "setup", "install", or a project path → guide to /setup
-   - Mentions building something, a feature, or a PRD → PRD Workshop mode
-   - Asks about the workflow → point to docs/
-3. Offer: "I can set up the autonomous workflow in a project (/setup), or help you write a PRD (/prd:new). What would you like?"
+## Code Quality Rules
 
----
+- Functions: max 40 lines, single responsibility
+- Files: max 300 lines, split if larger
+- Naming: descriptive, no abbreviations, no Hungarian notation
+- Error handling: use Result pattern (`{ data, error }`) for operations that can fail. Never swallow errors.
+- No console.log in production code (use structured logger)
+- No hardcoded strings for config/env values
+- Prefer `const` and immutable patterns
+- Prefer named exports over default exports
+- Prefer composition over inheritance
 
-## Installer Mode
+## Quality Gates
 
-When /setup is invoked:
+- Build: [BUILD_COMMAND] — 0 errors
+- Types: [TYPE_CHECK_COMMAND] — 0 errors (if applicable)
+- Tests: [TEST_COMMAND] — all pass, target 80%+ coverage
+- Lint: [LINT_COMMAND] — 0 errors
+- Format: [FORMAT_CHECK_COMMAND] — 0 differences
+- No Debug Logs: 0 debug print/log statements in production code
+- File Size: No file exceeds 300 lines
 
-- Read files from system/templates/ and system/stacks/
-- Follow the instructions in .claude/commands/setup.md
-- Generate customized config files in the target project
-- Install workflow commands from system/commands/
+## Design System — MANDATORY
 
----
+- ALWAYS use the `frontend-design` skill for ANY design-related work: UI components, pages, layouts, styling, visual polish, landing pages, dashboards, posters, artifacts — everything visual.
+- Every project MUST have a `DESIGN.md` file in the project root. This is non-negotiable.
+  - If it does not exist, create it before doing any design work.
+  - If it exists, read and study it thoroughly before making any design decisions.
+  - Update it when new design decisions are made (colors, typography, spacing, patterns, components).
+- `DESIGN.md` must document: color palette, typography (fonts, sizes, weights), spacing system, border radii, shadows, animation conventions, component patterns, brand guidelines, tone/mood, and any project-specific visual rules.
+- Never make visual/design decisions that contradict `DESIGN.md`. When in doubt, consult the document first.
+- This applies across ALL projects — web, mobile, CLI, docs, presentations, artifacts.
 
-## PRD Workshop Mode
+## Development Workflow
 
-### Knowledge Base
+- SPEC-DRIVEN: define requirements and acceptance criteria before coding
+- TEST-FIRST: write failing tests, then implement (use /tdd)
+- DONE = compiles + tests pass + linter clean (use /verify)
+- Plan complex features before implementing (use /plan)
+- Review changes before committing (use /code-review)
+- Fix build errors incrementally (use /build-fix)
+- Clean dead code periodically (use /refactor-clean)
+- Only commit when explicitly asked. Prefer specific file staging over `git add .`
 
-Read these files from `workshop/knowledge/` BEFORE starting any PRD work:
+## Task Registry (MANDATORY when present)
 
-- `workshop/knowledge/01-prd-template.md` — PRD structure and Agent-Ready Extension
-- `workshop/knowledge/02-questioning-framework.md` — Discovery question progression
-- `workshop/knowledge/03-decomposition-guide.md` — When/How to split into multiple PRDs
-- `workshop/knowledge/04-examples.md` — Complete PRD examples (simple to complex)
-- `workshop/knowledge/05-quality-checklist.md` — Verification and Readiness Scoring
-- `workshop/knowledge/06-network-map-guide.md` — Mermaid diagram conventions
-- `workshop/knowledge/07-prompt-templates.md` — Handoff prompt templates
-- `workshop/knowledge/08-workflow-modes.md` — Standard / Full-Auto / Ralph Loop decision guide
-
-### Core Principles
-
-1. You are a thinking partner, not a content generator — ask smart questions instead of making assumptions
-2. Every requirement must be testable — if no automated test is possible, it's not concrete enough
-3. Explicit boundaries prevent scope creep — Non-Goals are just as important as Goals
-4. The Data Model is the highest leverage point — defining the schema upfront eliminates architecture decisions
-5. The Project Network Map is the second brain — it shows how everything connects
-
-### Two Modes: Workshop & Express
-
-Classify the user's input automatically:
-
-| Input Type          | Recognition Pattern                     | Mode                                    |
-| ------------------- | --------------------------------------- | --------------------------------------- |
-| Vague idea          | 1-3 sentences, no technical detail      | **Workshop** (full discovery)           |
-| Feature request     | Describes WHAT, but not exactly HOW/WHY | **Workshop** (starting from Phase 2)    |
-| Feature list        | Multiple features listed                | **Workshop** (with decomposition)       |
-| Partial PRD         | Some sections present, others missing   | **Express** (fill the gaps)             |
-| Complete PRD        | All core sections present               | **Express** (add Agent-Ready Extension) |
-| Bugfix description  | Problem + reproduction steps            | **Express** (minimal PRD)               |
-| Refactoring request | Existing code should be improved        | **Express** (scoped PRD)                |
-
-Tell the user which mode you detected and briefly ask: [in configured language] "Should I proceed this way, or do you want to go deeper?"
-
-#### Express Mode
-
-1. Intelligently add missing sections (derive ACs from described behavior)
-2. Suggest scope boundaries
-3. Mark all assumptions with [ASSUMPTION]
-4. Choose the appropriate prompt type and explain why
-5. Produce the complete PRD as a file in `workshop/projects/{slug}/prds/`
-
-#### Workshop Mode
-
-The full 7-phase process (details in the slash commands):
-
-1. **Vision & Problem Discovery** — Understand WHAT and WHY
-2. **Scope Definition** — Sort into v1 / v2 / Out-of-scope
-3. **Decomposition & Network Map** — One or multiple PRDs? Visualize the structure
-4. **Discuss** — Clarify gray areas per PRD
-5. **PRD Creation** — Write Agent-Ready PRD
-6. **Prompt Generation** — Handoff prompt for Claude Code
-7. **Verification** — Quality Review + Readiness Scoring
-
-### File Organization
-
-- Each project lives in `workshop/projects/{project-slug}/`
-- Project slug: lowercase, hyphens, no spaces (e.g., `taskflow-saas`)
-- PRDs are numbered: `prds/001-{name}.md`, `prds/002-{name}.md`
-- Network Maps: `network-map.mmd` (Mermaid source) in the project root
-- Handoff prompts: `prompts/001-{name}-handoff.md`
-- Session notes: `notes/discovery-log.md`, `notes/decisions.md`
-- `PROJECT.md` in each project directory tracks metadata and status
-
-### PROJECT.md Schema
-
-Every project directory MUST contain a PROJECT.md with:
-
-```yaml
----
-name: [Project Name]
-slug: [project-slug]
-status: discovery | scoping | drafting | review | ready | handed-off | archived
-target_repo: [Path to target repository, e.g., ~/development-projects/taskflow]
-tech_stack: [Brief description]
-created: [YYYY-MM-DD]
-updated: [YYYY-MM-DD]
----
-```
-
-Plus a PRD index table with individual PRD statuses.
-
-### PRD Status Flow
-
-```
-discovery → scoping → drafting → review → ready → handed-off → archived
-```
-
-- **discovery**: Vision & Problem Discovery (Phase 1)
-- **scoping**: Scope Definition + Decomposition (Phase 2-3)
-- **drafting**: Discussion + PRD Writing (Phase 4-5)
-- **review**: Quality Review + Scoring (Phase 6-7)
-- **ready**: Quality gates passed, prompt generated
-- **handed-off**: Exported to the target project
-- **archived**: Project completed
-
-### Adaptive Question Depth
-
-Ask as many questions as needed — there is NO fixed limit. Adapt depth to the specificity of the user's input:
-
-- **Very vague** ("I want to build an app") → 4-6 rounds, 4-5 questions per round
-- **Moderately specific** ("Project management tool for small teams") → 2-3 rounds, 3-4 questions per round
-- **Fairly specific** ("Dashboard with Kanban, task CRUD, Supabase") → 1-2 rounds, focused clarification questions
-
-Question pool and type-specific questions: See `workshop/knowledge/02-questioning-framework.md`.
-
-### Network Map
-
-ALWAYS create a Project Network Map as a Mermaid file (`network-map.mmd`). Conventions in `workshop/knowledge/06-network-map-guide.md`.
-
-Update the map:
-
-- After Phase 2 (Scope): First version with features
-- After Phase 3 (Decomposition): PRD assignments
-- After each completed PRD: Refine details
-- When new insights emerge: Update immediately
-
-### Interaction Rules
-
-1. **Adaptive question depth** — more questions for vague inputs, fewer for specific ones
-2. **Summarize after each round** — what you understood, let the user correct
-3. **Mark uncertainties** — [ASSUMPTION] or [NEEDS CLARIFICATION], never guess silently
-4. **"Whatever" = you decide** — with reasoning, documented in the PRD
-5. **Save intermediate results as files** — Vision, Requirements Map, Network Map, PRDs
-6. **Update Network Map** on every significant change
-7. **Direct and substantive** — no filler text, no platitudes
-8. **Concrete examples** instead of abstract descriptions
-9. **Ask rather than guess** — one question too many is better than a wrong assumption
-10. **Handoff prompt at the end** — the user should be able to directly copy and use the PRD
-
-### Handoff to Target Project
-
-When a PRD is ready (Score >= 2.0):
-
-1. PRD file and handoff prompt are located in `workshop/projects/{slug}/prds/` and `workshop/projects/{slug}/prompts/`
-2. `/prd:handoff` copies to the `target_repo` from PROJECT.md
-3. In the target project: open Claude Code, paste the handoff prompt
-4. Target project has its own CLAUDE.md with /plan, /tdd, /verify, /code-review, /ralph-loop
-
----
-
-## Tech Stack Context (for PRD content)
-
-The user's primary stack (for Data Model, API Design, Quality Gates in PRDs):
-
-- Next.js >= 16, App Router ONLY, TypeScript strict
-- Tailwind CSS v4 + Shadcn UI, Framer Motion
-- Supabase: DB, Auth, Storage, Edge Functions, Realtime
-- Zod for ALL external validation
-- Vitest + Testing Library, Playwright E2E
-- pnpm, Vercel, Docker Compose
-- Multi-Tenant (org_id on every table)
-- RLS Policies on every table
-- DB changes ONLY through migrations (apply_migration), never raw DDL
-- TypeScript types generated from Supabase schema, never hand-written
-- Result Pattern { data, error }
-- Server Components by default
-
-This stack is the DEFAULT for Quality Gates and Autonomy Rules. If the user uses a different stack, adapt the PRDs accordingly.
-
----
-
-## Commit Conventions
-
-```
-feat(project-slug): add PRD-001 auth & org setup
-feat(project-slug): add project vision and network map
-docs(project-slug): update network map after PRD-002
-fix(project-slug): resolve AC clarity issues in PRD-003
-chore(knowledge): update prd template
-chore(templates): add constraint section
-```
-
----
+- If a `tasks.md` file exists in the project (usually `workshop/projects/*/tasks.md`), you MUST use it.
+- Before starting work: read `tasks.md` to find the next TODO or STALE task.
+- After completing a task: update its status in `tasks.md` immediately (TODO → IN_PROGRESS → DONE).
+- NEVER skip updating `tasks.md`. It is the source of truth for what has been done.
+- Task statuses: 📋 TODO | 🔄 IN_PROGRESS | ✅ DONE | ⚠️ STALE | ❌ CANCELLED
 
 ## Available Commands
 
-### System
+| Command           | Phase          | Function                                 |
+| ----------------- | -------------- | ---------------------------------------- |
+| `/plan`           | Start          | Analysis + plan + **waits for approval** |
+| `/tdd`            | Implementation | Tests first -> code -> refactor          |
+| `/verify`         | QA             | Build + types + lint + tests             |
+| `/e2e`            | QA             | E2E tests (Playwright / XCTest UI)       |
+| `/code-review`    | Review         | Security + quality audit                 |
+| `/build-fix`      | Debugging      | Incremental error resolution             |
+| `/refactor-clean` | Cleanup        | Remove dead code                         |
+| `/checkpoint`     | Safety         | Create a restore point                   |
+| `/ralph-loop`     | Full Auto      | Iterative autonomous implementation      |
 
-| Command         | Purpose                                                                                 |
-| --------------- | --------------------------------------------------------------------------------------- |
-| /setup          | Install autonomous workflow in a target project                                         |
-| /onboard        | Reverse-engineer existing project into Effectum (6 parallel agents, self-tests, review) |
-| /onboard:review | Run consistency review on onboarded PRDs (also runs standalone)                         |
 
-### PRD Workshop
+## Available CLI Tools
 
-| Command           | Purpose                                                    |
-| ----------------- | ---------------------------------------------------------- |
-| /prd:new          | Start new project or PRD (auto-generates frontmatter)      |
-| /prd:update       | Update PRD — semantic diff, impact analysis, delta handoff |
-| /prd:discuss      | Deep-dive on a specific PRD                                |
-| /prd:review       | Quality review + readiness scoring                         |
-| /prd:network-map  | Create/update Mermaid network map (`--validate`)           |
-| /prd:handoff      | Export PRD to target project + init task registry          |
-| /prd:status       | Dashboard of all projects                                  |
-| /prd:resume       | Resume existing work                                       |
-| /prd:express      | Quick PRD from clear input                                 |
-| /prd:decompose    | Split scope into multiple PRDs                             |
-| /prd:prompt       | Generate handoff prompt                                    |
-| /workshop:init    | Create project workspace                                   |
-| /workshop:archive | Archive completed project                                  |
+- **git** (installed): Version control — required for all projects
+- **claude** (installed): AI coding agent — the core of the autonomous workflow
+- **gh** (installed): GitHub: Issues, PRs, Code Search, CI status
+- **jq** (installed): JSON processing on the command line
+
+## Context7 — Always Use for Research
+
+- Always use Context7 MCP (`resolve_library_id` -> `get_library_docs`) when:
+  - Planning features that involve libraries, frameworks, or APIs
+  - Exploring documentation for setup, configuration, or integration
+  - Generating code that uses external dependencies
+  - Checking current API signatures, options, or best practices
+  - Comparing approaches or evaluating library capabilities
+- This applies to ALL stacks
+- Fetch docs proactively — do not rely on training data for library-specific details
+
+## Active Hooks — Be Aware
+
+The following hooks run automatically. Do NOT duplicate their behavior:
+
+- **Auto-Format**: echo no-formatter-configured runs after every Edit/Write. Do not manually run the formatter.
+- **CHANGELOG**: A Stop hook auto-updates CHANGELOG.md with [Unreleased] entries after meaningful changes. Do not manually update CHANGELOG.md unless the user explicitly asks.
+- **Commit Message Gate**: Commit messages must be >= 10 characters and descriptive. The hook blocks short messages.
+- **Stop Quality Gate**: A prompt hook verifies all tasks are completed before stopping. If it returns `ok: false`, continue working on what's missing.
+- **Subagent Quality Gate**: Subagent output is verified. Ensure subagents complete their tasks fully, not just report findings.
+- **Error Learning**: Tool failures are logged to `.claude/logs/tool-failures.jsonl`. Check this file at session start to learn from past mistakes and avoid repeating them.
+- **Guardrails Injection**: At session start and after compaction, `~/.claude/guardrails.md` (global) and `$PROJECT/.claude/guardrails.md` (project) are loaded. Follow them strictly.
+- **Transcript Backup**: Transcripts are backed up before context compaction to `.claude/backups/`.
+- **Protected Files**: `.env`, `.env.local`, `.env.production`, `secrets/`, `.git/`, lock files cannot be written to. Use Bash for env file operations if absolutely needed.
+- **Secret Detection**: Before `git commit` and `git push`, staged changes are scanned for API keys, tokens, and passwords. Blocked if secrets found.
+- **TDD Enforcement**: Before stopping, checks that test files were modified alongside source files. Blocks if source changed without tests.
+- **Destructive Command Blocker**: `rm -rf /`, `DROP TABLE`, `--force push`, `reset --hard` are blocked.
+- **Desktop Notifications**: User gets OS notifications on permission prompts and task completion.
+
+## Stack-Specific Rules
+
+- [Add project-specific guardrails here]
+- [e.g., "Use X package manager, not Y"]
+- [e.g., "Always validate input with Z library"]
+- [e.g., "Follow existing patterns in src/domain/"]
+
+## Agent Teams — Opt-In
+
+Agent Teams are DISABLED by default. Enable in settings.json:
+`"env": { "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1" }`
+
+Three execution tiers exist — use the simplest that fits:
+
+| Tier                 | Mechanism                           | When                                           |
+| -------------------- | ----------------------------------- | ---------------------------------------------- |
+| Single-Agent         | Main session alone                  | Simple tasks, bugfixes, single-file changes    |
+| Subagents (default)  | Task Tool spawns specialized agents | Parallel research, code reviews, focused tasks |
+| Agent Teams (opt-in) | Independent Claude instances        | Complex features with 3+ parallel workstreams  |
+
+## Shell Commands — Non-Interactive Only
+
+- ALWAYS use non-interactive flags for shell commands. AI agents cannot interact with stdin prompts.
+- Examples: `npm install --yes`, `rm -rf`, `apt install -y`
+- Never use interactive commands: `git rebase -i`, `git add -i`, `less`, `vim`, `nano`, `top`
+- If a command might prompt for input, find and use its non-interactive equivalent or pass defaults via flags/env vars.
+
+## Tool Usage
+
+- Use dedicated tools (Read, Grep, Glob) over Bash equivalents
+- Use Context7 MCP for up-to-date library/framework documentation
+- Use git worktrees for risky or exploratory changes
+- Parallelize independent tool calls
+- When blocked, investigate root cause. Never brute-force or retry blindly.
+- Never use destructive git operations as shortcuts
+
+## Commit Conventions
+
+- Conventional commits: `feat:`, `fix:`, `docs:`, `chore:`, `refactor:`, `test:`
+- Include scope when applicable: `feat(auth): add login flow`
+- Commit messages must be >= 10 characters and descriptive
+- Prefer specific file staging over `git add .`
+- Only commit when explicitly asked

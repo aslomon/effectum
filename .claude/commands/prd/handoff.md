@@ -62,18 +62,40 @@ If `target_repo` is defined in PROJECT.md and the path exists:
 - Ask the user whether PRD and prompt should be copied there.
 - If yes: Copy both files to the target repository (e.g., under `docs/prds/`).
 
-## Step 7: Update Status
+## Step 7: Initialize Task Registry
 
+On first handoff (no `tasks.md` exists yet), create the task registry:
+
+1. Read `workshop/templates/tasks.md` for the template.
+2. Create `workshop/projects/{slug}/tasks.md`.
+3. Generate one task per acceptance criterion from the PRD:
+   - Task ID: `T1`, `T2`, etc. (sequential)
+   - AC reference: `AC-1`, `AC-2`, etc.
+   - Description: Derived from the AC text (concise summary)
+   - Status: `📋 TODO`
+   - Since: `v{PRD version from frontmatter}`
+4. Group tasks under a section header: `## PRD-{number}: {title} (v{version})`
+
+If `tasks.md` already exists (subsequent handoff for a different PRD in the same project):
+
+1. Read the existing task registry.
+2. Append a new PRD section with tasks for the new PRD.
+3. Do not modify existing tasks from other PRDs.
+
+## Step 8: Update PRD Status
+
+Update the PRD frontmatter `status` to `in-progress`.
 Update the PRD status in `PROJECT.md` to `handed-off`.
 
-## Step 8: Show Next Steps
+## Step 9: Show Next Steps
 
 Show the user:
 
 1. Where the handoff prompt was saved.
-2. How the prompt is used in the target project (brief instructions).
-3. The chosen workflow mode and why.
-4. If additional PRDs are open in the project: what comes next.
+2. Where the task registry was created/updated.
+3. How the prompt is used in the target project (brief instructions).
+4. The chosen workflow mode and why.
+5. If additional PRDs are open in the project: what comes next.
 
 ## Communication
 

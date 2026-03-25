@@ -25,6 +25,10 @@ completion_promise: "[PHRASE]"
 started_at: [ISO 8601 timestamp]
 errors_consecutive: 0
 last_error: ""
+prd_hash: ""
+prd_path: ""
+tasks_path: ""
+network_map_path: ""
 ---
 
 ## Original Prompt
@@ -38,6 +42,17 @@ last_error: ""
 
 Read `CLAUDE.md` for the project's build, test, lint, and type-check commands.
 
+### PRD Lifecycle Detection
+
+If the prompt references a PRD (contains a path to a PRD file, or a `workshop/projects/` reference):
+
+1. Resolve the PRD file path and store it as `prd_path`.
+2. Compute the SHA-256 hash of the PRD file and store it as `prd_hash`.
+3. Detect the task registry: `workshop/projects/{slug}/tasks.md` → store as `tasks_path`.
+4. Detect the network map: `workshop/projects/{slug}/network-map.mmd` → store as `network_map_path`.
+
+If no PRD is referenced, leave these fields empty — the loop runs in legacy mode without lifecycle integration.
+
 ## Step 3: Execute Iteration Loop
 
 For each iteration (1 through max_iterations):
@@ -47,6 +62,32 @@ For each iteration (1 through max_iterations):
 1. Read `.claude/ralph-loop.local.md` for current iteration count, progress log, and error state.
 2. Check current project state: `git diff --stat`, existing files, latest test results.
 3. If a PRD is referenced in the prompt, re-read the acceptance criteria.
+
+#### PRD-Hash Change Detection
+
+If `prd_path` is set (lifecycle mode):
+
+1. Compute the current SHA-256 hash of the PRD file.
+2. Compare against `prd_hash` stored in the state file.
+3. **If the hash changed**:
+   - **PAUSE** the loop immediately.
+   - Notify the user: **"PRD has changed since this loop started."**
+   - Show a summary of what changed (diff the sections).
+   - Ask the user: **"Continue with current plan, or restart with a delta handoff?"**
+   - If "continue": Update `prd_hash` in state file, re-read ACs, resume.
+   - If "restart": Output instructions to run `/prd:update` and start a new loop with the delta handoff.
+   - **Do NOT silently continue with stale requirements.**
+
+#### Task Registry Read (MANDATORY)
+
+**You MUST check for and use a task registry if one exists.**
+
+1. Look for `tasks.md` in the project: `workshop/projects/*/tasks.md` or `tasks.md` in the project root. If found, set `tasks_path`.
+2. If `tasks_path` is set, read it at the START of every iteration.
+3. Identify the next task to work on: first `⚠️ STALE` task, then first `📋 TODO` task.
+4. Skip `✅ DONE` and `❌ CANCELLED` tasks.
+5. The current task determines what you implement this iteration. Do NOT skip ahead.
+6. If no `tasks.md` exists but the prompt references ACs, create one from the ACs before starting.
 
 ### 3b. Determine Next Step
 
@@ -84,6 +125,30 @@ Update `.claude/ralph-loop.local.md`:
 - Add a progress log entry: what was done, what passed/failed.
 - Update `errors_consecutive` (reset to 0 on success, increment on failure).
 - Update `last_error` with the most recent error message (if any).
+
+#### Task Registry Sync (MANDATORY)
+
+**You MUST update the task registry after EVERY iteration where you worked on a task.**
+
+1. Open `tasks.md` and update the task you worked on:
+   - When you START working on a task: change `📋 TODO` → `🔄 IN_PROGRESS`
+   - When a task's AC is fully implemented AND tests pass: change `🔄 IN_PROGRESS` → `✅ DONE`
+   - For STALE tasks after rework is complete and tests pass: change `⚠️ STALE` → `✅ DONE`
+2. Write the file to disk immediately. Do NOT batch updates.
+3. This is NOT optional. If you implemented code for a task, you MUST update `tasks.md` in the same iteration.
+
+**Verification:** At the end of each iteration, confirm that `tasks.md` reflects what you just did. If it doesn't, fix it before proceeding.
+
+#### Network Map Status Sync
+
+If `network_map_path` is set and a feature's status changed:
+
+1. Read the current network map.
+2. Update the CSS class of the corresponding feature node:
+   - When first task of a feature starts: `:::planned` → `:::inProgress`
+   - When all tasks of a feature are DONE: `:::inProgress` → `:::done`
+3. Write the updated network map to disk.
+4. Also update the feature `status` in the PRD frontmatter to match (`planned` → `in-progress` → `done`).
 
 ### 3f. Check Completion
 

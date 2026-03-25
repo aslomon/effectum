@@ -1,0 +1,82 @@
+# Overnight Build — 4 Teammates
+# Large feature build designed for unattended execution.
+# Combines implementation with continuous testing and review.
+
+name: overnight-build
+description: "Large feature build for unattended execution with continuous testing"
+teammate_count: 4
+min_acs: 12
+recommended_for:
+  app_types: [web-app, saas]
+  stacks: [nextjs-supabase, nextjs-firebase, nextjs-prisma]
+
+lead:
+  role: "Orchestrator — manages phased execution, monitors quality gates, escalates blockers"
+  instructions: "Create tasks from the PRD, enforce strict phase ordering, run quality gates between phases, document blockers in .claude/ralph-blockers.md if teammates get stuck"
+
+teammates:
+  - name: database
+    agent: postgres-pro
+    role: "Migrations, RLS policies, type generation, seed data"
+    file_ownership:
+      - "supabase/migrations/"
+      - "supabase/seed.sql"
+    model_hint: sonnet
+
+  - name: backend
+    agent: backend-developer
+    role: "API routes, services, business logic, validation"
+    file_ownership:
+      - "src/lib/"
+      - "src/app/api/"
+    model_hint: sonnet
+
+  - name: frontend
+    agent: frontend-developer
+    role: "UI components, pages, styling, responsive design"
+    file_ownership:
+      - "src/components/"
+      - "src/app/**/page.tsx"
+      - "src/app/**/layout.tsx"
+    model_hint: sonnet
+
+  - name: testing
+    agent: test-automator
+    role: "Continuous testing — writes tests alongside implementation, runs E2E"
+    file_ownership:
+      - "tests/"
+      - "e2e/"
+      - "**/*.test.*"
+    model_hint: sonnet
+
+phases:
+  - name: "Database + Types"
+    tasks_for: [database]
+    quality_gate: "Migrations applied, RLS policies defined, types generated"
+  - name: "API Implementation"
+    tasks_for: [backend, testing]
+    parallel: true
+    depends_on: ["Database + Types"]
+    quality_gate: "API routes respond, unit tests pass"
+  - name: "UI Implementation"
+    tasks_for: [frontend, testing]
+    parallel: true
+    depends_on: ["API Implementation"]
+    quality_gate: "Components render, integration tests pass"
+  - name: "E2E + Final Verification"
+    tasks_for: [testing]
+    depends_on: ["UI Implementation"]
+    quality_gate: "E2E tests pass, 80%+ coverage, no critical issues"
+
+cost_estimate:
+  min_iterations: 30
+  max_iterations: 80
+  estimated_tokens: "300k-800k"
+
+hooks:
+  TeammateIdle:
+    check_tasks_completed: true
+    check_tests_passing: true
+  TaskCompleted:
+    validate_acs_met: true
+    validate_tests_exist: true

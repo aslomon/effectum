@@ -1,0 +1,48 @@
+# Review — 2 Teammates
+# Parallel code review and security audit. Read-only — produces reports, not code.
+
+name: review
+description: "Parallel code review and security audit"
+teammate_count: 2
+min_acs: 3
+recommended_for:
+  app_types: [web-app, api-backend, saas]
+  stacks: [nextjs-supabase, nextjs-firebase, nextjs-prisma, python-fastapi]
+
+lead:
+  role: "Orchestrator — assigns review scope, synthesizes findings into a unified report"
+  instructions: "Split the review scope between quality and security teammates, collect findings, produce a consolidated report with severity ratings"
+
+teammates:
+  - name: quality
+    agent: code-reviewer
+    role: "Code quality, best practices, performance, maintainability"
+    file_ownership: []
+    read_only: true
+    model_hint: sonnet
+
+  - name: security
+    agent: security-engineer
+    role: "Security vulnerabilities, auth, RLS policies, OWASP top 10"
+    file_ownership: []
+    read_only: true
+    model_hint: sonnet
+
+phases:
+  - name: "Parallel Review"
+    tasks_for: [quality, security]
+    parallel: true
+    quality_gate: "Both reviews completed, findings documented"
+
+cost_estimate:
+  min_iterations: 5
+  max_iterations: 15
+  estimated_tokens: "50k-150k"
+
+hooks:
+  TeammateIdle:
+    check_tasks_completed: true
+    check_tests_passing: false
+  TaskCompleted:
+    validate_acs_met: true
+    validate_tests_exist: false

@@ -1,0 +1,87 @@
+# Fullstack — 5 Teammates
+# Complete full-stack feature with DB, API, UI, tests, and code review.
+
+name: fullstack
+description: "Full-stack feature with DB, API, UI, tests, and code review"
+teammate_count: 5
+min_acs: 10
+recommended_for:
+  app_types: [web-app, saas]
+  stacks: [nextjs-supabase, nextjs-firebase, nextjs-prisma]
+
+lead:
+  role: "Orchestrator — distributes tasks, coordinates phases, synthesizes results"
+  instructions: "Create tasks from the PRD, assign to teammates based on file ownership, enforce phase ordering (database first, reviewer last), run /verify when all implementation teammates complete"
+
+teammates:
+  - name: frontend
+    agent: frontend-developer
+    role: "UI components, pages, styling, responsive design"
+    file_ownership:
+      - "src/components/"
+      - "src/app/**/page.tsx"
+      - "src/app/**/layout.tsx"
+    model_hint: sonnet
+
+  - name: backend
+    agent: backend-developer
+    role: "API routes, services, business logic"
+    file_ownership:
+      - "src/lib/"
+      - "src/app/api/"
+    model_hint: sonnet
+
+  - name: database
+    agent: postgres-pro
+    role: "Migrations, RLS policies, type generation, seed data"
+    file_ownership:
+      - "supabase/migrations/"
+      - "supabase/seed.sql"
+    model_hint: sonnet
+
+  - name: testing
+    agent: test-automator
+    role: "Unit tests, integration tests, E2E tests"
+    file_ownership:
+      - "tests/"
+      - "e2e/"
+      - "**/*.test.*"
+    model_hint: sonnet
+
+  - name: reviewer
+    agent: code-reviewer
+    role: "Code quality review, security audit, best practices"
+    file_ownership: []
+    read_only: true
+    model_hint: sonnet
+
+phases:
+  - name: "Database + Types"
+    tasks_for: [database]
+    quality_gate: "Migrations applied, RLS policies defined, types generated"
+  - name: "API + UI (parallel)"
+    tasks_for: [backend, frontend]
+    parallel: true
+    depends_on: ["Database + Types"]
+    quality_gate: "API responds, components render, types match"
+  - name: "Tests"
+    tasks_for: [testing]
+    depends_on: ["API + UI (parallel)"]
+    quality_gate: "All tests pass, 80%+ coverage"
+  - name: "Review"
+    tasks_for: [reviewer]
+    depends_on: ["Tests"]
+    quality_gate: "No critical findings, security audit passed"
+
+cost_estimate:
+  min_iterations: 25
+  max_iterations: 60
+  estimated_tokens: "250k-600k"
+
+hooks:
+  TeammateIdle:
+    check_tasks_completed: true
+    check_tests_passing: true
+  TaskCompleted:
+    validate_acs_met: true
+    validate_tests_exist: true

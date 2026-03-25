@@ -111,6 +111,7 @@ All flags are optional. When no scope flag is given and no `--yes` is set, the i
 | `--local` | `-l` | Install to `./.claude/` — applies to current project only |
 | `--yes` | `-y` | Skip interactive prompts; use smart defaults |
 | `--dry-run` | | Show planned output without writing any files |
+| `--output-format` | | Output format: `claude-md` (default), `agents-md`, or `both` |
 | `--claude` | | Select Claude Code runtime (non-interactive, currently the only runtime) |
 | `--with-mcp` | | Install and configure MCP servers |
 | `--with-playwright` | | Install Playwright browsers |
@@ -148,6 +149,28 @@ Defaults when `--yes` is used:
 
 ```bash
 npx @aslomon/effectum --global --yes
+```
+
+#### `--output-format`
+
+Controls which project instruction file(s) Effectum generates.
+
+| Value | Generates |
+|-------|-----------|
+| `claude-md` | `CLAUDE.md` only *(default)* |
+| `agents-md` | `AGENTS.md` only (generic, works with any AI coding tool) |
+| `both` | Both `CLAUDE.md` and `AGENTS.md` |
+
+`AGENTS.md` uses generic language — no tool-specific references — so it works with Claude Code, Codex, Gemini CLI, and any other agent that reads project instruction files.
+
+If an `AGENTS.md` already exists in your project root, Effectum auto-detects it and generates/updates `AGENTS.md` regardless of this flag.
+
+```bash
+# Generate AGENTS.md for multi-agent / tool-agnostic projects
+npx @aslomon/effectum --yes --output-format agents-md
+
+# Generate both files (recommended when migrating)
+npx @aslomon/effectum --yes --output-format both
 ```
 
 #### `--dry-run`

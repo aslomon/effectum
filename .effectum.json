@@ -1,0 +1,108 @@
+{
+  "version": "0.4.0",
+  "projectName": "effectum",
+  "stack": "generic",
+  "appType": "web-app",
+  "description": "",
+  "language": "english",
+  "autonomyLevel": "standard",
+  "packageManager": "npm",
+  "formatter": "None",
+  "mcpServers": [
+    "context7",
+    "playwright",
+    "sequential-thinking"
+  ],
+  "playwrightBrowsers": true,
+  "installScope": "local",
+  "recommended": {
+    "commands": [
+      "plan",
+      "tdd",
+      "verify",
+      "code-review",
+      "build-fix",
+      "refactor-clean",
+      "e2e",
+      "ralph-loop",
+      "checkpoint",
+      "simplify"
+    ],
+    "hooks": [
+      "commit-gate",
+      "changelog-update",
+      "completion-verifier",
+      "subagent-verifier",
+      "desktop-notifications"
+    ],
+    "skills": [
+      "frontend-design",
+      "security-check",
+      "webapp-testing"
+    ],
+    "mcps": [
+      "context7",
+      "playwright",
+      "sequential-thinking"
+    ],
+    "subagents": [
+      "debugger",
+      "test-automator",
+      "frontend-developer",
+      "backend-developer",
+      "fullstack-developer",
+      "postgres-pro",
+      "security-engineer",
+      "ui-designer",
+      "mobile-developer"
+    ],
+    "agentTeams": false,
+    "suggestTeams": false,
+    "teamsReason": "",
+    "recommendedProfile": null,
+    "tags": [
+      "frontend-heavy",
+      "auth-needed",
+      "db-needed",
+      "multi-user",
+      "ui-design"
+    ]
+  },
+  "mode": "recommended",
+  "detectedTools": [
+    {
+      "key": "brew",
+      "installed": true
+    },
+    {
+      "key": "git",
+      "installed": true
+    },
+    {
+      "key": "node",
+      "installed": true
+    },
+    {
+      "key": "claude",
+      "installed": true
+    },
+    {
+      "key": "git",
+      "installed": true
+    },
+    {
+      "key": "claude",
+      "installed": true
+    },
+    {
+      "key": "gh",
+      "installed": true
+    },
+    {
+      "key": "jq",
+      "installed": true
+    }
+  ],
+  "updatedAt": "2026-03-25T05:04:53.880Z",
+  "createdAt": "2026-03-24T15:26:09.966Z"
+}

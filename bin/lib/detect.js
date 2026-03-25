@@ -488,9 +488,22 @@ function detectPackageManager(dir) {
 }
 
 /**
+ * Detect whether AGENTS.md exists in the project root.
+ * @param {string} dir
+ * @returns {{ agentsMdFound: boolean, confidence: string }}
+ */
+function detectAgentsMd(dir) {
+  const exists = fs.existsSync(path.join(dir, "AGENTS.md"));
+  return {
+    agentsMdFound: exists,
+    confidence: exists ? "certain" : "none",
+  };
+}
+
+/**
  * Run all detections and return a summary.
  * @param {string} dir
- * @returns {{ projectName: string, stack: string|null, packageManager: string, detection: object }}
+ * @returns {{ projectName: string, stack: string|null, packageManager: string, detection: object, agentsMd: object }}
  */
 function detectAll(dir) {
   const detection = detectModular(dir);
@@ -499,6 +512,7 @@ function detectAll(dir) {
     stack: detectionToStackKey(detection),
     packageManager: detection.packageManager,
     detection,
+    agentsMd: detectAgentsMd(dir),
   };
 }
 
@@ -541,6 +555,7 @@ module.exports = {
   detectModular,
   detectionToStackKey,
   detectAll,
+  detectAgentsMd,
   loadPresets,
   loadDetectionRules,
   // Exposed for testing
