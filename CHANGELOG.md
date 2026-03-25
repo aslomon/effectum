@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.0] - 2026-03-25
+
+### Added
+
+- **AGENTS.md Detection** — `detectAgentsMd(dir)` in `bin/lib/detect.js` detects `AGENTS.md` in project root and sets `agentsMdFound: true` with `certain` confidence; wired into `detectAll()`
+- **`--output-format` CLI flag** — Accepts `claude-md` (default) | `agents-md` | `both`. When `agents-md` or `both`, generates a tool-agnostic `AGENTS.md` alongside or instead of `CLAUDE.md`. Auto-triggers when existing `AGENTS.md` detected in project.
+- **AGENTS.md template blocks** (`system/blocks/agents-md/`) — 4 generic blocks with `{{projectName}}` / `{{stack}}` interpolation: `foundation.md`, `workflow.md`, `guardrails.md`, `commands.md`. No Claude-specific language — compatible with Codex, Gemini CLI, and other agents.
+- **npm Stats Script** (`scripts/npm-stats.mjs`) — Tracks daily/weekly/monthly npm downloads and GitHub stars; outputs Markdown report to `reports/`. Safe for cron.
+- **HN Launch Post draft** (`docs/launch/hn-post.md`) — Show HN post with thread strategy and timing notes.
+
+### Changed
+
+- **README** — Added Kiro to comparison table; added AGENTS.md positioning note; clarified CLI-native vs IDE-based tool positioning.
+- **`docs/cli-reference.md`** — Documented `--output-format` flag with examples and full section.
+
+### Tests
+
+- 201 tests, all passing (up from 184)
+- Added `test/agents-md.test.js` — 17 new tests covering detection, block loading, placeholder content, `composeBlocks` compatibility, and interpolation
+
+## [0.11.1] - 2026-03-24
+
+### Fixed
+
+- **Rust/Cargo.toml detection** — Added `system/detect/rust.json` with 61 rules covering ecosystem, framework, build tooling, and async runtime detection; maps to `rust-actix` stack preset
+- **npx entrypoint** — `main()` was never called via `npx` because `require.main !== module` when loaded by `effectum.js` router; fixed by checking `process.argv[1]` instead
+
+## [0.11.0] - 2026-03-24
+
 ### Added
 
 - **Agent Teams Orchestration**: 5 YAML team profiles (web-feature, fullstack, frontend-only, review, overnight-build) with agent specializations, file ownership, phased execution, quality gates, and cost estimates
