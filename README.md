@@ -633,6 +633,8 @@ The short version: Effectum doesn't invent new concepts. It combines what alread
 
 **On AGENTS.md:** Effectum supports both `CLAUDE.md` (default) and `AGENTS.md` (the emerging multi-agent standard adopted by GSD 2.37+). Use `--output-format agents-md` or `--output-format both` to generate a tool-agnostic project instruction file alongside your Claude Code config.
 
+**Backwards compatibility:** Existing Effectum projects continue working unchanged with `CLAUDE.md`. You do **not** need to migrate. `AGENTS.md` support is additive: choose `claude-md`, `agents-md`, or `both`. If an `AGENTS.md` already exists in your repo, Effectum detects it and updates that file automatically.
+
 ---
 
 ## 🎨 Stack Presets
