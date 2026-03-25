@@ -619,14 +619,19 @@ Pull requests for new stacks, presets, and detection rules are especially welcom
 
 ## 🆚 How is this different?
 
-| Tool           | What it does                              | What Effectum adds                                                                   |
+| Tool           | What it does                              | What Effectum adds / differs                                                         |
 | -------------- | ----------------------------------------- | ------------------------------------------------------------------------------------ |
 | **GSD**        | Context engineering, prevents context rot | PRD Lifecycle (spec versioning + delta handoffs), Ralph Loop, Project Onboarding     |
 | **BMAD**       | Full enterprise methodology               | Same ideas, 90% less ceremony. Configurator auto-selects what's relevant.            |
 | **SpecKit**    | Living specifications                     | + Autonomous execution + Quality gates + Task registry + Network map                 |
 | **Taskmaster** | Task breakdown from PRDs                  | + TDD workflow + Code review + E2E testing + Semantic diff + Onboarding agents       |
+| **Kiro (AWS)** | IDE-native spec-driven dev (VS Code fork) | CLI-native. No IDE required. No opaque request pricing. Works with your existing setup. |
 
 The short version: Effectum doesn't invent new concepts. It combines what already works, removes what doesn't, and packages it so it actually runs.
+
+**On IDE tools (Kiro, Cursor, etc.):** If you're happy in your IDE, great — stay there. Effectum is for developers who want a Claude Code-native, terminal-first workflow that doesn't require switching editors or agreeing to opaque pricing models.
+
+**On AGENTS.md:** Effectum supports both `CLAUDE.md` (default) and `AGENTS.md` (the emerging multi-agent standard adopted by GSD 2.37+). Use `--output-format agents-md` or `--output-format both` to generate a tool-agnostic project instruction file alongside your Claude Code config.
 
 ---
 
