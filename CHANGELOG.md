@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.13.0] - 2026-03-25
+
+### Added
+
+- **`/design` Command** (`system/commands/design.md`) — 5-step workflow: read PRD → detect design signals → ask 3–5 lightweight questions → generate `DESIGN.md` → confirm. For frontend-heavy projects, bridges the gap between "what to build" (PRD) and "how it should look" (DESIGN.md).
+- **`DESIGN.md` Template** (`system/templates/DESIGN.md.tmpl`) — 7 sections: Overview, Color System, Typography, Component Patterns, Layout & Spacing, Interaction Design, Constraints. Uses `{{projectName}}` / `{{stack}}` / `{{date}}` interpolation. TODO markers for user-driven sections.
+- **`detectDesignSignals(dir)`** (`bin/lib/design.js`) — Scans for Tailwind (config files + package.json), shadcn (components.json), CSS custom properties (globals.css in 4 candidate paths). Returns structured `{ hasTailwind, hasShadcn, cssVars, existingColors }`.
+- **Design docs** (`docs/design-md.md`) — When to use DESIGN.md, how to run `/design`, section reference, example snippet, FAQ.
+
+### Tests
+
+- 236 tests, all passing (up from 201)
+- Added `test/design.test.js` — 35 tests covering Tailwind/shadcn/CSS detection, parseCssVars, isColorValue, template loading/interpolation, command file validation
+
 ## [0.12.0] - 2026-03-25
 
 ### Added
