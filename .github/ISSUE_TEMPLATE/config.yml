@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Show me what you built
+    url: https://github.com/aslomon/effectum/discussions
+    about: Share projects built with Effectum — we'd love to see them.
+  - name: Question or discussion
+    url: https://github.com/aslomon/effectum/discussions
+    about: For questions, tips, and general discussion about Effectum.
