@@ -84,6 +84,16 @@ Report to the user:
 4. Where to find the full status report (`.claude/ralph-status.md`).
 5. Suggested next steps: continue manually, restart with a modified prompt, or run `/verify` to assess the current state.
 
+## Next Steps
+
+After cancelling the Ralph Loop:
+
+- → `/verify` — Assess the current state of the codebase after partial implementation
+- → `/build-fix` — If the build is broken, fix errors incrementally
+- → `/ralph-loop` — Restart with a modified prompt or adjusted scope
+
+ℹ️ Alternative: Review `.claude/ralph-status.md` for detailed progress and blockers before deciding next steps.
+
 ## Communication
 
 Follow the language settings defined in CLAUDE.md for user-facing communication.

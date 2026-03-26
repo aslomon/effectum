@@ -98,6 +98,15 @@ Present a summary:
 
 List each refactoring that was applied and its impact. Suggest running `/verify` for a full quality gate check.
 
+## Next Steps
+
+After refactoring is complete:
+
+- → `/verify` — Run full quality gates to confirm no regressions
+- → `/code-review` — Review the cleaned-up code for any remaining issues
+
+ℹ️ Alternative: If refactoring uncovered test gaps, run `/tdd` to add missing tests first.
+
 ## Communication
 
 Follow the language settings defined in CLAUDE.md for user-facing communication.

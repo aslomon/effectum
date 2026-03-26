@@ -114,6 +114,16 @@ Provide a summary:
 4. If zero CRITICAL findings: "No blocking issues found. Code is ready for deployment pending WARNING fixes."
 5. If CRITICAL findings exist: "Blocking issues found. These must be resolved before deployment."
 
+## Next Steps
+
+After code review:
+
+- → Done — If zero CRITICAL findings, the code is ready for commit and PR
+- → `/build-fix` — If review uncovered issues that need fixing, resolve them first
+- → `/verify` — After fixing review findings, re-run quality gates to confirm
+
+ℹ️ Alternative: For critical security findings, fix immediately and re-run `/code-review` to verify the fixes.
+
 ## Communication
 
 Follow the language settings defined in CLAUDE.md for user-facing communication.

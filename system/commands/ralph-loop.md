@@ -222,6 +222,16 @@ Apply these escalation rules:
 3. **Always run quality gates**: After every significant change, verify the build and tests. Do not accumulate changes without verification.
 4. **Self-awareness**: Read your own progress log to avoid repeating failed approaches. Learn from previous iterations.
 
+## Next Steps
+
+After the Ralph Loop completes (or is cancelled):
+
+- → `/verify` — Run full quality gates to confirm the implementation is solid
+- → `/code-review` — Run a security and quality audit on the changes
+- → `/cancel-ralph` — If the loop needs to be stopped, cancel gracefully
+
+ℹ️ Alternative: If the loop completed with all criteria met, proceed directly to `/code-review` and then commit.
+
 ## Communication
 
 Follow the language settings defined in CLAUDE.md for user-facing communication.

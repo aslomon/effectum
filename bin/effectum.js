@@ -43,6 +43,15 @@ switch (subcommand) {
     require("./reconfigure.js");
     break;
 
+  case "update":
+    process.argv = [
+      process.argv[0],
+      process.argv[1],
+      ...args.filter((a) => a !== "update"),
+    ];
+    require("./update.js");
+    break;
+
   default:
     // Default: run the installer (handles --help, --global, --local, etc.)
     require("./install.js");

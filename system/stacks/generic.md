@@ -75,7 +75,7 @@ docs/                       # Documentation (if needed)
 ## PACKAGE_MANAGER
 
 ```
-[SPECIFY — e.g., pnpm, uv, go mod, cargo, maven]
+{{PACKAGE_MANAGER}}
 ```
 
 ## STACK_SPECIFIC_GUARDRAILS

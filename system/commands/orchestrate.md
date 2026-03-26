@@ -215,6 +215,15 @@ When all tasks are done:
 5. **Graceful degradation**: If a teammate fails or gets stuck, the lead reassigns their tasks rather than spawning a new teammate.
 6. **Subagents still work**: When Agent Teams are disabled, `/orchestrate` prints an error directing the user to enable the feature flag. It does NOT fall back to subagents — that's what the normal workflow commands do.
 
+## Next Steps
+
+After orchestration is complete:
+
+- → `/verify` — Run full quality gates on the combined output from all teammates
+- → `/code-review` — Review all changes for security and quality
+
+ℹ️ Alternative: If a teammate got stuck, use `/build-fix` to resolve errors before running verification.
+
 ## Communication
 
 Follow the language settings defined in CLAUDE.md for user-facing communication.

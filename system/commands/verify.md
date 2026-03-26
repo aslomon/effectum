@@ -65,6 +65,15 @@ Present results as a clear table:
 - **Any gate FAIL**: Report which gates failed with the specific error details (file, line, error message). List the failures in priority order (build errors first, then types, then lint, then tests).
 - **Do NOT attempt to fix failures automatically.** Present the findings and ask the user what to do. Suggest `/build-fix` for build/type errors, or specific actions for other failures.
 
+## Next Steps
+
+After verification:
+
+- → `/code-review` — If all gates pass, run a security and quality audit before shipping
+- → `/build-fix` — If any gates failed, fix the errors incrementally
+
+ℹ️ Alternative: If this is a final check before merge, proceed directly to committing and creating a PR.
+
 ## Communication
 
 Follow the language settings defined in CLAUDE.md for user-facing communication.

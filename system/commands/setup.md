@@ -64,6 +64,7 @@ Read the template files — check these locations **in order** and use the first
 3. `system/templates/` — development (running directly from the repo)
 
 Templates to read:
+
 - `CLAUDE.md.tmpl` — Main configuration template
 - `settings.json.tmpl` — Settings template
 - `guardrails.md.tmpl` — Guardrails template
@@ -163,6 +164,16 @@ Tell the user:
 3. **"To create a PRD: come back to this repo and run `/prd:new`"**
 4. **"Read `AUTONOMOUS-WORKFLOW.md` for the complete reference guide"**
 5. **"Customize `CLAUDE.md` to match your specific project conventions"**
+
+## Next Steps
+
+After setup is complete:
+
+- → `/plan` — Create an implementation plan for your first feature
+- → `/prd:new` — Start a new PRD to define requirements before coding
+- → `/design` — Generate a DESIGN.md for frontend projects
+
+ℹ️ Alternative: Read `AUTONOMOUS-WORKFLOW.md` for the complete reference guide on all available commands.
 
 ## Communication
 

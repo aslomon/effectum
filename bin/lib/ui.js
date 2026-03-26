@@ -215,6 +215,110 @@ async function askLanguage() {
   return { language: value };
 }
 
+// ─── Step 5b: Package Manager ─────────────────────────────────────────────
+
+/**
+ * Package manager recommendation logic.
+ * @param {string|null} detected - detected package manager from lock file
+ * @param {string|null} ecosystem - detected ecosystem (javascript, python, etc.)
+ * @returns {{ recommended: string, reason: string }}
+ */
+function getPackageManagerRecommendation(detected, ecosystem) {
+  if (detected && detected !== "npm") {
+    return {
+      recommended: detected,
+      reason: `${detected} detected from lock file`,
+    };
+  }
+  // For new projects or npm default, recommend based on ecosystem
+  const ecosystemDefaults = {
+    javascript: { recommended: "pnpm", reason: "fast, strict dependencies" },
+    python: { recommended: "uv", reason: "fast Python package manager" },
+    go: { recommended: "go", reason: "Go modules (built-in)" },
+    rust: { recommended: "cargo", reason: "Rust package manager (built-in)" },
+    swift: {
+      recommended: "swift package (SPM)",
+      reason: "Swift Package Manager (built-in)",
+    },
+    dart: { recommended: "flutter", reason: "Flutter/Dart package manager" },
+  };
+  if (ecosystem && ecosystemDefaults[ecosystem]) {
+    return ecosystemDefaults[ecosystem];
+  }
+  if (detected) {
+    return { recommended: detected, reason: "detected from project files" };
+  }
+  return { recommended: "pnpm", reason: "fast, strict dependencies" };
+}
+
+/**
+ * Ask for package manager with detection + recommendation.
+ * @param {string|null} detected - auto-detected package manager
+ * @param {string|null} ecosystem - detected ecosystem
+ * @param {string|null} lockFile - name of detected lock file (for display)
+ * @returns {Promise<string>}
+ */
+async function askPackageManager(detected, ecosystem, lockFile) {
+  const rec = getPackageManagerRecommendation(detected, ecosystem);
+
+  // When a non-npm lock file exists, show confirmation
+  if (detected && detected !== "npm" && lockFile) {
+    p.log.info(`Package Manager: ${detected} detected (${lockFile} found)`);
+    p.log.info(`Recommendation: Keep ${detected}`);
+
+    const keep = await p.confirm({
+      message: `Keep ${detected}?`,
+      initialValue: true,
+    });
+    handleCancel(keep);
+
+    if (keep) return detected;
+  }
+
+  // Selection prompt for new projects or when user wants to change
+  const jsManagers = [
+    {
+      value: "pnpm",
+      label: "pnpm",
+      hint: "recommended — fast, strict dependencies",
+    },
+    { value: "npm", label: "npm", hint: "default Node.js manager" },
+    { value: "yarn", label: "yarn", hint: "classic alternative" },
+    { value: "bun", label: "bun", hint: "fast, experimental" },
+  ];
+
+  const pythonManagers = [
+    { value: "uv", label: "uv", hint: "recommended — fast Python packaging" },
+    { value: "pip", label: "pip", hint: "default Python installer" },
+    { value: "poetry", label: "poetry", hint: "dependency management" },
+    { value: "pipenv", label: "pipenv", hint: "Pipfile-based" },
+  ];
+
+  // Choose options based on ecosystem
+  let options;
+  if (ecosystem === "python") {
+    options = pythonManagers;
+  } else if (ecosystem === "go") {
+    return "go";
+  } else if (ecosystem === "rust") {
+    return "cargo";
+  } else if (ecosystem === "swift") {
+    return "swift package (SPM)";
+  } else if (ecosystem === "dart") {
+    return "flutter";
+  } else {
+    options = jsManagers;
+  }
+
+  const value = await p.select({
+    message: "Which package manager would you like to use?",
+    options,
+    initialValue: rec.recommended,
+  });
+  handleCancel(value);
+  return value;
+}
+
 // ─── Step 6: Autonomy ───────────────────────────────────────────────────────
 
 /**
@@ -1007,6 +1111,9 @@ module.exports = {
   askMissingComponents,
   askPresetOrCustom,
   askModularStack,
+  // Package manager
+  askPackageManager,
+  getPackageManagerRecommendation,
   // Tool check flow
   showSystemCheck,
   showInstallPlan,

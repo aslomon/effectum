@@ -97,6 +97,15 @@ Show the user:
 4. The chosen workflow mode and why.
 5. If additional PRDs are open in the project: what comes next.
 
+## Next Steps
+
+After handoff:
+
+- → `/design` — If frontend work is detected, create a DESIGN.md before planning
+- → `/plan` — Create a detailed implementation plan from the handed-off PRD
+
+ℹ️ Alternative: For full autonomy, use `/ralph-loop` with the handoff prompt to implement the PRD end-to-end.
+
 ## Communication
 
 Follow the language settings defined in CLAUDE.md.

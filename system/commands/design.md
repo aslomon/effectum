@@ -21,6 +21,7 @@ Run `/design` before starting frontend implementation:
 ### 1. Read the active PRD
 
 Look for a PRD in these locations (in order):
+
 - `docs/prds/` — find the most recently modified `.md` file
 - `PRD.md` in project root
 - Any file matching `*PRD*.md`
@@ -30,6 +31,7 @@ If found, extract: project name, app type, key features, target users.
 ### 2. Scan for existing design signals
 
 Check the project directory for:
+
 - **Tailwind:** `tailwind.config.js`, `tailwind.config.ts`, or `tailwindcss` in `package.json`
 - **shadcn/ui:** `components.json` in project root
 - **CSS variables:** `src/app/globals.css`, `src/styles/globals.css`, `styles/globals.css`, `app/globals.css`
@@ -54,11 +56,13 @@ Wait for the user's response before generating.
 Use the template at `system/templates/DESIGN.md.tmpl`.
 
 Fill in:
+
 - `{{projectName}}` — from PRD or directory name
 - `{{stack}}` — detected stack (e.g. "Next.js + Tailwind + shadcn/ui")
 - `{{date}}` — today's date (YYYY-MM-DD)
 
 For each section:
+
 - Replace `<!-- TODO: fill in -->` with content based on user answers and detected signals
 - Clearly label **Observed** (from codebase) vs **Proposed** (new conventions)
 - Keep entries practical and implementation-oriented — no design essays
@@ -69,11 +73,21 @@ Write the file to the **project root** as `DESIGN.md`.
 ### 5. Confirm
 
 After writing `DESIGN.md`, tell the user:
+
 - File written to `DESIGN.md`
 - Key decisions summarized in 3–5 bullet points
 - Suggest next step: `/plan` to begin implementation
 
 ---
+
+## Next Steps
+
+After DESIGN.md is generated:
+
+- → `/plan` — Create an implementation plan for the next feature or PRD
+- → `/tdd` — Start implementing with test-driven development
+
+ℹ️ Alternative: If working from a PRD, the design step feeds into `/plan` which creates the implementation roadmap.
 
 ## Notes
 

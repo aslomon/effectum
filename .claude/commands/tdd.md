@@ -78,6 +78,15 @@ When the feature is fully implemented:
 - **Flaky tests**: Investigate the root cause (stateful dependency, timing, test isolation) -- do not retry blindly.
 - **Same error 3 times**: Try a fundamentally different approach. Document what was tried and why it failed.
 
+## Next Steps
+
+After TDD implementation is complete:
+
+- → `/verify` — Run all quality gates (build, types, lint, tests) to confirm everything passes
+- → `/build-fix` — If any build or type errors remain, fix them incrementally
+
+ℹ️ Alternative: If all tests pass and build is clean, proceed to `/code-review` for a security and quality audit.
+
 ## Communication
 
 Follow the language settings defined in CLAUDE.md for user-facing communication.

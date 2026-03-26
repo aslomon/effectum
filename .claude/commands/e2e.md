@@ -86,6 +86,15 @@ For failures, include:
 - Any diagnostic artifacts (screenshot paths, trace paths).
 - Suggested root cause and fix.
 
+## Next Steps
+
+After E2E tests:
+
+- → `/verify` — Run the full quality gate suite including the new E2E tests
+- → `/code-review` — If all tests pass, proceed to security and quality audit
+
+ℹ️ Alternative: If E2E tests fail due to application bugs, fix them with `/build-fix` or `/tdd` first.
+
 ## Communication
 
 Follow the language settings defined in CLAUDE.md for user-facing communication.

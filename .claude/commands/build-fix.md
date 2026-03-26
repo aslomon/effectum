@@ -83,6 +83,15 @@ Present a summary:
 
 If errors remain, list each one with file, line, error message, and what was attempted.
 
+## Next Steps
+
+After build errors are resolved:
+
+- → `/verify` — Run all quality gates to confirm everything passes
+- → `/tdd` — If new functionality is needed, continue with test-driven development
+
+ℹ️ Alternative: If errors persist after 10 attempts, ask the user for guidance on the remaining issues.
+
 ## Communication
 
 Follow the language settings defined in CLAUDE.md for user-facing communication.

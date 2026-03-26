@@ -105,6 +105,15 @@ Wait for explicit approval from the user:
 - **"Change X"** -> Revise the plan based on feedback, present again, wait again.
 - **"Start over"** -> Discard the plan and restart from Step 1.
 
+## Next Steps
+
+After the plan is approved:
+
+- → `/tdd` — Implement the plan using test-driven development (RED → GREEN → REFACTOR)
+- → `/ralph-loop` — Run autonomous implementation loop (if autonomy level is "full" in `.effectum.json`)
+
+ℹ️ Alternative: If the plan reveals design work is needed first, run `/design` before implementation.
+
 ## Communication
 
 Follow the language settings defined in CLAUDE.md for user-facing communication.

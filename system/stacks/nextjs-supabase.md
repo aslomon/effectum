@@ -13,7 +13,7 @@
 - Zod for ALL external data validation (API inputs, env vars, form data)
 - Vitest + Testing Library for unit/integration tests
 - Playwright for E2E tests
-- pnpm (never npm/yarn unless project explicitly uses them)
+- {{PACKAGE_MANAGER}} (never use a different package manager — it will create conflicting lock files)
 - Vercel deployment, Docker Compose for local dev
 ```
 
@@ -61,10 +61,10 @@ tests/
 ## QUALITY_GATES
 
 ```
-- Build: `pnpm build` — 0 errors
+- Build: `{{PACKAGE_MANAGER}} build` — 0 errors
 - Types: `tsc --noEmit` — 0 errors
-- Tests: `pnpm vitest run` — all pass, 80%+ coverage
-- Lint: `pnpm lint` — 0 errors
+- Tests: `{{PACKAGE_MANAGER}} vitest run` — all pass, 80%+ coverage
+- Lint: `{{PACKAGE_MANAGER}} lint` — 0 errors
 - E2E: `npx playwright test` — all pass (if applicable)
 - Code Review: `/code-review` — no security issues
 - RLS Check: Supabase security advisor — all tables have RLS policies
@@ -88,13 +88,13 @@ ts|tsx|js|jsx|json|css|md
 ## PACKAGE_MANAGER
 
 ```
-pnpm
+{{PACKAGE_MANAGER}}
 ```
 
 ## STACK_SPECIFIC_GUARDRAILS
 
 ```
-- **pnpm, not npm**: This project ecosystem uses pnpm exclusively. npm commands will create conflicting lock files.
+- **{{PACKAGE_MANAGER}}, not alternatives**: This project uses {{PACKAGE_MANAGER}} exclusively. Other package managers will create conflicting lock files.
 - **Check DESIGN.md first**: Before any UI/design work, read DESIGN.md. Making design decisions without it causes inconsistencies.
 - **createServerClient in Server Components**: Always use `createServerClient` in Server Components and Route Handlers.
 - **createBrowserClient in Client Components**: Always use `createBrowserClient` in Client Components.
@@ -110,5 +110,5 @@ pnpm
 ```
 - **Prettier runs automatically**: The PostToolUse hook auto-formats ts/tsx/js/jsx/json/css/md files. Don't run prettier manually — it wastes a tool call.
 - **CHANGELOG is auto-updated**: The Stop hook handles CHANGELOG.md. Don't update it manually unless explicitly asked.
-- **Lock files are protected**: pnpm-lock.yaml and package-lock.json cannot be written to directly. Use pnpm install/add commands.
+- **Lock files are protected**: Lock files cannot be written to directly. Use {{PACKAGE_MANAGER}} install/add commands.
 ```

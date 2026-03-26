@@ -163,6 +163,15 @@ If called standalone:
 - If `--fix` was used, show what was changed.
 - If issues remain, suggest next steps.
 
+## Next Steps
+
+After onboarding review:
+
+- → `/prd:new` — Create new PRDs for features not yet covered
+- → `/prd:handoff` — Hand off a reviewed PRD for implementation
+
+ℹ️ Alternative: If the review found issues, fix them and re-run `/onboard:review` to verify.
+
 ## Communication
 
 Follow the language settings defined in CLAUDE.md.

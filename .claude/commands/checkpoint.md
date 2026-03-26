@@ -57,6 +57,16 @@ Show the user:
    - **View checkpoint**: `git show [tag-name]`
    - **List all checkpoints**: `git tag -l "checkpoint-*"`
 
+## Next Steps
+
+After creating a checkpoint:
+
+- → Continue working — The checkpoint provides a safe rollback point
+- → `/tdd` — Continue implementing the next piece of functionality
+- → `/verify` — Run quality gates if the checkpoint marks a milestone
+
+ℹ️ Alternative: Use checkpoints before risky refactoring or experimental changes.
+
 ## Communication
 
 Follow the language settings defined in CLAUDE.md for user-facing communication.

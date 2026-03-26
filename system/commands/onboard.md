@@ -561,6 +561,16 @@ If fewer than 2 features are detected:
 - The project may be too small for onboarding.
 - Suggest: **"This project has very few features. Consider using `/prd:new` to document it manually instead."**
 
+## Next Steps
+
+After onboarding is complete:
+
+- → `/prd:new` — Create a new PRD for the next feature you want to build
+- → `/plan` — Start planning implementation for an existing PRD
+- → `/design` — Generate a DESIGN.md if the project has a frontend
+
+ℹ️ Alternative: Run `/prd:status` to see a dashboard of all onboarded PRDs and their statuses.
+
 ## Communication
 
 Follow the language settings defined in CLAUDE.md.
