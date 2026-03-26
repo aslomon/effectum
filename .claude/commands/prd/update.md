@@ -1,3 +1,9 @@
+---
+name: "PRD Update"
+description: "Update an existing PRD with semantic diff, impact analysis, and delta handoff generation."
+allowed-tools: ["Read", "Write", "Bash"]
+---
+
 # /prd:update — Update an Existing PRD with Change Tracking
 
 You update an existing PRD, performing semantic diff, impact analysis, and delta handoff generation.

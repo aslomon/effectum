@@ -1,3 +1,9 @@
+---
+name: "Code Review"
+description: "Security and code quality review of all changes with severity levels and suggested fixes."
+allowed-tools: ["Read", "Bash", "Grep", "Glob"]
+---
+
 # /code-review -- Security and Quality Review
 
 You perform a thorough security and code quality review of all changes. You report findings with severity levels and suggested fixes.

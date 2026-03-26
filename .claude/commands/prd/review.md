@@ -1,3 +1,9 @@
+---
+name: "PRD Review"
+description: "Systematic quality review and readiness scoring for one or more PRDs."
+allowed-tools: ["Read", "Write"]
+---
+
 # /prd:review — Quality Review and Readiness Scoring (Phase 7)
 
 You perform a systematic quality review of one or more PRDs.

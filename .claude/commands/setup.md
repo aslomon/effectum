@@ -1,3 +1,9 @@
+---
+name: "Setup"
+description: "Install the complete Effectum autonomous development workflow into a target project."
+allowed-tools: ["Read", "Write", "Bash", "Glob"]
+---
+
 # /setup — Install Autonomous Development Workflow
 
 Install the complete autonomous development workflow into a target project.

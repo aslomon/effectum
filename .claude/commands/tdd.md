@@ -1,3 +1,9 @@
+---
+name: "TDD"
+description: "Test-driven development: write failing tests first, then implement minimal code to pass."
+allowed-tools: ["Read", "Write", "Edit", "Bash", "Glob", "Grep"]
+---
+
 # /tdd -- Test-Driven Development: RED -> GREEN -> REFACTOR
 
 You implement features using strict Test-Driven Development. Every piece of functionality starts with a failing test.

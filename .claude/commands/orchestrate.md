@@ -1,3 +1,9 @@
+---
+name: "Orchestrate"
+description: "Manage Agent Teams: create teams, distribute tasks, monitor progress, and control lifecycle."
+allowed-tools: ["Read", "Write", "Edit", "Bash", "Agent"]
+---
+
 # /orchestrate — Agent Teams Orchestration
 
 Manage Agent Teams: create teams from YAML profiles, distribute tasks from PRDs, monitor progress, and control team lifecycle.

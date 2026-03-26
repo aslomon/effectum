@@ -1,3 +1,9 @@
+---
+name: "PRD Network Map"
+description: "Create or update the visual network map of a project as a Mermaid diagram."
+allowed-tools: ["Read", "Write", "Bash"]
+---
+
 # /prd:network-map — Create or Update the Project Network Map
 
 You create or update the visual network map of a project as a Mermaid diagram.
@@ -138,6 +144,7 @@ After writing the `.mmd` file, ALWAYS generate an interactive HTML viewer:
 6. Open the HTML file in the default browser: `open network-map.html` (macOS) or `xdg-open network-map.html` (Linux)
 
 The HTML viewer includes:
+
 - Dark/Light theme toggle
 - Top-Bottom / Left-Right direction switch
 - SVG export button

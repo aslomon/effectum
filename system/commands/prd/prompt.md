@@ -1,3 +1,9 @@
+---
+name: "PRD Prompt"
+description: "Generate a handoff prompt for a PRD without performing the full export process."
+allowed-tools: ["Read", "Write"]
+---
+
 # /prd:prompt — Generate Handoff Prompt for a PRD
 
 You generate a handoff prompt for a PRD without performing the full export process.

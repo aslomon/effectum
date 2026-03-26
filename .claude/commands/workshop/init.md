@@ -1,3 +1,9 @@
+---
+name: "Workshop Init"
+description: "Create the complete directory structure and template files for a new project."
+allowed-tools: ["Read", "Write", "Bash"]
+---
+
 # /workshop:init — Initialize a New Project Workspace
 
 You create the complete directory structure and template files for a new project.

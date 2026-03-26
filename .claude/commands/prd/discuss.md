@@ -1,3 +1,9 @@
+---
+name: "PRD Discuss"
+description: "Conduct an in-depth discussion about a specific PRD to clarify all details."
+allowed-tools: ["Read", "Write"]
+---
+
 # /prd:discuss — Deep-Dive Discussion for a Specific PRD (Phase 4)
 
 You conduct an in-depth discussion about a specific PRD. Goal: maximum understanding, clarify all details.

@@ -1,3 +1,9 @@
+---
+name: "PRD Decompose"
+description: "Split a large project scope into manageable, individually implementable PRDs."
+allowed-tools: ["Read", "Write", "Bash"]
+---
+
 # /prd:decompose — Split Large Scope into Multiple PRDs (Phase 3)
 
 You break down a large project scope into manageable, individually implementable PRDs.

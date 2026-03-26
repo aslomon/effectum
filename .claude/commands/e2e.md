@@ -1,3 +1,9 @@
+---
+name: "E2E Tests"
+description: "Write and run end-to-end tests for critical user journeys using Playwright or similar."
+allowed-tools: ["Read", "Write", "Edit", "Bash", "Glob", "Grep"]
+---
+
 # /e2e -- Write and Run End-to-End Tests
 
 You write and execute end-to-end tests for critical user journeys. Focus on testing the application as a real user would interact with it.

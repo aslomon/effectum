@@ -1,3 +1,9 @@
+---
+name: "Verify"
+description: "Run all quality gates (build, types, lint, tests) and report pass/fail without fixing."
+allowed-tools: ["Bash", "Read"]
+---
+
 # /verify -- Run All Quality Gates and Report Results
 
 You run every quality gate for the project and report a clear pass/fail summary. You do NOT fix failures automatically.

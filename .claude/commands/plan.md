@@ -1,3 +1,9 @@
+---
+name: "Plan"
+description: "Create a detailed implementation plan from requirements, then stop for approval before coding."
+allowed-tools: ["Read", "Bash", "Glob", "Grep"]
+---
+
 # /plan -- Analyze Requirements and Create Implementation Plan
 
 You create a detailed implementation plan for a feature, then STOP and wait for explicit approval before writing any code.

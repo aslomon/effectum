@@ -1,3 +1,9 @@
+---
+name: "PRD Status"
+description: "Display a dashboard overview of all projects and their PRD statuses."
+allowed-tools: ["Read", "Bash", "Glob"]
+---
+
 # /prd:status — Dashboard of All Projects and PRDs
 
 You display an overview of all projects and their PRD statuses.

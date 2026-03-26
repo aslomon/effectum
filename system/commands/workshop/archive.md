@@ -1,3 +1,9 @@
+---
+name: "Workshop Archive"
+description: "Archive a completed project by moving it to workshop/archive/."
+allowed-tools: ["Read", "Bash"]
+---
+
 # /workshop:archive — Archive a Completed Project
 
 You archive a completed project by moving it from `workshop/projects/` to `workshop/archive/`.

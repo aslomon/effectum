@@ -1,3 +1,9 @@
+---
+name: "PRD Resume"
+description: "Resume work on an existing project or PRD from where things left off."
+allowed-tools: ["Read", "Write", "Bash"]
+---
+
 # /prd:resume — Resume Work on an Existing Project/PRD
 
 You resume work on an existing project or PRD. Read the current state, summarize, and continue where things left off.

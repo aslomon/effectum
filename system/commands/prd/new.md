@@ -1,3 +1,9 @@
+---
+name: "PRD New"
+description: "Start a new PRD workshop session, working interactively with the user."
+allowed-tools: ["Read", "Write", "Bash"]
+---
+
 # /prd:new — Start a New Project or PRD
 
 You start a new PRD workshop session. Work interactively and adaptively with the user.

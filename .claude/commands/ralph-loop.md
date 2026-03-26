@@ -1,3 +1,9 @@
+---
+name: "Ralph Loop"
+description: "Autonomous iterative implementation loop that runs until all acceptance criteria are met."
+allowed-tools: ["Read", "Write", "Edit", "Bash", "Glob", "Grep", "Agent"]
+---
+
 # /ralph-loop -- Self-Referential Agentic Loop for Autonomous Implementation
 
 You enter an autonomous iteration loop. Each iteration: assess state, implement the next step, run quality gates, repeat -- until all criteria are met or max-iterations is reached.
@@ -11,6 +17,13 @@ Parse `$ARGUMENTS` for these components:
 3. **`--completion-promise "PHRASE"`**: The exact phrase to output when done (required).
 
 If either `--max-iterations` or `--completion-promise` is missing, ask the user to provide them and wait.
+
+## Prime Directives
+
+1. **Honesty above all**: The completion promise may ONLY be output when the statement is 100% TRUE. Do NOT output false promises to escape the loop. If the build is broken, tests fail, or criteria are unmet, the promise MUST NOT be output.
+2. **One step per iteration**: Each iteration should accomplish one meaningful piece of work. Do not try to implement the entire feature in a single iteration.
+3. **Always run quality gates**: After every significant change, verify the build and tests. Do not accumulate changes without verification.
+4. **Self-awareness**: Read your own progress log to avoid repeating failed approaches. Learn from previous iterations.
 
 ## Step 2: Initialize State
 
@@ -214,13 +227,6 @@ Apply these escalation rules:
 - Write a final status report to `.claude/ralph-status.md`.
 - Do NOT output the completion promise -- it would be dishonest.
 - Report what was accomplished and what remains.
-
-## CRITICAL RULES
-
-1. **Honesty above all**: The completion promise may ONLY be output when the statement is 100% TRUE. Do NOT output false promises to escape the loop. If the build is broken, tests fail, or criteria are unmet, the promise MUST NOT be output.
-2. **One step per iteration**: Each iteration should accomplish one meaningful piece of work. Do not try to implement the entire feature in a single iteration.
-3. **Always run quality gates**: After every significant change, verify the build and tests. Do not accumulate changes without verification.
-4. **Self-awareness**: Read your own progress log to avoid repeating failed approaches. Learn from previous iterations.
 
 ## Next Steps
 

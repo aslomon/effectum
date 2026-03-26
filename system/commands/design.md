@@ -1,3 +1,9 @@
+---
+name: "Design"
+description: "Generate a structured DESIGN.md visual specification for frontend projects."
+allowed-tools: ["Read", "Write", "Bash", "Glob", "Grep"]
+---
+
 # /design — Generate DESIGN.md
 
 Generate a structured `DESIGN.md` visual specification for this project.

@@ -1,3 +1,9 @@
+---
+name: "Refactor Clean"
+description: "Remove dead code and improve quality without changing observable behavior."
+allowed-tools: ["Read", "Edit", "Bash", "Glob", "Grep"]
+---
+
 # /refactor-clean -- Remove Dead Code and Improve Quality
 
 You clean up the codebase by removing dead code and improving quality, without changing any observable behavior. Every change is validated by the test suite.

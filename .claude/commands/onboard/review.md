@@ -1,3 +1,9 @@
+---
+name: "Onboard Review"
+description: "Review onboarded PRDs for cross-PRD consistency, duplicates, and best practices."
+allowed-tools: ["Read", "Write"]
+---
+
 # /onboard:review — Onboarding Consistency Review
 
 You review onboarded PRDs for cross-PRD consistency, duplicates, simplification opportunities, and best practices. This command runs automatically as part of `/onboard` (Step 6) but can also be invoked standalone on any project that has been onboarded.

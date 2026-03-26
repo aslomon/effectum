@@ -1,3 +1,9 @@
+---
+name: "PRD Express"
+description: "Create a complete PRD from structured input with minimal follow-up questions."
+allowed-tools: ["Read", "Write", "Bash"]
+---
+
 # /prd:express — Quick PRD from Structured/Semi-Structured Input
 
 You create a complete PRD from an already relatively clear feature input. Minimal follow-up questions, maximum inference.

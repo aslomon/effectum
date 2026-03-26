@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.15.0] - 2026-03-26
+
+### Added
+
+- **YAML Frontmatter on All Commands** — All 28 command files (`.claude/commands/` and `system/commands/`) now include `---` YAML frontmatter with `name`, `description`, and `allowed-tools` fields. Enables machine-readable command metadata and improved CLI tooling.
+- **Agent Spec Extraction from `/onboard`** — 6 specialized agent prompts extracted from `onboard.md` into separate files:
+  - `system/agents/onboard-stack-analyst.md` — Technology stack detection
+  - `system/agents/onboard-architecture-analyst.md` — Architecture pattern identification
+  - `system/agents/onboard-api-analyst.md` — API endpoint discovery
+  - `system/agents/onboard-database-analyst.md` — Database schema analysis
+  - `system/agents/onboard-frontend-analyst.md` — Frontend structure & UI framework detection
+  - `system/agents/onboard-test-analyst.md` — Testing framework and coverage analysis
+  - `onboard.md` reduced from 578 → 202 lines (under 250-line target); agent prompts now live in isolated, maintainable files.
+- **Command Index** (`system/commands/README.md`) — Comprehensive guide to all 28 commands organized by workflow category (Planning, Implementation, Quality, Git, Loop Control, Orchestration, Setup, PRD Workshop, Workshop). Includes workflow diagrams and decision trees.
+- **Overview Table in `/onboard`** — Quick reference showing the 8-step onboarding process (Parse & Validate → Launch 6 Agents → Merge Results → Self-Test → Generate PRDs → Consistency Review → User Confirmation → Write Files) with parallel agents and expected outputs.
+- **Prime Directives Repositioning in `/ralph-loop`** — Moved from line 224 ("CRITICAL RULES" section) to line 21 ("Prime Directives" section) for improved discoverability and immediate visibility in command file.
+
+### Tests
+
+- New `test/frontmatter.test.js` — 92 tests covering YAML frontmatter validation for all 28 command files:
+  - Frontmatter presence and valid YAML syntax
+  - Required fields: `name`, `description`, `allowed-tools`
+  - Field value types and non-empty validation
+  - Allowed-tools contain only valid tool names (Bash, Read, Edit, Write, Glob, Grep, Agent, etc.)
+- **Total tests**: 389 (up from 297)
+
+### Changed
+
+- **Version bumped** — v0.14.2 → v0.15.0 (minor version bump for new features)
+- **`.effectum.json` metadata** — Version reference updated
+
 ## [0.13.0] - 2026-03-25
 
 ### Added

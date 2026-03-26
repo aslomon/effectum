@@ -1,3 +1,9 @@
+---
+name: "Checkpoint"
+description: "Create a tagged git commit as a safe restore point for easy rollback."
+allowed-tools: ["Bash", "Read"]
+---
+
 # /checkpoint -- Create a Git Restore Point
 
 You create a tagged git commit as a safe restore point. This allows easy rollback if subsequent changes need to be undone.
