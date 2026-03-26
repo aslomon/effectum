@@ -255,6 +255,7 @@ function listAllFiles(dir, prefix = "") {
 
 async function main() {
   const targetDir = process.cwd();
+  const autoYes = process.argv.includes("--yes") || process.argv.includes("-y");
   const repoRoot = findRepoRoot();
 
   const p = await initClack();
@@ -337,13 +338,16 @@ async function main() {
   let commandsToUpdate = [];
 
   if (hasNewCommands) {
-    const addNew = await p.confirm({
-      message: `Add ${diff.newCommands.length} new command(s)?`,
-      initialValue: true,
-    });
-    if (p.isCancel(addNew)) {
-      p.cancel("Update cancelled.");
-      process.exit(0);
+    let addNew = autoYes;
+    if (!autoYes) {
+      addNew = await p.confirm({
+        message: `Add ${diff.newCommands.length} new command(s)?`,
+        initialValue: true,
+      });
+      if (p.isCancel(addNew)) {
+        p.cancel("Update cancelled.");
+        process.exit(0);
+      }
     }
     if (addNew) {
       commandsToAdd = diff.newCommands;
@@ -351,13 +355,16 @@ async function main() {
   }
 
   if (hasUpdatedCommands) {
-    const updateExisting = await p.confirm({
-      message: `Update ${diff.updatedCommands.length} existing command(s)?`,
-      initialValue: true,
-    });
-    if (p.isCancel(updateExisting)) {
-      p.cancel("Update cancelled.");
-      process.exit(0);
+    let updateExisting = autoYes;
+    if (!autoYes) {
+      updateExisting = await p.confirm({
+        message: `Update ${diff.updatedCommands.length} existing command(s)?`,
+        initialValue: true,
+      });
+      if (p.isCancel(updateExisting)) {
+        p.cancel("Update cancelled.");
+        process.exit(0);
+      }
     }
     if (updateExisting) {
       commandsToUpdate = diff.updatedCommands;
