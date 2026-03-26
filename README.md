@@ -16,12 +16,12 @@ _Effectum (Latin): the result, the accomplishment — that which has been brough
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Built%20for-Claude%20Code-blueviolet)](https://claude.ai/claude-code)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
-[![Version](https://img.shields.io/badge/version-0.10.0-orange)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.15.0-orange)](CHANGELOG.md)
 [![Website](https://img.shields.io/badge/Website-aslomon.github.io%2Feffectum-D97706)](https://aslomon.github.io/effectum/)
 
 <br>
 
-[Quick Start](#-quick-start) · [Configurator](#-configurator) · [The Workflow](#-the-workflow) · [PRD Lifecycle](#-prd-lifecycle) · [Project Onboarding](#-project-onboarding) · [Foundation](#-foundation) · [How is this different?](#-how-is-this-different) · [Website](https://aslomon.github.io/effectum/)
+[Quick Start](#-quick-start) · [Configurator](#-configurator) · [The Workflow](#-the-workflow) · [Design](#-design-system-generation) · [Update Command](#-update-command) · [PRD Lifecycle](#-prd-lifecycle) · [Project Onboarding](#-project-onboarding) · [Foundation](#-foundation) · [How is this different?](#-how-is-this-different) · [Website](https://aslomon.github.io/effectum/)
 
 </div>
 
@@ -35,7 +35,7 @@ I'm a solo developer who builds everything with Claude Code. I tried BMAD, SpecK
 
 So I built Effectum. It combines what I learned from all of them: structured specifications (like SpecKit), autonomous execution (like GSD's approach), and quality gates that actually enforce standards.
 
-**v0.9.0 is a different animal.** The original was a workflow tool. This is closer to a development operating system. There's now an intelligent configurator that detects your stack and sets everything up in four steps. There's a full PRD lifecycle with changelogs, semantic diffs, and delta handoffs. And there's `/onboard` — my personal favorite — which drops 6 parallel agents into any unfamiliar codebase and produces a complete understanding of it in minutes.
+**v0.15.0 is a different animal.** The original was a workflow tool. This is closer to a development operating system. There's now an intelligent configurator that detects your stack and package manager in one step. There's a full PRD lifecycle with changelogs, semantic diffs, and delta handoffs. There's `/design` to generate a visual spec before you write a line of CSS. And there's `/onboard` — my personal favorite — which drops 6 parallel agents into any unfamiliar codebase and produces a complete understanding of it in minutes.
 
 The result: from zero to autonomous development, for any stack, any language, with the quality gates that make overnight builds actually trustworthy.
 
@@ -55,7 +55,7 @@ The interactive configurator detects your stack, asks what you're building, and 
 # Open Claude Code in your project
 cd ~/my-project && claude
 
-# Onboard an existing codebase (new in v0.9.0!)
+# Onboard an existing codebase
 /onboard
 
 # Or write a specification and build from scratch
@@ -93,18 +93,22 @@ claude
 
 One command. Everything you need for autonomous Claude Code development.
 
-| What                          | Details                                                                                                              |
-| ----------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| **Intelligent Configurator**  | Stack auto-detection, 8 quick presets, 16 languages, guided CLI tool install                                        |
-| **17 workflow commands**      | `/plan`, `/tdd`, `/verify`, `/e2e`, `/code-review`, `/build-fix`, `/refactor-clean`, `/ralph-loop`, `/cancel-ralph`, `/checkpoint`, `/prd:new`, `/prd:update`, `/prd:review`, `/prd:handoff`, `/prd:network-map`, `/onboard`, `/onboard:review` |
-| **PRD Lifecycle**             | Frontmatter, changelog, semantic diff, delta handoffs, task registry, network map auto-sync                         |
-| **Project Onboarding**        | 6 parallel analysis agents, 7-point self-test loop, per-area PRDs, interactive HTML network map                     |
-| **19 Agent Specializations**  | Pre-configured agent roles with distinct behaviors for planning, TDD, review, security, and more                    |
-| **22+ Skills**                | Reusable capability blocks attached to agent roles                                                                   |
-| **7 Stack Presets + 8 Quick** | Next.js+Supabase, Python+FastAPI, Swift/SwiftUI, Go+Echo, Django+PostgreSQL, Rust+Actix, Generic + Firebase, Prisma, Flutter…   |
-| **Quality gates**             | 8 automated checks (build, types, lint, tests, security, etc.)                                                       |
-| **Foundation Hooks**          | Always-on: secret detection, TDD enforcement, guardrails                                                             |
-| **Extensible**                | JSON-based tool definitions + detection rules, community presets + blocks                                            |
+| What                          | Details                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Intelligent Configurator**  | Stack auto-detection, package manager config, 8 quick presets, 16 languages                                                                                                                                                                                                                                                                                                                                                |
+| **28 workflow commands**      | `/plan`, `/design`, `/tdd`, `/verify`, `/e2e`, `/code-review`, `/build-fix`, `/refactor-clean`, `/ralph-loop`, `/cancel-ralph`, `/checkpoint`, `/orchestrate`, `/prd:new`, `/prd:express`, `/prd:discuss`, `/prd:decompose`, `/prd:update`, `/prd:review`, `/prd:handoff`, `/prd:prompt`, `/prd:resume`, `/prd:status`, `/prd:network-map`, `/onboard`, `/onboard:review`, `/setup`, `/workshop:init`, `/workshop:archive` |
+| **Update Command**            | `npx @aslomon/effectum update` — add new commands, refresh templates, preserve config                                                                                                                                                                                                                                                                                                                                      |
+| **PRD Lifecycle**             | Frontmatter, changelog, semantic diff, delta handoffs, task registry, network map auto-sync                                                                                                                                                                                                                                                                                                                                |
+| **Project Onboarding**        | 6 parallel analysis agents, 7-point self-test loop, per-area PRDs, interactive HTML network map                                                                                                                                                                                                                                                                                                                            |
+| **Design System Generation**  | `/design` generates DESIGN.md — color tokens, typography, component specs, constraints                                                                                                                                                                                                                                                                                                                                     |
+| **19 Agent Specializations**  | Pre-configured agent roles with distinct behaviors for planning, TDD, review, security, and more                                                                                                                                                                                                                                                                                                                           |
+| **22+ Skills**                | Reusable capability blocks attached to agent roles                                                                                                                                                                                                                                                                                                                                                                         |
+| **7 Stack Presets + 8 Quick** | Next.js+Supabase, Python+FastAPI, Swift/SwiftUI, Go+Echo, Django+PostgreSQL, Rust+Actix, Generic + Firebase, Prisma, Flutter…                                                                                                                                                                                                                                                                                              |
+| **YAML Frontmatter**          | All 28 commands have machine-readable metadata (`name`, `description`, `allowed-tools`)                                                                                                                                                                                                                                                                                                                                    |
+| **Quality gates**             | 8 automated checks (build, types, lint, tests, security, etc.)                                                                                                                                                                                                                                                                                                                                                             |
+| **Foundation Hooks**          | Always-on: secret detection, TDD enforcement, guardrails                                                                                                                                                                                                                                                                                                                                                                   |
+| **Extensible**                | JSON-based tool definitions + detection rules, community presets + blocks                                                                                                                                                                                                                                                                                                                                                  |
+| **389 tests**                 | Comprehensive test suite covering configurator, templates, commands, frontmatter, and more                                                                                                                                                                                                                                                                                                                                 |
 
 ---
 
@@ -206,16 +210,16 @@ Recommended setup:
 
 Drop it into any project and it reads your existing config files to detect your stack automatically:
 
-| File detected              | Stack recognized        |
-| -------------------------- | ----------------------- |
-| `package.json`             | Node.js / framework     |
-| `next.config.*`            | Next.js                 |
-| `pyproject.toml`           | Python ecosystem        |
-| `go.mod`                   | Go                      |
-| `Package.swift`            | Swift / SPM             |
-| `pubspec.yaml`             | Flutter / Dart          |
-| `requirements.txt`         | Python (legacy)         |
-| `Cargo.toml`               | Rust                    |
+| File detected      | Stack recognized    |
+| ------------------ | ------------------- |
+| `package.json`     | Node.js / framework |
+| `next.config.*`    | Next.js             |
+| `pyproject.toml`   | Python ecosystem    |
+| `go.mod`           | Go                  |
+| `Package.swift`    | Swift / SPM         |
+| `pubspec.yaml`     | Flutter / Dart      |
+| `requirements.txt` | Python (legacy)     |
+| `Cargo.toml`       | Rust                |
 
 ### Modular Stack Selection (4 Steps)
 
@@ -232,17 +236,17 @@ Step 4/4: Deploy       → Vercel / Railway / Fly.io / App Store / …
 
 One click. Instantly configured.
 
-| Preset                    | Stack                               |
-| ------------------------- | ----------------------------------- |
-| **Next.js + Supabase**    | Full-stack web, TypeScript          |
-| **Python + FastAPI**      | API backend, Pydantic               |
-| **Swift / SwiftUI**       | iOS / macOS native                  |
-| **Go + Echo**             | High-performance API                |
-| **Django + PostgreSQL**   | Python web, ORM-first               |
-| **Generic**               | Stack-agnostic, customize freely    |
-| **+ Firebase**            | Any framework + Firebase backend    |
-| **+ Prisma**              | Any framework + Prisma ORM          |
-| **+ Flutter**             | Cross-platform mobile               |
+| Preset                  | Stack                            |
+| ----------------------- | -------------------------------- |
+| **Next.js + Supabase**  | Full-stack web, TypeScript       |
+| **Python + FastAPI**    | API backend, Pydantic            |
+| **Swift / SwiftUI**     | iOS / macOS native               |
+| **Go + Echo**           | High-performance API             |
+| **Django + PostgreSQL** | Python web, ORM-first            |
+| **Generic**             | Stack-agnostic, customize freely |
+| **+ Firebase**          | Any framework + Firebase backend |
+| **+ Prisma**            | Any framework + Prisma ORM       |
+| **+ Flutter**           | Cross-platform mobile            |
 
 ### Language & CLI Setup
 
@@ -254,44 +258,63 @@ One click. Instantly configured.
 
 ## 🔧 The Workflow
 
-20+ commands. Each does exactly one thing, and does it well.
+28 commands. Each does exactly one thing, and does it well. Every command includes [YAML frontmatter](#-yaml-frontmatter) with machine-readable metadata and shows contextual next steps after completion.
+
+### Planning & Design
+
+| Command   | What it does                                                        |
+| --------- | ------------------------------------------------------------------- |
+| `/plan`   | Read spec, explore codebase, produce a plan — **waits for your OK** |
+| `/design` | Generate DESIGN.md — color tokens, typography, component specs      |
 
 ### Core Build Cycle
 
-| Command            | What it does                                                           |
-| ------------------ | ---------------------------------------------------------------------- |
-| `/plan`            | Read spec, explore codebase, produce a plan — **waits for your OK**   |
-| `/tdd`             | Failing test → passing code → refactor → repeat                       |
-| `/verify`          | Run all 8 quality gates                                                |
-| `/code-review`     | Security audit, architecture review, rating by severity                |
-| `/build-fix`       | Targeted fix loop for a specific failing build or test                 |
-| `/refactor-clean`  | Clean up code without changing behavior                                |
-| `/e2e`             | End-to-end test run with Playwright                                    |
+| Command           | What it does                                            |
+| ----------------- | ------------------------------------------------------- |
+| `/tdd`            | Failing test → passing code → refactor → repeat         |
+| `/verify`         | Run all 8 quality gates                                 |
+| `/code-review`    | Security audit, architecture review, rating by severity |
+| `/build-fix`      | Targeted fix loop for a specific failing build or test  |
+| `/refactor-clean` | Clean up code without changing behavior                 |
+| `/e2e`            | End-to-end test run with Playwright                     |
 
 ### Autonomy & Control
 
-| Command            | What it does                                                                   |
-| ------------------ | ------------------------------------------------------------------------------ |
-| `/ralph-loop`      | Autonomous build loop — writes, tests, fixes, iterates until done              |
-| `/cancel-ralph`    | Stop the loop cleanly, preserve state                                          |
-| `/checkpoint`      | Snapshot current state (git + test results + notes)                           |
+| Command         | What it does                                                      |
+| --------------- | ----------------------------------------------------------------- |
+| `/ralph-loop`   | Autonomous build loop — writes, tests, fixes, iterates until done |
+| `/cancel-ralph` | Stop the loop cleanly, preserve state                             |
+| `/checkpoint`   | Snapshot current state (git + test results + notes)               |
+| `/orchestrate`  | Parallel agent teams (opt-in)                                     |
 
 ### PRD Commands
 
-| Command              | What it does                                                           |
-| -------------------- | ---------------------------------------------------------------------- |
-| `/prd:new`           | Start a new specification (guided workshop)                            |
-| `/prd:update`        | Evolve an existing spec — tracks changes semantically                 |
-| `/prd:review`        | Quality check — is this spec ready for implementation?                |
-| `/prd:handoff`       | Delta handoff: what changed since last implementation run             |
-| `/prd:network-map`   | Render PRD dependencies as interactive HTML map                        |
+| Command            | What it does                                              |
+| ------------------ | --------------------------------------------------------- |
+| `/prd:new`         | Start a new specification (guided workshop)               |
+| `/prd:express`     | Quick PRD from structured input                           |
+| `/prd:discuss`     | Deep-dive discussion for a specific PRD                   |
+| `/prd:decompose`   | Split large scope into multiple PRDs                      |
+| `/prd:update`      | Evolve an existing spec — tracks changes semantically     |
+| `/prd:review`      | Quality check — is this spec ready for implementation?    |
+| `/prd:handoff`     | Delta handoff: what changed since last implementation run |
+| `/prd:prompt`      | Generate handoff prompt for a PRD                         |
+| `/prd:resume`      | Resume work on an existing project/PRD                    |
+| `/prd:status`      | Dashboard of all projects and PRDs                        |
+| `/prd:network-map` | Render PRD dependencies as interactive HTML map           |
 
-### Onboarding
+### Setup & Onboarding
 
-| Command            | What it does                                                           |
-| ------------------ | ---------------------------------------------------------------------- |
-| `/onboard`         | Full codebase analysis with 6 parallel agents + self-test loop         |
-| `/onboard:review`  | Re-run onboarding review after significant changes                     |
+| Command             | What it does                                                   |
+| ------------------- | -------------------------------------------------------------- |
+| `/setup`            | Install Effectum workflow into a project                       |
+| `/onboard`          | Full codebase analysis with 6 parallel agents + self-test loop |
+| `/onboard:review`   | Re-run onboarding review after significant changes             |
+| `/workshop:init`    | Initialize a new project workspace                             |
+| `/workshop:archive` | Archive a completed project                                    |
+
+> [!TIP]
+> See the full [Command Index](system/commands/README.md) for all 28 commands organized by workflow category with decision trees.
 
 ---
 
@@ -310,7 +333,7 @@ Claude works autonomously — writing code, running tests, fixing errors, iterat
 
 **You go to sleep. You wake up to a working feature.**
 
-Starting in v0.9.0, Ralph Loop also detects PRD changes mid-run via PRD-hash comparison. If your spec was updated while the loop was running, it pauses and reconciles before continuing.
+Ralph Loop also detects PRD changes mid-run via PRD-hash comparison. If your spec was updated while the loop was running, it pauses and reconciles before continuing.
 
 <details>
 <summary><strong>🔄 How Ralph Loop works internally</strong></summary>
@@ -367,9 +390,81 @@ graph TD
 
 ---
 
+## 🎨 Design System Generation
+
+`/design` generates a structured `DESIGN.md` before you write a line of frontend code. It bridges the gap between "what to build" (PRD) and "how it should look" (implementation).
+
+```
+/prd:new → PRD approved → /design → DESIGN.md generated → /plan → /ralph-loop
+```
+
+### How It Works
+
+1. **Reads the active PRD** — extracts project name, app type, key features
+2. **Scans for design signals** — detects Tailwind, shadcn/ui, CSS custom properties, UI libraries
+3. **Asks 3–5 lightweight questions** — color palette, typography feel, UI complexity, references
+4. **Generates DESIGN.md** — 7 sections: Overview, Color System, Typography, Component Patterns, Layout & Spacing, Interaction Design, Constraints
+5. **Confirms** — summarizes key decisions, suggests `/plan` as next step
+
+> [!TIP]
+> `DESIGN.md` is optional for CLI tools, API backends, and libraries. Only suggested for web apps, mobile apps, and fullstack projects.
+
+---
+
+## 🔄 Update Command
+
+Already have Effectum installed? Update without re-running the full setup:
+
+```bash
+npx @aslomon/effectum update
+```
+
+The update command:
+
+- **Diffs commands** — shows new and updated commands available in the latest version
+- **Re-renders templates** — refreshes CLAUDE.md, settings.json, and guardrails.md from your existing config
+- **Preserves your config** — reads `.effectum.json`, keeps your stack, autonomy level, and customizations
+- **Supports `--yes`** — non-interactive mode for CI and automation
+
+```
+$ npx @aslomon/effectum update
+ℹ Project: "my-app" (nextjs-supabase)
+ℹ 3 new command(s) available:
+    + /design
+    + /prd:express
+    + /prd:discuss
+ℹ 5 command(s) with updates:
+    ~ /ralph-loop
+    ~ /onboard
+    ...
+✔ Updated: 3 new command(s) added, 5 command(s) updated, CLAUDE.md refreshed
+```
+
+---
+
+## 📦 Package Manager Configurator
+
+The configurator now auto-detects your package manager from lock files and recommends the best option for your ecosystem.
+
+| Lock file detected | Package manager    |
+| ------------------ | ------------------ |
+| `pnpm-lock.yaml`   | pnpm (recommended) |
+| `yarn.lock`        | yarn               |
+| `bun.lockb`        | bun                |
+| `uv.lock`          | uv                 |
+| `Cargo.lock`       | cargo              |
+| `go.sum`           | go                 |
+
+- **Apple-like flow**: detected package manager → confirm or change
+- **Ecosystem-aware defaults**: pnpm for JS, uv for Python, cargo for Rust, go for Go
+- **Flows through all templates** via `{{PACKAGE_MANAGER}}` — CLAUDE.md, guardrails, and settings all use the correct manager
+- **Supports**: npm, pnpm, yarn, bun, uv, pip, poetry, cargo, go, swift package (SPM), flutter
+
+---
+
 ## 📋 PRD Lifecycle
 
-Specifications aren't static. They evolve. v0.9.0 treats PRDs as living documents with full version control, semantic diffing, and automatic synchronization across your project.
+Specifications aren't static. They evolve. Effectum treats PRDs as living documents with full version control, semantic diffing, and automatic synchronization across your project.
 
 ### Frontmatter & Changelog
 
@@ -398,6 +493,7 @@ And an auto-maintained changelog at the bottom:
 
 ```markdown
 ## Changelog
+
 - v1.3.0 (2026-03-20): Added rate limiting spec, revised token refresh flow
 - v1.2.0 (2026-03-10): Expanded RLS policy section
 - v1.1.0 (2026-02-28): Added 2FA requirements
@@ -450,9 +546,9 @@ This is what makes Ralph Loop so much more reliable on evolving projects.
 
 - [x] JWT token generation
 - [x] Supabase RLS policies
-- [ ] Rate limiter middleware        ← added in v1.3.0
+- [ ] Rate limiter middleware ← added in v1.3.0
 - [ ] Token expiry update: 24h → 7d ← changed in v1.3.0
-- [ ] Remove session cookie handler  ← deprecated in v1.3.0
+- [ ] Remove session cookie handler ← deprecated in v1.3.0
 
 Last synced: 2026-03-20T14:32:00Z
 ```
@@ -469,20 +565,20 @@ docs/network-map.html  ← open in browser, zoom, click nodes
 
 ## 🔍 Project Onboarding
 
-This is the feature I'm most excited about in v0.9.0. `/onboard` solves a real problem: dropping into an unfamiliar codebase (or coming back to your own after months away) and needing to get up to speed fast.
+`/onboard` solves a real problem: dropping into an unfamiliar codebase (or coming back to your own after months away) and needing to get up to speed fast. In v0.15.0, the onboard command was refactored from 578 to 202 lines — 6 agent specs now live in dedicated files under `system/agents/`.
 
 ### How It Works
 
 Run `/onboard` in any project directory. Effectum spawns **6 parallel analysis agents**, each with a specific lens:
 
-| Agent                   | Focus                                                        |
-| ----------------------- | ------------------------------------------------------------ |
-| 🏗️ **Architecture**     | Directory structure, module boundaries, dependency graph     |
-| 🗄️ **Data Model**       | Schemas, migrations, RLS policies, relationships             |
-| 🔌 **API Surface**      | Endpoints, contracts, authentication patterns                |
-| 🧪 **Test Coverage**    | What's tested, what's not, test quality assessment           |
-| 🔒 **Security**         | Auth flows, secret handling, known vulnerability patterns    |
-| 📦 **Dependencies**     | Packages, versions, outdated or risky dependencies           |
+| Agent                | Focus                                                     |
+| -------------------- | --------------------------------------------------------- |
+| 🏗️ **Architecture**  | Directory structure, module boundaries, dependency graph  |
+| 🗄️ **Data Model**    | Schemas, migrations, RLS policies, relationships          |
+| 🔌 **API Surface**   | Endpoints, contracts, authentication patterns             |
+| 🧪 **Test Coverage** | What's tested, what's not, test quality assessment        |
+| 🔒 **Security**      | Auth flows, secret handling, known vulnerability patterns |
+| 📦 **Dependencies**  | Packages, versions, outdated or risky dependencies        |
 
 ### Self-Test Loop (7 Tests)
 
@@ -529,14 +625,14 @@ docs/
 
 Effectum ships with pre-configured agent roles. Each has a distinct behavior profile, toolset, and communication style appropriate to its function:
 
-| Category            | Agents                                                                |
-| ------------------- | --------------------------------------------------------------------- |
-| **Planning**        | Architect, Decomposer, Risk Analyst                                   |
-| **Build**           | Engineer, TDD Driver, Refactor Specialist                             |
-| **Quality**         | QA Reviewer, Security Auditor, Performance Analyst                    |
-| **Documentation**   | Spec Writer, API Documenter, Onboarding Analyst                       |
-| **Orchestration**   | Ralph (autonomous loop), Checkpoint Manager, Delta Tracker            |
-| **Analysis**        | Architecture Agent, Data Model Agent, Test Coverage Agent, Dep Auditor |
+| Category          | Agents                                                                 |
+| ----------------- | ---------------------------------------------------------------------- |
+| **Planning**      | Architect, Decomposer, Risk Analyst                                    |
+| **Build**         | Engineer, TDD Driver, Refactor Specialist                              |
+| **Quality**       | QA Reviewer, Security Auditor, Performance Analyst                     |
+| **Documentation** | Spec Writer, API Documenter, Onboarding Analyst                        |
+| **Orchestration** | Ralph (autonomous loop), Checkpoint Manager, Delta Tracker             |
+| **Analysis**      | Architecture Agent, Data Model Agent, Test Coverage Agent, Dep Auditor |
 
 Each specialization is defined in `system/agents/` and composed from shared skills.
 
@@ -544,25 +640,43 @@ Each specialization is defined in `system/agents/` and composed from shared skil
 
 Skills are reusable capability blocks that agent specializations are composed from:
 
-| Domain              | Examples                                                               |
-| ------------------- | ---------------------------------------------------------------------- |
-| **Code**            | TypeScript, Python, Go, Swift, Rust, SQL                              |
-| **Testing**         | TDD, E2E, snapshot, load testing                                      |
-| **Security**        | Secret detection, OWASP scanning, RLS validation                      |
-| **Documentation**   | PRD authoring, markdown, Mermaid diagrams                             |
-| **Infrastructure**  | Vercel, Railway, Fly.io, Docker, GitHub Actions                       |
+| Domain             | Examples                                         |
+| ------------------ | ------------------------------------------------ |
+| **Code**           | TypeScript, Python, Go, Swift, Rust, SQL         |
+| **Testing**        | TDD, E2E, snapshot, load testing                 |
+| **Security**       | Secret detection, OWASP scanning, RLS validation |
+| **Documentation**  | PRD authoring, markdown, Mermaid diagrams        |
+| **Infrastructure** | Vercel, Railway, Fly.io, Docker, GitHub Actions  |
 
 ### Foundation Hooks (Always Active)
 
 Three hooks run on every Claude Code session, regardless of configuration:
 
-| Hook                     | What it does                                                      |
-| ------------------------ | ----------------------------------------------------------------- |
-| **Secret Detection**     | Blocks writes containing API keys, tokens, passwords to any file  |
-| **TDD Enforcement**      | Warns when code is written before a failing test exists           |
-| **Guardrails**           | Prevents `rm -rf`, `DROP TABLE`, direct writes to `.env`          |
+| Hook                 | What it does                                                     |
+| -------------------- | ---------------------------------------------------------------- |
+| **Secret Detection** | Blocks writes containing API keys, tokens, passwords to any file |
+| **TDD Enforcement**  | Warns when code is written before a failing test exists          |
+| **Guardrails**       | Prevents `rm -rf`, `DROP TABLE`, direct writes to `.env`         |
 
 These can't be disabled by mistake. They're the safety net.
+
+### 📑 YAML Frontmatter
+
+All 28 command files now include YAML frontmatter with machine-readable metadata:
+
+```yaml
+---
+name: "Design"
+description: "Generate a structured DESIGN.md visual specification for frontend projects."
+allowed-tools: ["Read", "Write", "Bash", "Glob", "Grep"]
+---
+```
+
+This enables better context selection by Claude Code — each command declares exactly what tools it needs and what it does, reducing token waste and improving command routing.
+
+### Command Next Steps
+
+Every command now shows contextual next steps after completion. The suggestions respect your autonomy level — conservative mode shows approval steps, while full autonomy mode suggests the next automated action.
 
 ---
 
@@ -619,12 +733,12 @@ Pull requests for new stacks, presets, and detection rules are especially welcom
 
 ## 🆚 How is this different?
 
-| Tool           | What it does                              | What Effectum adds / differs                                                         |
-| -------------- | ----------------------------------------- | ------------------------------------------------------------------------------------ |
-| **GSD**        | Context engineering, prevents context rot | PRD Lifecycle (spec versioning + delta handoffs), Ralph Loop, Project Onboarding     |
-| **BMAD**       | Full enterprise methodology               | Same ideas, 90% less ceremony. Configurator auto-selects what's relevant.            |
-| **SpecKit**    | Living specifications                     | + Autonomous execution + Quality gates + Task registry + Network map                 |
-| **Taskmaster** | Task breakdown from PRDs                  | + TDD workflow + Code review + E2E testing + Semantic diff + Onboarding agents       |
+| Tool           | What it does                              | What Effectum adds / differs                                                            |
+| -------------- | ----------------------------------------- | --------------------------------------------------------------------------------------- |
+| **GSD**        | Context engineering, prevents context rot | PRD Lifecycle (spec versioning + delta handoffs), Ralph Loop, Project Onboarding        |
+| **BMAD**       | Full enterprise methodology               | Same ideas, 90% less ceremony. Configurator auto-selects what's relevant.               |
+| **SpecKit**    | Living specifications                     | + Autonomous execution + Quality gates + Task registry + Network map                    |
+| **Taskmaster** | Task breakdown from PRDs                  | + TDD workflow + Code review + E2E testing + Semantic diff + Onboarding agents          |
 | **Kiro (AWS)** | IDE-native spec-driven dev (VS Code fork) | CLI-native. No IDE required. No opaque request pricing. Works with your existing setup. |
 
 The short version: Effectum doesn't invent new concepts. It combines what already works, removes what doesn't, and packages it so it actually runs.
@@ -712,16 +826,16 @@ Customize everything<br>
 
 ### Quick Presets (Add-Ons)
 
-| Quick Preset       | Adds to your stack                                            |
-| ------------------ | ------------------------------------------------------------- |
-| **+ Firebase**     | Firebase SDK, Firestore rules, Auth integration patterns      |
-| **+ Prisma**       | Prisma schema, migration workflow, typed client               |
-| **+ Flutter**      | Dart/Flutter project config, widget test setup                |
-| **+ Stripe**       | Webhook handling patterns, price/subscription management      |
-| **+ tRPC**         | End-to-end typesafe API layer                                 |
-| **+ Turborepo**    | Monorepo workspace configuration                              |
-| **+ Docker**       | Dockerfile, docker-compose, health check patterns             |
-| **+ GitHub CI**    | GitHub Actions workflow for test + deploy                     |
+| Quick Preset    | Adds to your stack                                       |
+| --------------- | -------------------------------------------------------- |
+| **+ Firebase**  | Firebase SDK, Firestore rules, Auth integration patterns |
+| **+ Prisma**    | Prisma schema, migration workflow, typed client          |
+| **+ Flutter**   | Dart/Flutter project config, widget test setup           |
+| **+ Stripe**    | Webhook handling patterns, price/subscription management |
+| **+ tRPC**      | End-to-end typesafe API layer                            |
+| **+ Turborepo** | Monorepo workspace configuration                         |
+| **+ Docker**    | Dockerfile, docker-compose, health check patterns        |
+| **+ GitHub CI** | GitHub Actions workflow for test + deploy                |
 
 Each preset configures build commands, test frameworks, linters, formatters, and architecture rules for your stack.
 
@@ -763,7 +877,8 @@ effectum/
 ├── system/                          The installable workflow
 │   ├── configurator/                Stack detection + setup recommender
 │   ├── templates/                   CLAUDE.md, settings, guardrails (parameterized)
-│   ├── commands/                    17 workflow commands
+│   ├── commands/                    28 workflow commands (with YAML frontmatter)
+│   │   └── README.md               Command index by category
 │   ├── agents/                      19 agent specializations
 │   ├── skills/                      22+ reusable skill blocks
 │   ├── tools/                       JSON-based tool definitions
@@ -795,14 +910,14 @@ effectum/
 
 ## 📚 Documentation
 
-| Guide                                                   | What you'll learn                              |
-| ------------------------------------------------------- | ---------------------------------------------- |
-| 📖 [Workflow Overview](docs/workflow-overview.md)       | The complete autonomous workflow explained      |
-| ⚙️ [Configurator Guide](docs/configurator-guide.md)    | Stack detection, presets, language setup        |
-| 📋 [PRD Lifecycle](docs/prd-lifecycle.md)               | Frontmatter, diffs, delta handoffs, tasks.md   |
-| 🔍 [Onboarding Guide](docs/onboarding-guide.md)         | Getting up to speed on any codebase fast        |
-| 🔧 [Customization](docs/customization.md)               | JSON tools, detection rules, community presets  |
-| 🔍 [Troubleshooting](docs/troubleshooting.md)           | Common issues and solutions                     |
+| Guide                                               | What you'll learn                              |
+| --------------------------------------------------- | ---------------------------------------------- |
+| 📖 [Workflow Overview](docs/workflow-overview.md)   | The complete autonomous workflow explained     |
+| ⚙️ [Configurator Guide](docs/configurator-guide.md) | Stack detection, presets, language setup       |
+| 📋 [PRD Lifecycle](docs/prd-lifecycle.md)           | Frontmatter, diffs, delta handoffs, tasks.md   |
+| 🔍 [Onboarding Guide](docs/onboarding-guide.md)     | Getting up to speed on any codebase fast       |
+| 🔧 [Customization](docs/customization.md)           | JSON tools, detection rules, community presets |
+| 🔍 [Troubleshooting](docs/troubleshooting.md)       | Common issues and solutions                    |
 
 ---
 
