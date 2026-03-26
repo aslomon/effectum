@@ -258,21 +258,39 @@ async function main() {
   const autoYes = process.argv.includes("--yes") || process.argv.includes("-y");
   const repoRoot = findRepoRoot();
 
-  const p = await initClack();
-  p.intro("EFFECTUM — Update");
+  let p;
+  try {
+    p = await initClack();
+    p.intro("EFFECTUM — Update");
+  } catch (err) {
+    // Fallback if clack fails (non-TTY, CI, etc.)
+    p = {
+      intro: (msg) => console.log(`\n${msg}`),
+      outro: (msg) => console.log(`\n${msg}`),
+      log: {
+        info: (msg) => console.log(`ℹ ${msg}`),
+        error: (msg) => console.error(`✖ ${msg}`),
+        success: (msg) => console.log(`✔ ${msg}`),
+        step: (msg) => console.log(`  ${msg}`),
+      },
+      spinner: () => ({ start: (msg) => console.log(`… ${msg}`), stop: (msg) => console.log(`✔ ${msg}`) }),
+      confirm: async () => true,
+      isCancel: () => false,
+      cancel: (msg) => console.log(`✖ ${msg}`),
+    };
+    p.intro("EFFECTUM — Update");
+  }
 
   // Read existing config
   let config;
   try {
     config = readConfig(targetDir);
   } catch (err) {
-    p.log.error(err.message);
+    console.error(`✖ ${err.message}`);
     process.exit(1);
   }
   if (!config) {
-    p.log.error(
-      "No .effectum.json found. Run `npx @aslomon/effectum` first to set up.",
-    );
+    console.error("✖ No .effectum.json found. Run `npx @aslomon/effectum` first to set up.");
     process.exit(1);
   }
 
