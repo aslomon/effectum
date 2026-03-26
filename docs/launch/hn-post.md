@@ -1,7 +1,7 @@
 # Show HN: Effectum — Autonomous dev framework for Claude Code
 
 > **Status:** Draft — needs Jason review before posting  
-> **Updated:** 2026-03-25 (v0.11.1, 184 tests)  
+> **Updated:** 2026-03-26 (v0.13.0, 236 tests)  
 > **Target:** news.ycombinator.com/submit
 
 ---
@@ -30,16 +30,21 @@ You define a "completion promise" — a concrete, checkable statement like "all 
 
 The 8 quality gates run every iteration: build, TypeScript types, lint, tests (80%+ coverage required), OWASP security scan, no debug logs, no `any` casts, max 300 lines/file. Not optional.
 
+**Bonus: `/design` workshop.**
+Same philosophy applied to design systems — generates an opinionated DESIGN.md with color palette, typography, component standards. One command, usable by both humans and agents as a source of truth.
+
 **The other half: PRD Workshop.**  
 Slash commands that guide you through writing a specification good enough for autonomous implementation. `/prd:new` → guided discovery → acceptance criteria → data model → completion promise. Spec quality is the primary variable in output quality — there's no shortcut around it.
 
 I tried everything first: BMAD is thorough but too much ceremony for a solo dev. GSD introduced me to context engineering and changed how I think about prompting — but doesn't help with spec writing. Taskmaster does useful task breakdowns but stops there. SpecKit has a great spec format but leaves the execution gap open. Effectum combines what I found useful from each, packaged as one command.
 
+**Traction so far:** 2.600+ downloads this week on npm — no launch post, just organic discovery. That surprised me enough to finally write this.
+
 **Honest about limitations:** Claude Code only (no Codex/Gemini yet). Ralph Loop effectiveness scales with PRD quality. Agent Teams feature is experimental (requires Claude Code ≥v2.1.32 with feature flag).
 
-Works with 7 stack presets (Next.js+Supabase, FastAPI, Django+PostgreSQL, Go+Echo, Rust+Actix, Swift/SwiftUI, generic). Three autonomy levels: Conservative (step-by-step), Standard (batch), Full Autonomy (overnight). Agent Teams for parallel multi-domain builds.
+Works with 7 stack presets (Next.js+Supabase, FastAPI, Django+PostgreSQL, Go+Echo, Rust+Actix, Swift/SwiftUI, generic). Three autonomy levels: Conservative (step-by-step), Standard (batch), Full Autonomy (overnight). Agent Teams for parallel multi-domain builds. Outputs both CLAUDE.md and AGENTS.md (compatible with GSD, BMAD, and other agentic frameworks).
 
-v0.11.1, 184 tests, MIT.
+v0.13.0, 236 tests, MIT.
 
 `npx @aslomon/effectum`
 
@@ -62,7 +67,7 @@ GitHub: github.com/aslomon/effectum
 > Max iterations are configurable (default 30 for Standard). If gates don't pass after max iterations, it stops and reports the delta. It's not magic — it fails gracefully when the spec is ambiguous or the codebase is too complex.
 
 **"GitHub has 0 stars — is this production-ready?"**  
-> This is a Show HN post, not a launch claim. v0.11.1 is stable with 184 passing tests. I've been using it on my own projects for weeks. Stars are a lagging indicator.
+> This is a Show HN post, not a launch claim. v0.13.0 is stable with 236 passing tests. I've been using it on my own projects for weeks. Stars are a lagging indicator.
 
 ---
 
@@ -70,4 +75,6 @@ GitHub: github.com/aslomon/effectum
 
 - **Best HN posting time:** Tuesday–Thursday, 8–10 AM US Eastern (2–4 PM Berlin)
 - **Kiro backlash timing:** AWS Kiro's pricing complaints peaked late March — directly relevant context
-- **After AGENTS.md support ships (v0.12.0):** add mention of multi-agent convention alignment
+- **AGENTS.md support:** v0.12.0 shipped, mention in post body if relevant
+- **Design system support:** v0.13.0 added `/design` command + DESIGN.md template
+- **npm traction:** 2.625 downloads this week (organic, pre-launch) — mention briefly for credibility
