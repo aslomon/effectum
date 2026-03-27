@@ -25,10 +25,15 @@ VISUAL_VIEWPORTS="${VISUAL_VIEWPORTS:-desktop mobile}"
 VISUAL_BACKEND="${VISUAL_BACKEND:-openai-gpt-5.4-mini}"
 VISUAL_OUTPUT_DIR="${VISUAL_OUTPUT_DIR:-.effectum/visual-reports}"
 
-# Viewport dimensions
-declare -A VIEWPORT_MAP
-VIEWPORT_MAP[desktop]="1440x900"
-VIEWPORT_MAP[mobile]="390x844"
+# Viewport dimensions (portable function — avoids declare -A for macOS bash 3.2 compat)
+get_viewport_dims() {
+  case "$1" in
+    desktop) echo "1440x900" ;;
+    mobile)  echo "390x844" ;;
+    tablet)  echo "768x1024" ;;
+    *)       echo "$1" ;;  # passthrough for custom dimensions
+  esac
+}
 
 # --- Flag parsing ------------------------------------------------------------
 
@@ -129,29 +134,33 @@ call_openai() {
   local route="$2"
   local viewport="$3"
 
+  # Write payload builder to a temp file to avoid shell-quoting issues
+  local py_script
+  py_script=$(mktemp /tmp/visual-check-openai-XXXXXX.py)
+  cat > "$py_script" << 'PYEOF'
+import json, sys, os
+prompt = os.environ.get("_VISION_PROMPT", "")
+b64 = os.environ.get("_B64_IMAGE", "")
+payload = {
+    "model": "gpt-4o-mini",
+    "messages": [{"role": "user", "content": [
+        {"type": "text", "text": prompt},
+        {"type": "image_url", "image_url": {"url": "data:image/png;base64," + b64}}
+    ]}],
+    "max_tokens": 2000,
+    "temperature": 0.2
+}
+print(json.dumps(payload))
+PYEOF
+
+  local body
+  body=$(_VISION_PROMPT="$VISION_PROMPT" _B64_IMAGE="$b64_image" python3 "$py_script")
+  rm -f "$py_script"
+
   curl -s https://api.openai.com/v1/chat/completions \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
-    -d "$(python3 -c "
-import json, sys, os
-
-prompt = sys.stdin.read()
-b64 = os.environ['_B64_IMAGE']
-
-payload = {
-    'model': 'gpt-4o-mini',
-    'messages': [{
-        'role': 'user',
-        'content': [
-            {'type': 'text', 'text': prompt},
-            {'type': 'image_url', 'image_url': {'url': 'data:image/png;base64,' + b64}}
-        ]
-    }],
-    'max_tokens': 2000,
-    'temperature': 0.2
-}
-print(json.dumps(payload))
-" <<< "$VISION_PROMPT")"
+    -d "$body"
 }
 
 call_anthropic() {
@@ -159,29 +168,32 @@ call_anthropic() {
   local route="$2"
   local viewport="$3"
 
+  local py_script
+  py_script=$(mktemp /tmp/visual-check-anthropic-XXXXXX.py)
+  cat > "$py_script" << 'PYEOF'
+import json, sys, os
+prompt = os.environ.get("_VISION_PROMPT", "")
+b64 = os.environ.get("_B64_IMAGE", "")
+payload = {
+    "model": "claude-haiku-4-5",
+    "max_tokens": 2000,
+    "messages": [{"role": "user", "content": [
+        {"type": "image", "source": {"type": "base64", "media_type": "image/png", "data": b64}},
+        {"type": "text", "text": prompt}
+    ]}]
+}
+print(json.dumps(payload))
+PYEOF
+
+  local body
+  body=$(_VISION_PROMPT="$VISION_PROMPT" _B64_IMAGE="$b64_image" python3 "$py_script")
+  rm -f "$py_script"
+
   curl -s https://api.anthropic.com/v1/messages \
     -H "Content-Type: application/json" \
     -H "x-api-key: $ANTHROPIC_API_KEY" \
     -H "anthropic-version: 2023-06-01" \
-    -d "$(python3 -c "
-import json, sys, os
-
-prompt = sys.stdin.read()
-b64 = os.environ['_B64_IMAGE']
-
-payload = {
-    'model': 'claude-haiku-4-5',
-    'max_tokens': 2000,
-    'messages': [{
-        'role': 'user',
-        'content': [
-            {'type': 'image', 'source': {'type': 'base64', 'media_type': 'image/png', 'data': b64}},
-            {'type': 'text', 'text': prompt}
-        ]
-    }]
-}
-print(json.dumps(payload))
-" <<< "$VISION_PROMPT")"
+    -d "$body"
 }
 
 extract_json_content() {
@@ -221,7 +233,7 @@ HAS_CRITICAL=false
 
 for route in $VISUAL_ROUTES; do
   for viewport in $VISUAL_VIEWPORTS; do
-    dimensions="${VIEWPORT_MAP[$viewport]:-$viewport}"
+    dimensions="$(get_viewport_dims "$viewport")"
     width="${dimensions%x*}"
     height="${dimensions#*x}"
     url="${BASE_URL%/}${route}"
