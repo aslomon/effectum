@@ -95,3 +95,9 @@
 | ------------------- | ---------------------------------- |
 | `/workshop:init`    | Initialize a new project workspace |
 | `/workshop:archive` | Archive a completed project        |
+
+### Hooks
+
+| Hook               | Description                                                  |
+| ------------------ | ------------------------------------------------------------ |
+| `visual-check.sh`  | Optional visual quality gate. Screenshot + vision review.    |
