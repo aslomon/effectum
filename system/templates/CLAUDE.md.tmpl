@@ -105,7 +105,7 @@ The following hooks run automatically. Do NOT duplicate their behavior:
 - **Auto-Format**: {{FORMATTER}} runs after every Edit/Write. Do not manually run the formatter.
 - **CHANGELOG**: A Stop hook auto-updates CHANGELOG.md with [Unreleased] entries after meaningful changes. Do not manually update CHANGELOG.md unless the user explicitly asks.
 - **Commit Message Gate**: Commit messages must be >= 10 characters and descriptive. The hook blocks short messages.
-- **Stop Quality Gate**: A prompt hook verifies all tasks are completed before stopping. If it returns `ok: false`, continue working on what's missing.
+- **Stop Quality Gate**: Removed in v0.16 (prompt-type Stop hooks caused session loops). Task completion is enforced via SubagentStop + TaskCompleted hooks for agent teams. For solo sessions, use `/verify` manually before stopping.
 - **Subagent Quality Gate**: Subagent output is verified. Ensure subagents complete their tasks fully, not just report findings.
 - **Error Learning**: Tool failures are logged to `.claude/logs/tool-failures.jsonl`. Check this file at session start to learn from past mistakes and avoid repeating them.
 - **Guardrails Injection**: At session start and after compaction, `~/.claude/guardrails.md` (global) and `$PROJECT/.claude/guardrails.md` (project) are loaded. Follow them strictly.
@@ -119,6 +119,8 @@ The following hooks run automatically. Do NOT duplicate their behavior:
 ## Stack-Specific Rules
 
 {{STACK_SPECIFIC_GUARDRAILS}}
+
+{{LOOP_CONFIG}}
 
 ## Agent Teams — Opt-In
 

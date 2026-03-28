@@ -1,0 +1,29 @@
+{
+  "id": "loop-worker",
+  "label": "Background Worker / Scheduled Tasks",
+  "hint": "For long-running Claude Code sessions using /loop — PR monitoring, deployment checks, overnight builds",
+  "ecosystem": "any",
+  "framework": null,
+  "database": null,
+  "auth": null,
+  "deploy": null,
+  "orm": null,
+  "packageManager": "npm",
+  "formatter": null,
+  "stack": "loop-worker",
+  "toolsFile": null,
+  "loopConfig": {
+    "defaultSchedule": "0 * * * *",
+    "maxRuntimeSeconds": 300,
+    "exitOnError": false,
+    "transcriptTimestamps": true
+  },
+  "autonomyLevel": "auto",
+  "notes": [
+    "Each /loop iteration is independent — always re-read tasks.md at the start",
+    "On completion, write a one-line summary to .claude/loop-summary.log",
+    "If all tasks are DONE, exit cleanly — do not invent new work",
+    "On error, log to .claude/loop-errors.log and continue (do not hard-fail)",
+    "Combine with /ralph-loop for overnight PRD implementation runs"
+  ]
+}

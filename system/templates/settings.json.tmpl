@@ -23,7 +23,7 @@
       "Bash(rm -rf /*)",
       "Bash(rm -rf .)"
     ],
-    "defaultMode": "default"
+    "defaultMode": "auto"
   },
   "hooks": {
     "SessionStart": [
@@ -131,18 +131,6 @@
     "Stop": [
       {
         "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "Evaluate if Claude should stop. Context: $ARGUMENTS\n\nCheck:\n1. Were ALL user-requested tasks completed (not just attempted)?\n2. Any unresolved errors or failed operations?\n3. If code was changed, was it verified (no obvious type errors, no broken imports)?\n4. Any TODO/FIXME comments added but not resolved?\n\nIMPORTANT: If stop_hook_active is true in the input, this is a second pass — be lenient and only block for critical unfinished work. Never block twice in a row for the same reason.\n\nRespond {\"ok\": true} to allow stopping, or {\"ok\": false, \"reason\": \"what remains\"} to continue.",
-            "timeout": 30,
-            "statusMessage": "Verifying work completion..."
-          },
-          {
-            "type": "prompt",
-            "prompt": "Check if tests were written for code changes. Run: git diff --name-only HEAD 2>/dev/null\n\nAnalyze the changed files:\n1. Identify source code files (not config, not docs, not tests)\n2. Check if corresponding test files were also changed or created\n3. If source files changed but NO test files changed, respond {\"ok\": false, \"reason\": \"Source files were modified but no tests were written. Write tests before stopping.\"}\n4. If tests exist for the changes, or only config/docs changed, respond {\"ok\": true}\n5. If stop_hook_active is true in input, be lenient — only block for completely untested new features.\n\nContext: $ARGUMENTS",
-            "timeout": 30,
-            "statusMessage": "Checking test coverage..."
-          },
           {
             "type": "agent",
             "prompt": "Check if meaningful code changes were made in this session by running: git diff --stat HEAD 2>/dev/null\n\nIf there are staged or unstaged changes to source code files (not just config/formatting):\n1. Read the current CHANGELOG.md if it exists\n2. Add entries under [Unreleased] following Keep a Changelog format (Added/Changed/Fixed/Removed)\n3. If CHANGELOG.md doesn't exist, create it with a proper header and the current changes\n\nIf changes are trivial (only formatting, only comments, only config), skip and respond {\"ok\": true}.\nIf stop_hook_active is true, respond {\"ok\": true} immediately — do not update CHANGELOG on second pass.\n\nContext: $ARGUMENTS",

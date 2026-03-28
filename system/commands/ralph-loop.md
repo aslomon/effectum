@@ -370,6 +370,23 @@ After the Ralph Loop completes (or is cancelled):
 
 ℹ️ Alternative: If the loop completed with all criteria met, proceed directly to `/code-review` and then commit.
 
+## Overnight / Scheduled Runs (via `/loop`)
+
+For long PRD implementations you want to run unattended:
+
+1. Set up your PRD and `tasks.md` normally
+2. Instead of running `/ralph-loop` interactively, schedule it:
+   ```
+   /loop schedule "0 22 * * *" — run /ralph-loop --max-iterations 50 --completion-promise "ALL_DONE"
+   ```
+3. Claude will fire at 22:00, iterate autonomously, and stop when done or on iteration limit
+4. Review `.claude/loop-summary.log` in the morning for a one-line status
+5. Run `/verify` and `/code-review` after waking up
+
+**When to use scheduled vs. interactive:**
+- Interactive: tasks that need guidance mid-way, or where you want to review each iteration
+- Scheduled (`/loop`): well-defined PRDs with clear acceptance criteria, overnight builds, CI-like automation
+
 ## Communication
 
 Follow the language settings defined in CLAUDE.md for user-facing communication.
