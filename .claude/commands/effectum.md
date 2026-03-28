@@ -1,16 +1,59 @@
-# Effectum Commands
+---
+name: "Effectum Help"
+description: "Getting started guide and full command reference. Run this first."
+allowed-tools: []
+effort: "low"
+---
 
-New? Type `/effectum`. Lost? Type `/next`.
+# /effectum — Getting Started & Command Reference
 
-## Navigation
+You output a formatted getting-started card followed by the full command reference. No tools needed — this is pure informational output.
+
+## Output the Following
+
+### Getting Started
+
+Print this card:
+
+```
+╭─────────────────────────────────────────────╮
+│  EFFECTUM — Autonomous Development Workflow │
+╰─────────────────────────────────────────────╯
+```
+
+Then print three numbered journeys:
+
+**1. NEW PROJECT** — Start from scratch
+
+```
+/prd:new → /prd:review → /prd:handoff → [open target repo] → /run
+```
+
+**2. EXISTING CODEBASE** — Bring an existing project into Effectum
+
+```
+/onboard → /prd:new → /prd:review → /prd:handoff → /run
+```
+
+**3. FEATURE BUILD** — Add a feature to a project already under Effectum
+
+```
+/prd:new → /save → /run
+```
+
+### Command Reference
+
+Then print all commands grouped into 8 categories. Use a table for each group with columns: Command | Description | When to use.
+
+**Navigation**
 
 | Command     | Description                                                    | When to use                     |
 | ----------- | -------------------------------------------------------------- | ------------------------------- |
 | `/effectum` | Getting started guide and full command reference               | First time using Effectum       |
-| `/help`     | Alias for `/effectum`                                          | Anytime you need help           |
+| `/help`     | Alias for /effectum                                            | Anytime you need help           |
 | `/next`     | Reads project state and recommends the single best next action | When you're not sure what to do |
 
-## Core Workflow
+**Core Workflow**
 
 | Command           | Description                                     | When to use                         |
 | ----------------- | ----------------------------------------------- | ----------------------------------- |
@@ -22,7 +65,7 @@ New? Type `/effectum`. Lost? Type `/next`.
 | `/build-fix`      | Incrementally fix build and type errors         | When the build is broken            |
 | `/refactor-clean` | Remove dead code and improve quality            | Periodic cleanup                    |
 
-## Autonomous
+**Autonomous**
 
 | Command                    | Description                              | When to use                      |
 | -------------------------- | ---------------------------------------- | -------------------------------- |
@@ -32,7 +75,7 @@ New? Type `/effectum`. Lost? Type `/next`.
 | `/forensics` (`/diagnose`) | Post-mortem diagnosis for loop failures  | Loop failed or got stuck         |
 | `/orchestrate`             | Manage Agent Teams (requires opt-in)     | Complex multi-agent tasks        |
 
-## Spec
+**Spec**
 
 | Command            | Description                              | When to use                         |
 | ------------------ | ---------------------------------------- | ----------------------------------- |
@@ -46,9 +89,8 @@ New? Type `/effectum`. Lost? Type `/next`.
 | `/prd:status`      | Dashboard of all projects and PRDs       | Overview of all work                |
 | `/prd:resume`      | Resume work on an existing project/PRD   | Picking up where you left off       |
 | `/prd:network-map` | Create/update project network map        | Visualizing project structure       |
-| `/prd:prompt`      | Generate handoff prompt for a PRD        | Quick handoff without full export   |
 
-## Onboarding
+**Onboarding**
 
 | Command                      | Description                                                | When to use                      |
 | ---------------------------- | ---------------------------------------------------------- | -------------------------------- |
@@ -56,7 +98,7 @@ New? Type `/effectum`. Lost? Type `/next`.
 | `/onboard:review`            | Review onboarded PRDs for consistency                      | After onboarding                 |
 | `/map-codebase` (`/explore`) | Spawn 4 parallel agents to produce codebase knowledge docs | Understanding a new codebase     |
 
-## Project
+**Project**
 
 | Command            | Description                                                    | When to use                      |
 | ------------------ | -------------------------------------------------------------- | -------------------------------- |
@@ -64,22 +106,31 @@ New? Type `/effectum`. Lost? Type `/next`.
 | `/project:archive` | Archive a completed project                                    | Project is done                  |
 | `/context:init`    | Interactive interview to populate project context in CLAUDE.md | Setting up project context       |
 
-## Design
+**Design**
 
 | Command   | Description                             | When to use               |
 | --------- | --------------------------------------- | ------------------------- |
 | `/design` | Generate DESIGN.md visual specification | Before any UI/design work |
 
-## Setup
+**Setup**
 
 | Command  | Description                              | When to use              |
 | -------- | ---------------------------------------- | ------------------------ |
 | `/setup` | Install Effectum workflow into a project | First-time project setup |
 
-## Deprecated
+### Deprecated Commands
 
 | Old Name            | New Name           | Removed in |
 | ------------------- | ------------------ | ---------- |
 | `/workshop:init`    | `/project:init`    | v0.19      |
 | `/workshop:archive` | `/project:archive` | v0.19      |
 | `/effectum:init`    | `/context:init`    | v0.19      |
+
+### What's Next?
+
+Print: "Type `/next` for a personalized recommendation based on your project state."
+
+## Communication
+
+Follow the language settings defined in CLAUDE.md for user-facing communication.
+All command tables and technical content in English.

@@ -1,11 +1,9 @@
 ---
-name: "workshop:archive [DEPRECATED]"
-description: "DEPRECATED: Use /project:archive instead."
+name: "Project Archive"
+description: "Archive a completed project by moving it to workshop/archive/."
 allowed-tools: ["Read", "Bash"]
 effort: "low"
 ---
-
-> **⚠️ DEPRECATED:** `/workshop:archive` has been renamed to `/project:archive`. Both names work identically. `/workshop:archive` will be removed in v0.19.
 
 # /project:archive — Archive a Completed Project
 

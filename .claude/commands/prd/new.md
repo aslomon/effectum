@@ -22,7 +22,7 @@ If `$ARGUMENTS` is provided, analyze the input:
 
 Check if a matching project already exists under `workshop/projects/`.
 
-- **New project**: Create the project structure following the `/workshop:init` pattern:
+- **New project**: Create the project structure following the `/project:init` (formerly `/workshop:init`) pattern:
   1. Derive a slug from the project name (lowercase, hyphens, no spaces).
   2. Create `workshop/projects/{slug}/` with subdirectories `prds/`, `prompts/`, `notes/`.
   3. Create `PROJECT.md` from `workshop/templates/PROJECT.md` with slug and today's date.
