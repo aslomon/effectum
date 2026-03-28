@@ -13,11 +13,13 @@
 _Effectum (Latin): the result, the accomplishment — that which has been brought to completion._
 
 [![npm](https://img.shields.io/npm/v/@aslomon/effectum.svg)](https://www.npmjs.com/package/@aslomon/effectum)
+[![npm downloads](https://img.shields.io/npm/dw/@aslomon/effectum.svg)](https://www.npmjs.com/package/@aslomon/effectum)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Built%20for-Claude%20Code-blueviolet)](https://claude.ai/claude-code)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Version](https://img.shields.io/badge/version-0.16.0-orange)](CHANGELOG.md)
 [![Website](https://img.shields.io/badge/Website-aslomon.github.io%2Feffectum-D97706)](https://aslomon.github.io/effectum/)
+[![GitHub Stars](https://img.shields.io/github/stars/aslomon/effectum?style=social)](https://github.com/aslomon/effectum)
 
 <br>
 
@@ -28,6 +30,8 @@ _Effectum (Latin): the result, the accomplishment — that which has been brough
 ---
 
 > Built by Jason Salomon-Rinnert. Works for me — might work for you. MIT licensed, PRs welcome.
+>
+> If Effectum saves you time, a ⭐ on GitHub means a lot — it helps others find it too.
 
 ## Why I built this
 
