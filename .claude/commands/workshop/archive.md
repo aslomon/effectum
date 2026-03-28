@@ -36,7 +36,7 @@ Check if `workshop/archive/` exists. If not, create it.
 Move the project directory:
 
 - From: `workshop/projects/{slug}/`
-- To: `archive/{YYYY-MM-DD}_{slug}/`
+- To: `workshop/archive/{YYYY-MM-DD}_{slug}/`
 
 Use today's date as the prefix.
 

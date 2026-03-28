@@ -108,10 +108,9 @@ Show the user:
 
 After handoff:
 
-- → `/design` — If frontend work is detected, create a DESIGN.md before planning
+- → `/ralph-loop` — Run autonomous implementation with the handoff prompt to implement the PRD end-to-end (recommended for full-auto mode)
 - → `/plan` — Create a detailed implementation plan from the handed-off PRD
-
-ℹ️ Alternative: For full autonomy, use `/ralph-loop` with the handoff prompt to implement the PRD end-to-end.
+- → `/design` — If frontend work is detected, create a DESIGN.md before planning
 
 ## Communication
 

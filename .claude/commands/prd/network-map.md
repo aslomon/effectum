@@ -73,11 +73,22 @@ Create the diagram according to the conventions from the guide:
 - Label edges with relationship types
 - Keep the diagram readable — split or simplify if >20 nodes
 
-## Step 7: Write File
+## Step 7: Sanitize Mermaid Syntax
+
+Before writing the `.mmd` file, ensure valid Mermaid syntax:
+
+1. **Wrap labels containing special characters in double quotes:**
+   - Labels with `/` (paths): `NODE["/docs/getting-started"]` not `NODE[/docs/getting-started]`
+   - Labels with `&`, `<`, `>`, `(`, `)`: must be quoted
+2. **Node IDs must be alphanumeric + underscore only** — no dots, slashes, or hyphens in IDs
+3. **Validate subgraph names don't conflict with node IDs**
+4. **Test:** The generated Mermaid must parse without errors on mermaid.live
+
+## Step 8: Write File
 
 Write the updated Network Map to `workshop/projects/{slug}/network-map.mmd`.
 
-## Step 8: Validate (if `--validate` flag)
+## Step 9: Validate (if `--validate` flag)
 
 When `--validate` is passed, skip map generation and instead perform these checks:
 
@@ -121,18 +132,7 @@ Follow the language settings defined in CLAUDE.md.
 All file content must be written in English.
 User-facing communication uses the language configured in CLAUDE.md.
 
-## Step 8b: Sanitize Mermaid Syntax
-
-Before writing the `.mmd` file, ensure valid Mermaid syntax:
-
-1. **Wrap labels containing special characters in double quotes:**
-   - Labels with `/` (paths): `NODE["/docs/getting-started"]` not `NODE[/docs/getting-started]`
-   - Labels with `&`, `<`, `>`, `(`, `)`: must be quoted
-2. **Node IDs must be alphanumeric + underscore only** — no dots, slashes, or hyphens in IDs
-3. **Validate subgraph names don't conflict with node IDs**
-4. **Test:** The generated Mermaid must parse without errors on mermaid.live
-
-## Step 9: Display Result
+## Step 10: Display Result
 
 Show the user:
 
@@ -141,7 +141,7 @@ Show the user:
 3. Validation results (if `--validate` was used, or always run basic checks after generation).
 4. Notes on potential issues (circular dependencies, isolated nodes, too many connections).
 
-## Step 10: Generate HTML Viewer
+## Step 11: Generate HTML Viewer
 
 After writing the `.mmd` file, ALWAYS generate an interactive HTML viewer:
 

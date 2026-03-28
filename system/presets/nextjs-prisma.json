@@ -14,6 +14,6 @@
     "name": "Prettier",
     "glob": "ts|tsx|js|jsx|json|css|md"
   },
-  "stack": "nextjs-supabase",
-  "toolsFile": "nextjs-supabase"
+  "stack": "generic",
+  "toolsFile": "generic"
 }

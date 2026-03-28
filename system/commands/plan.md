@@ -102,14 +102,29 @@ Present the complete plan to the user in a clear, structured format. Include:
 4. Risks, open questions, and assumptions.
 5. Total estimated complexity.
 
-## Step 7: STOP and Wait
+## Step 7: Save Plan to Disk
 
-**STOP HERE.** Do NOT write any code, create any files, or make any changes.
+Write the complete plan to `.claude/plan.local.md` so that other commands (e.g., `/orchestrate`, `/ralph-loop`) can reference it:
+
+1. Include the full plan content from Step 6 (summary, phases, reusable assets, risks).
+2. Add a YAML frontmatter block:
+   ```yaml
+   ---
+   status: pending_approval
+   created_at: [ISO 8601 timestamp]
+   source: [PRD path or "inline prompt"]
+   ---
+   ```
+3. If `.claude/` directory does not exist, create it.
+
+## Step 8: STOP and Wait
+
+**STOP HERE.** Do NOT write any code, create any files (beyond the plan), or make any changes.
 
 Wait for explicit approval from the user:
 
-- **"OK"** or **"Go"** or **"Start"** -> Proceed with implementation (typically via `/tdd`).
-- **"Change X"** -> Revise the plan based on feedback, present again, wait again.
+- **"OK"** or **"Go"** or **"Start"** -> Update `status` in `.claude/plan.local.md` to `approved`, then proceed with implementation (typically via `/tdd`).
+- **"Change X"** -> Revise the plan based on feedback, update `.claude/plan.local.md`, present again, wait again.
 - **"Start over"** -> Discard the plan and restart from Step 1.
 
 ## Next Steps
@@ -118,6 +133,7 @@ After the plan is approved:
 
 - → `/tdd` — Implement the plan using test-driven development (RED → GREEN → REFACTOR)
 - → `/ralph-loop` — Run autonomous implementation loop (if autonomy level is "full" in `.effectum.json`)
+- → `/orchestrate` — Spawn an Agent Team to implement the plan in parallel (requires Agent Teams enabled)
 
 ℹ️ Alternative: If the plan reveals design work is needed first, run `/design` before implementation.
 

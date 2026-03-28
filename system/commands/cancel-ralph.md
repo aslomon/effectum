@@ -77,9 +77,13 @@ Write a comprehensive status report to `.claude/ralph-status.md`:
 [Concrete suggestions for how to continue: specific fixes, remaining tasks, approach changes]
 ```
 
-## Step 4: Update State File
+## Step 4: Update State Files
 
-Set `active: false` in `.claude/ralph-loop.local.md`. Do not delete the file -- it serves as a record.
+1. Set `active: false` in `.claude/ralph-loop.local.md`. Do not delete the file -- it serves as a record.
+2. If `.effectum/loop-state.json` exists, update it:
+   - Set `status` to `"cancelled"`
+   - Add `cancelled_at` with the current ISO 8601 timestamp
+   - Preserve all other fields (`task`, `iteration`, `maxIterations`, `lastError`, `artifacts_created`, `completionPromise`, `branch`, etc.)
 
 ## Step 5: Inform the User
 
