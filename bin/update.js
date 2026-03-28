@@ -95,6 +95,35 @@ function copyCommandFiles(files, sourceDir, destDir) {
   }
 }
 
+// ─── Sentinel block preservation ─────────────────────────────────────────────
+
+const SENTINEL_START = "<!-- effectum:project-context:start -->";
+const SENTINEL_END = "<!-- effectum:project-context:end -->";
+
+/**
+ * Extract the sentinel block (including markers) from file content.
+ * @param {string} content
+ * @returns {string|null} the full sentinel block or null if not found
+ */
+function extractSentinelBlock(content) {
+  const startIdx = content.indexOf(SENTINEL_START);
+  const endIdx = content.indexOf(SENTINEL_END);
+  if (startIdx === -1 || endIdx === -1 || endIdx < startIdx) return null;
+  return content.slice(startIdx, endIdx + SENTINEL_END.length);
+}
+
+/**
+ * Replace the sentinel block in rendered content with a preserved block.
+ * @param {string} rendered - freshly rendered template content
+ * @param {string} preserved - the sentinel block to re-insert
+ * @returns {string}
+ */
+function replaceSentinelBlock(rendered, preserved) {
+  const existing = extractSentinelBlock(rendered);
+  if (!existing) return rendered;
+  return rendered.replace(existing, preserved);
+}
+
 // ─── Re-render templates ────────────────────────────────────────────────────
 
 /**
@@ -111,10 +140,22 @@ function reRenderTemplates(config, targetDir, repoRoot) {
   const stackSections = loadStackPreset(config.stack, targetDir, repoRoot);
   const vars = buildSubstitutionMap(config, stackSections);
 
-  // 1. CLAUDE.md
+  // 1. CLAUDE.md — preserve sentinel block across re-renders
+  const claudeMdPath = path.join(targetDir, "CLAUDE.md");
+  let preservedBlock = null;
+  if (fs.existsSync(claudeMdPath)) {
+    const existingContent = fs.readFileSync(claudeMdPath, "utf8");
+    preservedBlock = extractSentinelBlock(existingContent);
+  }
+
   const claudeMdTmpl = findTemplatePath("CLAUDE.md.tmpl", targetDir, repoRoot);
-  const { content: claudeMdContent } = renderTemplate(claudeMdTmpl, vars);
-  fs.writeFileSync(path.join(targetDir, "CLAUDE.md"), claudeMdContent, "utf8");
+  let { content: claudeMdContent } = renderTemplate(claudeMdTmpl, vars);
+
+  if (preservedBlock) {
+    claudeMdContent = replaceSentinelBlock(claudeMdContent, preservedBlock);
+  }
+
+  fs.writeFileSync(claudeMdPath, claudeMdContent, "utf8");
   refreshed.push("CLAUDE.md");
 
   // 2. settings.json
@@ -273,7 +314,10 @@ async function main() {
         success: (msg) => console.log(`✔ ${msg}`),
         step: (msg) => console.log(`  ${msg}`),
       },
-      spinner: () => ({ start: (msg) => console.log(`… ${msg}`), stop: (msg) => console.log(`✔ ${msg}`) }),
+      spinner: () => ({
+        start: (msg) => console.log(`… ${msg}`),
+        stop: (msg) => console.log(`✔ ${msg}`),
+      }),
       confirm: async () => true,
       isCancel: () => false,
       cancel: (msg) => console.log(`✖ ${msg}`),
@@ -290,7 +334,9 @@ async function main() {
     process.exit(1);
   }
   if (!config) {
-    console.error("✖ No .effectum.json found. Run `npx @aslomon/effectum` first to set up.");
+    console.error(
+      "✖ No .effectum.json found. Run `npx @aslomon/effectum` first to set up.",
+    );
     process.exit(1);
   }
 
@@ -441,6 +487,10 @@ module.exports = {
   copyCommandFiles,
   reRenderTemplates,
   listAllFiles,
+  extractSentinelBlock,
+  replaceSentinelBlock,
+  SENTINEL_START,
+  SENTINEL_END,
   main,
 };
 

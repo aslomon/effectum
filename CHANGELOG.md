@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.16.0] - 2026-03-28
+
+### Added
+
+- **Sentinel-based CLAUDE.md Split** — `<!-- effectum:project-context:start/end -->` markers in the template. Content between sentinels is preserved across `effectum update` re-renders. Enables persistent project context that survives template changes.
+- **Context Budget Monitor** — `/ralph-loop` and `/orchestrate` now estimate context usage before each iteration. At >80% usage: commit current state, write `HANDOFF.md` with structured handoff, and stop cleanly.
+- **Stuck Detection** — `/ralph-loop` tracks error messages across iterations. If the same error repeats in 2 consecutive iterations: stop immediately, write `STUCK.md` with diagnosis and next steps.
+- **Per-Iteration Loop State** — `/ralph-loop` persists `.effectum/loop-state.json` after every iteration. On startup, detects incomplete runs and offers to resume or start fresh.
+- **Loop Ledger** — On completion (success, stuck, or budget stop), `/ralph-loop` appends a session entry to `effectum-metrics.json` with iterations, outcome, quality gates, and duration.
+- **`/forensics` Command** — Post-mortem diagnosis that reads HANDOFF.md, STUCK.md, loop-state.json, effectum-metrics.json, and git log. Classifies failure mode, analyzes root cause, outputs `FORENSICS-YYYY-MM-DD.md` with recommended next steps.
+- **`/effectum:init` Command** — Interactive 7-question interview to populate the sentinel block in CLAUDE.md with project-specific context (app description, users, domain terminology, architecture decisions, conventions, critical areas, tech debt).
+- **`/map-codebase` Command** — Spawns 4 parallel analysis agents (ArchitectureMapper, StackMapper, QualityMapper, IntegrationMapper) that produce 7 knowledge documents in `knowledge/codebase/` (ARCHITECTURE.md, STACK.md, STRUCTURE.md, CONVENTIONS.md, TESTING.md, CONCERNS.md, INTEGRATIONS.md).
+- **Hook Modernization** — Added `if` conditional fields to git-specific hooks in `settings.json.tmpl` (commit message check and secret scanning only fire on `git commit`/`git push`). Added `effort` field to command frontmatter.
+
+### Changed
+
+- **Version bumped** — v0.15.0 → v0.16.0
+- **README** — Updated version badge, feature description for v0.16.0
+- **Command Index** — Added `/forensics`, `/effectum:init`, `/map-codebase` to command reference
+
 ## [0.15.0] - 2026-03-26
 
 ### Added
@@ -275,7 +295,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **MCP Server Integration**: Context7, Playwright, Sequential Thinking, Filesystem
 - Translated all Claude Code commands from German to English
 
-[Unreleased]: https://github.com/aslomon/effectum/compare/v0.9.0...HEAD
+[Unreleased]: https://github.com/aslomon/effectum/compare/v0.16.0...HEAD
+[0.16.0]: https://github.com/aslomon/effectum/compare/v0.15.0...v0.16.0
+[0.15.0]: https://github.com/aslomon/effectum/compare/v0.13.0...v0.15.0
 [0.9.0]: https://github.com/aslomon/effectum/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/aslomon/effectum/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/aslomon/effectum/compare/v0.6.2...v0.7.0
