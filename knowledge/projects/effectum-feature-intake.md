@@ -2,7 +2,7 @@
 
 > Laufender Backlog für externe Feature-Signale (Claude Code / Anthropic / Community).  
 > Quelle: Claude Code Changelog Monitor (06:00 Cron) + Effectum Product Intake (07:30 Cron).  
-> Letzte Aktualisierung: 2026-03-27
+> Letzte Aktualisierung: 2026-03-28
 
 ---
 
@@ -127,6 +127,112 @@
 | - | ------ | ------ | ------ |
 | 001 | Conditional Hooks `if` | Hook-Templates erweitern | ⏳ |
 | 003 | Multi-glob Paths | CLAUDE.md-Templates prüfen + updaten | ⏳ |
+
+## Offene Specs (v0.17-Kandidaten)
+
+| # | Signal | Aktion | Status |
+| - | ------ | ------ | ------ |
+| 002 | TaskCreated Hook | Spec für `/orchestrate`-Integration | ⏳ |
+
+---
+
+### 2026-03-28 — Batch 2 (aus Heartbeat 04:23 Nacht-Monitoring)
+
+---
+
+#### #006 — `--bare` Flag für scripted `-p` Calls
+
+| Feld | Inhalt |
+| ---- | ------ |
+| **Datum** | 2026-03-28 |
+| **Signal** | Claude Code hat `--bare` Flag: skippt Hooks, LSP, Plugin Sync, Skill Dir Walks für reine Script-Calls |
+| **Quelle** | Claude Code Changelog 26.03 |
+| **Bereich** | `/ralph-loop`, CI-Integrationen, Scripted-Mode Docs |
+| **Entscheidung** | `docs-only` |
+| **Priorität** | skip |
+| **Aktion** | Erwähnung in Scripted-Mode / CI-Dokumentation |
+| **Roadmap** | `none` |
+| **Confidence** | hoch |
+| **Status** | ⏳ offen |
+
+---
+
+#### #007 — Auto Mode (AI Safety Classifier für Permissions)
+
+| Feld | Inhalt |
+| ---- | ------ |
+| **Datum** | 2026-03-28 |
+| **Signal** | Neuer "Auto Mode" — AI-powered Safety Classifier ersetzt manuelle Permission Prompts. Claude codet autonom ohne Approval-Bottleneck. |
+| **Quelle** | Claude Code März 2026 Release |
+| **Bereich** | `/setup`, Permission-Level-Doku, CLAUDE.md Sentinels, bypassPermissions |
+| **Entscheidung** | `spec` |
+| **Priorität** | P1 |
+| **Aktion** | Spec: Wie verhält sich Effectum-generiertes CLAUDE.md im Auto Mode? Sentinel-Block Kompatibilität prüfen. |
+| **Roadmap** | `v0.16` |
+| **Confidence** | hoch |
+| **Status** | ⏳ offen |
+
+---
+
+#### #008 — `/loop` Scheduled Tasks (Cron-like Background Worker)
+
+| Feld | Inhalt |
+| ---- | ------ |
+| **Datum** | 2026-03-28 |
+| **Signal** | `/loop` macht Claude Code zum Background Worker — PR Reviews, Deployment Monitoring, scheduled Automations |
+| **Quelle** | Claude Code März 2026 |
+| **Bereich** | `/ralph-loop`, `/orchestrate`, Workflow-Templates |
+| **Entscheidung** | `implement-now` |
+| **Priorität** | P1 |
+| **Aktion** | Effectum `/ralph-loop` + `/orchestrate` Templates um `/loop`-native Patterns erweitern. YAML-Profile für "loop-first" Workflows hinzufügen. |
+| **Roadmap** | `v0.16` |
+| **Confidence** | hoch |
+| **Status** | ⏳ offen |
+
+---
+
+#### #009 — Dispatch (Always-On Desktop Agent via Phone)
+
+| Feld | Inhalt |
+| ---- | ------ |
+| **Datum** | 2026-03-28 |
+| **Signal** | "Dispatch" — Desktop Agent der per SMS/Text gesteuert wird. Claude Desktop + Phone Control. |
+| **Quelle** | Claude Code Release 24.03 |
+| **Bereich** | Remote Workflows, Orchestrierung, Agent-Teams-Doku |
+| **Entscheidung** | `watchlist` |
+| **Priorität** | P2 |
+| **Aktion** | Im Agent-Teams-Kontext beobachten — könnte Effectum /orchestrate-Profile beeinflussen |
+| **Roadmap** | `later` |
+| **Confidence** | mittel |
+| **Status** | ⏳ offen |
+
+---
+
+#### #010 — `CLAUDE_CODE_MCP_SERVER_NAME` + `_URL` Env Vars
+
+| Feld | Inhalt |
+| ---- | ------ |
+| **Datum** | 2026-03-28 |
+| **Signal** | Neue Env Vars für MCP Headless Setup: `CLAUDE_CODE_MCP_SERVER_NAME`, `CLAUDE_CODE_MCP_SERVER_URL` |
+| **Quelle** | Claude Code Changelog 26.03 |
+| **Bereich** | MCP-Integration, `/onboard`, CLAUDE.md Env-Setup |
+| **Entscheidung** | `docs-only` |
+| **Priorität** | skip |
+| **Aktion** | Falls Effectum MCP-Templates generiert → Env-Var-Hinweis einbauen |
+| **Roadmap** | `none` |
+| **Confidence** | hoch |
+| **Status** | ⏳ offen |
+
+---
+
+## Offene P1 Implementierungen (v0.16-Kandidaten)
+
+| # | Signal | Aktion | Status |
+| - | ------ | ------ | ------ |
+| 001 | Conditional Hooks `if` | Hook-Templates erweitern | ⏳ |
+| 003 | Multi-glob Paths | CLAUDE.md-Templates prüfen + updaten | ⏳ |
+| 007 | Auto Mode Kompatibilität | Spec: Sentinel-Block im Auto Mode | ⏳ |
+| 008 | `/loop` native Patterns | ralph-loop + orchestrate Templates + YAML-Profil | ⏳ |
 
 ## Offene Specs (v0.17-Kandidaten)
 
