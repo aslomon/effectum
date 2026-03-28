@@ -1,7 +1,7 @@
 # Show HN: Effectum — Autonomous dev framework for Claude Code
 
 > **Status:** Draft — needs Jason review before posting  
-> **Updated:** 2026-03-26 (v0.13.0, 236 tests)  
+> **Updated:** 2026-03-28 (v0.17.0, 446 tests, 42 commands)  
 > **Target:** news.ycombinator.com/submit
 
 ---
@@ -14,10 +14,10 @@
 **Option B (curiosity hook):**  
 `Show HN: Effectum – I wanted Claude Code to build things while I sleep, so I wrote a framework`
 
-**Option C (positioning):**  
-`Show HN: Effectum – Claude Code framework with structured PRD workflow and quality gates (not another task manager)`
+**Option C (v0.17 hook):**  
+`Show HN: Effectum – I type /next and Claude tells me what to do next on my codebase`
 
-**Recommendation:** Option A — HN readers prefer direct + concrete over clickbait.
+**Recommendation:** Option B — most click-worthy for HN without being misleading. Option C works well if the /next router is the angle.
 
 ---
 
@@ -26,55 +26,56 @@
 Effectum is a Claude Code framework I built for myself because nothing in the existing ecosystem covered the full workflow: writing a real spec, then running autonomous iterations until the code actually satisfies defined quality standards.
 
 **The core concept: the Ralph Loop.**  
-You define a "completion promise" — a concrete, checkable statement like "all tests pass, build succeeds, 0 lint errors" — and Claude iterates: writes code, runs 8 automated quality gates, recovers from errors, tries different approaches. It stops when the promise is 100% true. Not when Claude thinks it's done.
+You define a "completion promise" — a concrete, checkable statement like "all tests pass, build succeeds, 0 lint errors" — and Claude iterates: writes code, runs quality gates, recovers from errors, tries different approaches. It stops when the promise is 100% true. Not when Claude thinks it's done.
 
-The 8 quality gates run every iteration: build, TypeScript types, lint, tests (80%+ coverage required), OWASP security scan, no debug logs, no `any` casts, max 300 lines/file. Not optional.
+Quality gates run every iteration: build, TypeScript types, lint, tests, no debug logs, no `any` casts. Not optional. Context Budget Monitor stops the loop cleanly at 80% context usage with a structured HANDOFF.md. Stuck Detection catches repeated errors after 2 iterations and writes a STUCK.md with diagnosis.
 
-**Bonus: `/design` workshop.**
-Same philosophy applied to design systems — generates an opinionated DESIGN.md with color palette, typography, component standards. One command, usable by both humans and agents as a source of truth.
+**v0.17: "Apple-like clarity."**  
+The command system got a UX pass. New `/effectum` entry point with a `/next` smart router — it reads your project state (open PRDs, task registry, git status) and recommends exactly one next action. No more reading docs to figure out which of 42 commands applies. Also: `/run` → `/tdd`, `/stop` → `/cancel-ralph`, `/save` → `/checkpoint`. The things you actually reach for should be short.
 
 **The other half: PRD Workshop.**  
-Slash commands that guide you through writing a specification good enough for autonomous implementation. `/prd:new` → guided discovery → acceptance criteria → data model → completion promise. Spec quality is the primary variable in output quality — there's no shortcut around it.
+`/prd:new` guides you through spec writing: requirements → acceptance criteria → data model → completion promise → overlap detection against existing PRDs. Spec quality is the primary variable in output quality — there's no shortcut around it.
 
-I tried everything first: BMAD is thorough but too much ceremony for a solo dev. GSD introduced me to context engineering and changed how I think about prompting — but doesn't help with spec writing. Taskmaster does useful task breakdowns but stops there. SpecKit has a great spec format but leaves the execution gap open. Effectum combines what I found useful from each, packaged as one command.
+**New in v0.17:** `/context:init` (7-question interview to populate CLAUDE.md with project-specific context), `/map-codebase` (4 parallel agents produce 7 knowledge documents in `knowledge/codebase/`), `/forensics` (post-mortem when loops fail).
 
-**Traction so far:** 2.600+ downloads this week on npm — no launch post, just organic discovery. That surprised me enough to finally write this.
+I tried BMAD, GSD, Taskmaster, SpecKit. Each taught me something. Effectum combines what worked: context engineering (GSD), structured specs (SpecKit), autonomous execution with real quality gates, and now progressive disclosure so a first-time user can build something in 10 minutes without reading the docs.
 
-**Honest about limitations:** Claude Code only (no Codex/Gemini yet). Ralph Loop effectiveness scales with PRD quality. Agent Teams feature is experimental (requires Claude Code ≥v2.1.32 with feature flag).
+**Traction:** 2,200+ downloads this week on npm — organic, no launch post. That's what finally pushed me to write this.
 
-Works with 7 stack presets (Next.js+Supabase, FastAPI, Django+PostgreSQL, Go+Echo, Rust+Actix, Swift/SwiftUI, generic). Three autonomy levels: Conservative (step-by-step), Standard (batch), Full Autonomy (overnight). Agent Teams for parallel multi-domain builds. Outputs both CLAUDE.md and AGENTS.md (compatible with GSD, BMAD, and other agentic frameworks).
-
-v0.13.0, 236 tests, MIT.
+v0.17.0, 446 tests, 42 commands, MIT.
 
 `npx @aslomon/effectum`
 
-GitHub: github.com/aslomon/effectum
+github.com/aslomon/effectum
 
 ---
 
 ## Thread Strategy (anticipated questions)
 
 **"How is this different from GSD/BMAD?"**  
-> GSD is context engineering (how you structure instructions). BMAD is a project methodology. Effectum is execution infrastructure — it runs the loop, enforces the quality gates, and drives Claude toward a defined completion state. They're compatible, not competing. You could use GSD's AGENTS.md convention with Effectum.
+> GSD is context engineering (how you structure instructions). BMAD is a project methodology. Effectum is execution infrastructure — it runs the loop, enforces quality gates, and drives Claude toward a defined completion state. Compatible, not competing. Effectum generates both CLAUDE.md and AGENTS.md.
 
 **"Why not just use Claude Projects with good instructions?"**  
-> You can. Effectum is for people who want a repeatable, checkable process — especially for complex features with multiple ACs. The quality gates are the key differentiator: without them, "done" is subjective.
+> You can. Effectum is for people who want a repeatable, checkable process — especially for complex features with multiple ACs. The quality gates are the differentiator: without them, "done" is subjective.
 
 **"Does it work with Codex/OpenAI?"**  
-> Not yet. Claude Code only. The slash command system and /plan-/ralph-loop flow are Claude Code-specific. Adding Codex support would require significant rework.
+> Not yet. Claude Code only. The slash command system and /ralph-loop flow are Claude Code-specific.
 
 **"Is the Ralph Loop reliable? Won't it just loop forever?"**  
-> Max iterations are configurable (default 30 for Standard). If gates don't pass after max iterations, it stops and reports the delta. It's not magic — it fails gracefully when the spec is ambiguous or the codebase is too complex.
+> Max iterations configurable (default 30). Stuck Detection stops at 2 repeated errors with diagnosis. Context Budget Monitor stops cleanly at 80% usage. Fails gracefully, never silently.
 
 **"GitHub has 0 stars — is this production-ready?"**  
-> This is a Show HN post, not a launch claim. v0.13.0 is stable with 236 passing tests. I've been using it on my own projects for weeks. Stars are a lagging indicator.
+> v0.17.0 is stable with 446 passing tests across 42 commands. I've been using it daily on my own projects. Stars are a lagging indicator — hopefully less so after this post.
+
+**"What's the /next command exactly?"**  
+> It reads your current project state: open PRDs, tasks.md status, uncommitted changes, test results. Then recommends exactly one action. First commit? `/setup`. PRD exists but no tasks? `/prd:task-breakdown`. Tests failing? `/build-fix`. No ambiguity.
 
 ---
 
 ## Timing Notes
 
 - **Best HN posting time:** Tuesday–Thursday, 8–10 AM US Eastern (2–4 PM Berlin)
-- **Kiro backlash timing:** AWS Kiro's pricing complaints peaked late March — directly relevant context
-- **AGENTS.md support:** v0.12.0 shipped, mention in post body if relevant
-- **Design system support:** v0.13.0 added `/design` command + DESIGN.md template
-- **npm traction:** 2.625 downloads this week (organic, pre-launch) — mention briefly for credibility
+- **Weekend posting:** Lower volume but also less competition — Sunday morning ET can work
+- **npm traction:** 2,206 downloads this week (organic, pre-launch) — mention for credibility
+- **v0.17.0 angle:** "Apple-like clarity" is a positioning hook — lean into the UX improvement story
+- **Competitor context:** AWS Kiro launched (pricing complaints), Windsurf acquired by OpenAI — good moment for "Claude Code native" positioning
