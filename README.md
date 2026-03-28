@@ -16,7 +16,7 @@ _Effectum (Latin): the result, the accomplishment — that which has been brough
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Built%20for-Claude%20Code-blueviolet)](https://claude.ai/claude-code)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
-[![Version](https://img.shields.io/badge/version-0.16.0-orange)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.17.0-orange)](CHANGELOG.md)
 [![Website](https://img.shields.io/badge/Website-aslomon.github.io%2Feffectum-D97706)](https://aslomon.github.io/effectum/)
 
 <br>
@@ -36,6 +36,8 @@ I'm a solo developer who builds everything with Claude Code. I tried BMAD, SpecK
 So I built Effectum. It combines what I learned from all of them: structured specifications (like SpecKit), autonomous execution (like GSD's approach), and quality gates that actually enforce standards.
 
 **v0.16.0 is the trust + brownfield release.** The autonomous loop now knows when it's stuck (2 repeated errors → stop + diagnosis), when it's running out of context (80% budget → clean handoff), and it persists state to disk so crashed sessions can resume. There's `/forensics` for post-mortem analysis, `/effectum:init` to teach Claude about your domain, and `/map-codebase` that drops 4 parallel agents to produce 7 structured knowledge docs. Plus sentinel-based CLAUDE.md splitting so your project context survives updates.
+
+**v0.17.0 is the Apple-like clarity release.** New users now have `/effectum` as a starting point and `/next` as a smart router that reads your project state and tells you exactly what to do. Five human-language aliases (`/run`, `/stop`, `/save`, `/diagnose`, `/explore`) make the daily vocabulary intuitive. The `workshop:` namespace moved to `project:`, and `effectum:init` became `/context:init`. Plus 12 journey bug fixes found by 6 parallel code analysis agents.
 
 The result: from zero to autonomous development, for any stack, any language, with the self-awareness and crash recovery that make overnight builds actually trustworthy.
 
@@ -104,11 +106,11 @@ One command. Everything you need for autonomous Claude Code development.
 | **25 Agent Specializations**  | Pre-configured agent roles with distinct behaviors for planning, TDD, review, security, and more                                                                                                                                                                                                                                                                                                                           |
 | **43+ Skills**                | Reusable capability blocks attached to agent roles                                                                                                                                                                                                                                                                                                                                                                         |
 | **7 Stack Presets + 8 Quick** | Next.js+Supabase, Python+FastAPI, Swift/SwiftUI, Go+Echo, Django+PostgreSQL, Rust+Actix, Generic + Firebase, Prisma, Flutter…                                                                                                                                                                                                                                                                                              |
-| **YAML Frontmatter**          | All 31 commands have machine-readable metadata (`name`, `description`, `allowed-tools`)                                                                                                                                                                                                                                                                                                                                    |
+| **YAML Frontmatter**          | All 42 commands have machine-readable metadata (`name`, `description`, `allowed-tools`)                                                                                                                                                                                                                                                                                                                                    |
 | **Quality gates**             | 8 automated checks (build, types, lint, tests, security, etc.)                                                                                                                                                                                                                                                                                                                                                             |
 | **Foundation Hooks**          | Always-on: secret detection, TDD enforcement, guardrails                                                                                                                                                                                                                                                                                                                                                                   |
 | **Extensible**                | JSON-based tool definitions + detection rules, community presets + blocks                                                                                                                                                                                                                                                                                                                                                  |
-| **413 tests**                 | Comprehensive test suite covering configurator, templates, commands, frontmatter, and more                                                                                                                                                                                                                                                                                                                                 |
+| **446 tests**                 | Comprehensive test suite covering configurator, templates, commands, frontmatter, and more                                                                                                                                                                                                                                                                                                                                 |
 
 ---
 
@@ -258,7 +260,7 @@ One click. Instantly configured.
 
 ## 🔧 The Workflow
 
-31 commands. Each does exactly one thing, and does it well. Every command includes [YAML frontmatter](#-yaml-frontmatter) with machine-readable metadata and shows contextual next steps after completion.
+42 commands. Each does exactly one thing, and does it well. Every command includes [YAML frontmatter](#-yaml-frontmatter) with machine-readable metadata and shows contextual next steps after completion.
 
 ### Planning & Design
 
@@ -322,7 +324,7 @@ One click. Instantly configured.
 | `/map-codebase`    | 4 parallel agents → 7 structured knowledge docs for brownfield codebases |
 
 > [!TIP]
-> See the full [Command Index](system/commands/README.md) for all 31 commands organized by workflow category with decision trees.
+> See the full [Command Index](system/commands/README.md) for all 42 commands organized by workflow category with decision trees.
 
 ---
 
@@ -813,7 +815,7 @@ These can't be disabled by mistake. They're the safety net.
 
 ### 📑 YAML Frontmatter
 
-All 31 command files now include YAML frontmatter with machine-readable metadata:
+All 42 command files now include YAML frontmatter with machine-readable metadata:
 
 ```yaml
 ---
