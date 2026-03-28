@@ -61,7 +61,7 @@ For each project, provide a concrete recommendation:
 - `drafting` → "Use `/prd:discuss {slug}/001` for the next deep-dive"
 - `review` → "Run `/prd:review {slug}`"
 - `ready` → "Ready for `/prd:handoff {slug}/001`"
-- `handed-off` → "All PRDs handed off. `/workshop:archive {slug}` is available."
+- `handed-off` → "All PRDs handed off. `/project:archive {slug}` (formerly `/workshop:archive`) is available."
 
 ## Next Steps
 
@@ -69,7 +69,7 @@ Based on the dashboard, continue with the appropriate action:
 
 - → `/prd:new {slug}` — Continue a project in discovery phase
 - → `/prd:handoff {slug}/{number}` — Hand off a ready PRD
-- → `/workshop:archive {slug}` — Archive a fully handed-off project
+- → `/project:archive {slug}` (formerly `/workshop:archive`) — Archive a fully handed-off project
 
 ## Communication
 

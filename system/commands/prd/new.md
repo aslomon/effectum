@@ -22,7 +22,7 @@ If `$ARGUMENTS` is provided, analyze the input:
 
 Check if a matching project already exists under `workshop/projects/`.
 
-- **New project**: Create the project structure following the `/workshop:init` pattern:
+- **New project**: Create the project structure following the `/project:init` (formerly `/workshop:init`) pattern:
   1. Derive a slug from the project name (lowercase, hyphens, no spaces).
   2. Create `workshop/projects/{slug}/` with subdirectories `prds/`, `prompts/`, `notes/`.
   3. Create `PROJECT.md` from `workshop/templates/PROJECT.md` with slug and today's date.
@@ -30,6 +30,25 @@ Check if a matching project already exists under `workshop/projects/`.
   5. Set status to `discovery`.
 
 - **Existing project**: Read `PROJECT.md` and determine the current state.
+
+### Check for Existing PRDs (Overlap Detection)
+
+If `workshop/projects/{slug}/prds/` contains existing PRDs:
+
+1. Read each PRD's YAML frontmatter (title, id, features[]).
+2. Compare the new feature idea against existing PRD titles and feature descriptions.
+3. If potential overlap is detected (similar domain, similar feature names, or overlapping ACs):
+   - Warn the user: **"Potential overlap detected with {PRD-ID}: {title}. Review before proceeding?"**
+   - List the overlapping areas.
+   - Wait for the user to confirm whether to proceed, merge into the existing PRD, or adjust scope.
+
+### Read CLAUDE.md Sentinel (Domain Context)
+
+If the project has a `CLAUDE.md` with an effectum sentinel block (marked by `<!-- effectum:context -->`):
+
+1. Extract the domain context: elevator pitch, key terminology, constraints, tech stack, and domain rules.
+2. Use this context to inform the discovery questions in Phase 1 — tailor questions to the domain instead of asking generic ones.
+3. Pre-fill known constraints (e.g., if the sentinel says "multi-tenant required", skip asking about tenancy).
 
 ## Step 3: Start Discovery Phase (Phase 1 — Vision & Problem Discovery)
 
@@ -76,10 +95,15 @@ When the scope is clear:
    - Title, Problem Statement, User Stories
    - Acceptance Criteria, Scope/Non-Goals
    - Data Model (if data persistence is involved), API Contracts
-   - Quality Gates, Autonomy Rules, Completion Promise
-5. Mark open items with `[ASSUMPTION]` or `[NEEDS CLARIFICATION]`.
-6. Save PRD under `workshop/projects/{slug}/prds/{number}-{name}.md`.
-7. Update `PROJECT.md`.
+5. **Agent-Ready Extension** (ask only when the user indicates autonomous/full-auto mode):
+   - **Quality Gates**: Which gates to run — `/verify`, `/tdd`, `/e2e`, `/code-review`? Which are mandatory vs. advisory?
+   - **Completion Promise**: A testable one-liner that is TRUE when the feature is DONE (e.g., "All CRUD endpoints return correct status codes and tests pass").
+   - **Autonomy Rules**: What may the agent decide alone (file structure, naming, minor refactors) vs. what must it ask about (schema changes, new dependencies, public API changes)?
+   - Add these fields to the PRD under an `## Agent-Ready Extension` section.
+   - If the user does not want autonomous mode, skip this step entirely.
+6. Mark open items with `[ASSUMPTION]` or `[NEEDS CLARIFICATION]`.
+7. Save PRD under `workshop/projects/{slug}/prds/{number}-{name}.md`.
+8. Update `PROJECT.md`.
 
 ## Step 6: Auto-Generate Stage 1 Network Map
 

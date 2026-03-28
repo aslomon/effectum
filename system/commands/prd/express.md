@@ -29,7 +29,7 @@ Parse the input for existing structure:
 Check if a matching project exists under `workshop/projects/`:
 
 - If yes: Assign the PRD there.
-- If no: Create a new project (like `/workshop:init`). Derive the slug from the feature description.
+- If no: Create a new project (like `/project:init` (formerly `/workshop:init`)). Derive the slug from the feature description.
 
 ## Step 3: Generate PRD
 

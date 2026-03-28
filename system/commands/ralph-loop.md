@@ -91,12 +91,14 @@ Track error messages across iterations to detect loops:
    ## Suggested Next Steps
 
    [Concrete recommendations for a human or fresh session]
+   [If a checkpoint_tag exists: "Safe rollback point: `git checkout {checkpoint_tag}`"]
 
    ## Loop State
 
    - Iteration: N of M
    - Task: [current task]
    - Branch: [current branch]
+   - Checkpoint: [checkpoint_tag or "none"]
    ```
 
 4. Do NOT continue looping on the same error. Two repetitions means the approach is fundamentally wrong.
@@ -116,7 +118,8 @@ Persist loop state to disk after every iteration for crash recovery:
      "timestamp": "2026-03-28T12:00:00Z",
      "artifacts_created": ["src/auth.ts", "test/auth.test.ts"],
      "completionPromise": "the promise text",
-     "branch": "feat/my-feature"
+     "branch": "feat/my-feature",
+     "checkpoint_tag": "checkpoint-2026-03-28 or null"
    }
    ```
 2. **At the START of a new run**: Check if `.effectum/loop-state.json` exists with `status` != `"complete"`.
@@ -186,6 +189,15 @@ network_map_path: ""
 ```
 
 Read `CLAUDE.md` for the project's build, test, lint, and type-check commands.
+
+### Checkpoint Tag Detection
+
+Check if a recent git tag matching `checkpoint-*` exists:
+
+1. Run `git tag --list 'checkpoint-*' --sort=-creatordate` and take the first result.
+2. If a checkpoint tag is found, store it as `checkpoint_tag` in `.effectum/loop-state.json`.
+3. In the stuck/failure handler (STUCK.md, ralph-blockers.md, or max-iterations report), mention the checkpoint tag as a rollback option:
+   - Example: `"Safe rollback point: git checkout {checkpoint_tag}"`
 
 ### PRD Lifecycle Detection
 
@@ -316,7 +328,7 @@ Continue to the next iteration.
 
 Apply these escalation rules:
 
-> **Note:** Stuck Detection (see above) fires at **2 consecutive identical errors** and stops the loop entirely. The rules below apply to *different* errors or recoverable transient failures — not repeated identical errors.
+> **Note:** Stuck Detection (see above) fires at **2 consecutive identical errors** and stops the loop entirely. The rules below apply to _different_ errors or recoverable transient failures — not repeated identical errors.
 
 ### Build/Test Error
 

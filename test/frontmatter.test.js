@@ -65,11 +65,11 @@ function parseFrontmatter(content) {
 const commandFiles = collectCommandFiles(COMMANDS_DIR);
 
 describe("command frontmatter", () => {
-  test("finds exactly 31 command files", () => {
+  test("finds exactly 42 command files", () => {
     assert.equal(
       commandFiles.length,
-      31,
-      `Expected 31 command files, found ${commandFiles.length}: ${commandFiles.map((f) => path.relative(COMMANDS_DIR, f)).join(", ")}`,
+      42,
+      `Expected 42 command files, found ${commandFiles.length}: ${commandFiles.map((f) => path.relative(COMMANDS_DIR, f)).join(", ")}`,
     );
   });
 

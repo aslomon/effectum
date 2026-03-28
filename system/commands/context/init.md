@@ -1,11 +1,9 @@
 ---
-name: "effectum:init [DEPRECATED]"
-description: "DEPRECATED: Use /context:init instead."
+name: "Context Init"
+description: "Interactive interview to populate the project-context sentinel block in CLAUDE.md."
 allowed-tools: ["Read", "Write", "Edit", "Bash", "Glob", "Grep"]
 effort: "medium"
 ---
-
-> **⚠️ DEPRECATED:** `/effectum:init` has been renamed to `/context:init`. Both names work identically. `/effectum:init` will be removed in v0.19.
 
 # /context:init — Project Context Interview
 

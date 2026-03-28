@@ -1,9 +1,11 @@
 ---
-name: "Cancel Ralph"
+name: "Stop (alias for /cancel-ralph)"
 description: "Gracefully cancel a running Ralph Loop, preserve progress, and report current state."
 allowed-tools: ["Read", "Write", "Bash"]
 effort: "low"
 ---
+
+> **Alias:** /stop is an alias for /cancel-ralph. Both names work identically.
 
 # /cancel-ralph -- Cancel an Active Ralph Loop
 
@@ -101,7 +103,7 @@ After cancelling the Ralph Loop:
 
 - → `/verify` — Assess the current state of the codebase after partial implementation
 - → `/build-fix` — If the build is broken, fix errors incrementally
-- → `/ralph-loop` — Restart with a modified prompt or adjusted scope
+- → `/ralph-loop` (`/run`) — Restart with a modified prompt or adjusted scope
 
 ℹ️ Alternative: Review `.claude/ralph-status.md` for detailed progress and blockers before deciding next steps.
 

@@ -15,6 +15,9 @@ You implement features using strict Test-Driven Development. Every piece of func
 2. Read `$ARGUMENTS` for the feature context: PRD reference, specific functionality, or conversation context.
 3. If a PRD is referenced, read it to understand the acceptance criteria.
 4. Read existing test files to understand patterns: test structure, naming, helpers, fixtures, mocking approach.
+5. **Task Registry**: Check for `tasks.md` in the project (`workshop/projects/*/tasks.md` or project root). If found:
+   - Read it and identify the next `📋 TODO` or `⚠️ STALE` task related to the current work.
+   - Update the task status to `🔄 IN_PROGRESS` before starting.
 
 ## Step 2: Identify the Next Unit of Work
 
@@ -75,8 +78,11 @@ When the feature is fully implemented:
 2. Run the project's build command to confirm compilation succeeds.
 3. Run the project's type-check command (if separate from build) to confirm type safety.
 4. Run the project's linter to confirm code style compliance.
-5. Report results: what was implemented, how many tests were written, and the pass/fail status of each quality gate.
-6. Suggest running `/verify` for the full quality gate check or `/e2e` for end-to-end tests.
+5. **Task Registry**: If `tasks.md` was found in Step 1, update all tasks worked on during this TDD session:
+   - Tasks with all ACs implemented and tests passing: `🔄 IN_PROGRESS` → `✅ DONE`
+   - Write the file to disk immediately.
+6. Report results: what was implemented, how many tests were written, and the pass/fail status of each quality gate.
+7. Suggest running `/verify` for the full quality gate check or `/e2e` for end-to-end tests.
 
 ## Error Recovery
 

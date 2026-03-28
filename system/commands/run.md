@@ -1,9 +1,11 @@
 ---
-name: "Ralph Loop"
+name: "Run (alias for /ralph-loop)"
 description: "Autonomous iterative implementation loop that runs until all acceptance criteria are met."
 allowed-tools: ["Read", "Write", "Edit", "Bash", "Glob", "Grep", "Agent"]
 effort: "high"
 ---
+
+> **Alias:** /run is an alias for /ralph-loop. Both names work identically.
 
 # /ralph-loop -- Self-Referential Agentic Loop for Autonomous Implementation
 
@@ -372,7 +374,7 @@ After the Ralph Loop completes (or is cancelled):
 
 - → `/verify` — Run full quality gates to confirm the implementation is solid
 - → `/code-review` — Run a security and quality audit on the changes
-- → `/cancel-ralph` — If the loop needs to be stopped, cancel gracefully
+- → `/cancel-ralph` (`/stop`) — If the loop needs to be stopped, cancel gracefully
 
 ℹ️ Alternative: If the loop completed with all criteria met, proceed directly to `/code-review` and then commit.
 
