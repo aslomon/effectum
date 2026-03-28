@@ -96,19 +96,19 @@ One command. Everything you need for autonomous Claude Code development.
 | What                          | Details                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Intelligent Configurator**  | Stack auto-detection, package manager config, 8 quick presets, 16 languages                                                                                                                                                                                                                                                                                                                                                |
-| **28 workflow commands**      | `/plan`, `/design`, `/tdd`, `/verify`, `/e2e`, `/code-review`, `/build-fix`, `/refactor-clean`, `/ralph-loop`, `/cancel-ralph`, `/checkpoint`, `/orchestrate`, `/prd:new`, `/prd:express`, `/prd:discuss`, `/prd:decompose`, `/prd:update`, `/prd:review`, `/prd:handoff`, `/prd:prompt`, `/prd:resume`, `/prd:status`, `/prd:network-map`, `/onboard`, `/onboard:review`, `/setup`, `/workshop:init`, `/workshop:archive` |
+| **31 workflow commands**      | `/plan`, `/design`, `/tdd`, `/verify`, `/e2e`, `/code-review`, `/build-fix`, `/refactor-clean`, `/ralph-loop`, `/cancel-ralph`, `/checkpoint`, `/orchestrate`, `/prd:new`, `/prd:express`, `/prd:discuss`, `/prd:decompose`, `/prd:update`, `/prd:review`, `/prd:handoff`, `/prd:prompt`, `/prd:resume`, `/prd:status`, `/prd:network-map`, `/onboard`, `/onboard:review`, `/setup`, `/workshop:init`, `/workshop:archive`, `/forensics`, `/effectum:init`, `/map-codebase` |
 | **Update Command**            | `npx @aslomon/effectum update` — add new commands, refresh templates, preserve config                                                                                                                                                                                                                                                                                                                                      |
 | **PRD Lifecycle**             | Frontmatter, changelog, semantic diff, delta handoffs, task registry, network map auto-sync                                                                                                                                                                                                                                                                                                                                |
 | **Project Onboarding**        | 6 parallel analysis agents, 7-point self-test loop, per-area PRDs, interactive HTML network map                                                                                                                                                                                                                                                                                                                            |
 | **Design System Generation**  | `/design` generates DESIGN.md — color tokens, typography, component specs, constraints                                                                                                                                                                                                                                                                                                                                     |
-| **19 Agent Specializations**  | Pre-configured agent roles with distinct behaviors for planning, TDD, review, security, and more                                                                                                                                                                                                                                                                                                                           |
-| **22+ Skills**                | Reusable capability blocks attached to agent roles                                                                                                                                                                                                                                                                                                                                                                         |
+| **25 Agent Specializations**  | Pre-configured agent roles with distinct behaviors for planning, TDD, review, security, and more                                                                                                                                                                                                                                                                                                                           |
+| **43+ Skills**                | Reusable capability blocks attached to agent roles                                                                                                                                                                                                                                                                                                                                                                         |
 | **7 Stack Presets + 8 Quick** | Next.js+Supabase, Python+FastAPI, Swift/SwiftUI, Go+Echo, Django+PostgreSQL, Rust+Actix, Generic + Firebase, Prisma, Flutter…                                                                                                                                                                                                                                                                                              |
-| **YAML Frontmatter**          | All 28 commands have machine-readable metadata (`name`, `description`, `allowed-tools`)                                                                                                                                                                                                                                                                                                                                    |
+| **YAML Frontmatter**          | All 31 commands have machine-readable metadata (`name`, `description`, `allowed-tools`)                                                                                                                                                                                                                                                                                                                                    |
 | **Quality gates**             | 8 automated checks (build, types, lint, tests, security, etc.)                                                                                                                                                                                                                                                                                                                                                             |
 | **Foundation Hooks**          | Always-on: secret detection, TDD enforcement, guardrails                                                                                                                                                                                                                                                                                                                                                                   |
 | **Extensible**                | JSON-based tool definitions + detection rules, community presets + blocks                                                                                                                                                                                                                                                                                                                                                  |
-| **389 tests**                 | Comprehensive test suite covering configurator, templates, commands, frontmatter, and more                                                                                                                                                                                                                                                                                                                                 |
+| **413 tests**                 | Comprehensive test suite covering configurator, templates, commands, frontmatter, and more                                                                                                                                                                                                                                                                                                                                 |
 
 ---
 
@@ -258,7 +258,7 @@ One click. Instantly configured.
 
 ## 🔧 The Workflow
 
-28 commands. Each does exactly one thing, and does it well. Every command includes [YAML frontmatter](#-yaml-frontmatter) with machine-readable metadata and shows contextual next steps after completion.
+31 commands. Each does exactly one thing, and does it well. Every command includes [YAML frontmatter](#-yaml-frontmatter) with machine-readable metadata and shows contextual next steps after completion.
 
 ### Planning & Design
 
@@ -313,8 +313,16 @@ One click. Instantly configured.
 | `/workshop:init`    | Initialize a new project workspace                             |
 | `/workshop:archive` | Archive a completed project                                    |
 
+### Diagnosis & Context
+
+| Command            | What it does                                                             |
+| ------------------ | ------------------------------------------------------------------------ |
+| `/forensics`       | Post-mortem diagnosis — reads loop artifacts and produces failure report  |
+| `/effectum:init`   | Interactive interview to populate project-context in CLAUDE.md           |
+| `/map-codebase`    | 4 parallel agents → 7 structured knowledge docs for brownfield codebases |
+
 > [!TIP]
-> See the full [Command Index](system/commands/README.md) for all 28 commands organized by workflow category with decision trees.
+> See the full [Command Index](system/commands/README.md) for all 31 commands organized by workflow category with decision trees.
 
 ---
 
@@ -372,6 +380,148 @@ graph TD
 - **Honest promises**: the completion promise is ONLY output when 100% true
 
 </details>
+
+---
+
+### `/forensics` — Post-mortem diagnosis
+
+When a Ralph Loop stops unexpectedly — due to stuck detection, a context budget stop, or an incomplete run — `/forensics` gives you a clear picture of what happened.
+
+```bash
+/forensics
+```
+
+It reads all available loop artifacts and produces a structured diagnosis report:
+
+| Artifact                        | What it reveals                            |
+| ------------------------------- | ------------------------------------------ |
+| `HANDOFF.md`                    | Context budget stop — what was done, what's left |
+| `STUCK.md`                      | Stuck detection report — the repeated error and diagnosis |
+| `.effectum/loop-state.json`     | Last persisted iteration state             |
+| `effectum-metrics.json`         | Historical session ledger                  |
+| `.claude/ralph-loop.local.md`   | Internal loop state                        |
+| `.claude/ralph-blockers.md`     | Documented blockers                        |
+
+The output is a root-cause diagnosis with a recommended next action — whether that's fixing the blocker, resuming from checkpoint, or rewriting a failing test.
+
+---
+
+### `/effectum:init` — Project context bootstrap
+
+Teach Claude about your domain before it writes a single line of code. `/effectum:init` runs an interactive interview and writes the results into a sentinel block in `CLAUDE.md`:
+
+```bash
+/effectum:init
+```
+
+It asks about your domain model, key business rules, naming conventions, and any constraints the code must respect. The result is persisted between Effectum updates — the sentinel block is preserved when `npx @aslomon/effectum update` refreshes the rest of CLAUDE.md.
+
+```
+<!-- effectum:project-context:start -->
+  Domain: Multi-tenant SaaS for event management
+  Key entities: Tenant, Event, Booking, Venue
+  Auth: Row-level security — all queries must be tenant-scoped
+  ...
+<!-- effectum:project-context:end -->
+```
+
+This is the right command to run before `/ralph-loop` on a new project, or before onboarding a Claude Code session to an existing domain.
+
+---
+
+### `/map-codebase` — Parallel brownfield analysis
+
+`/map-codebase` is purpose-built for understanding codebases you didn't write. It spawns **4 parallel analysis agents** and produces **7 structured knowledge documents** in `knowledge/codebase/`:
+
+```bash
+/map-codebase
+```
+
+| Agent                  | Output document                        |
+| ---------------------- | -------------------------------------- |
+| **ArchitectureMapper** | `ARCHITECTURE.md` — structure, modules, boundaries |
+| **DataFlowMapper**     | `DATA-FLOW.md` — how data moves through the system |
+| **APIMapper**          | `API-SURFACE.md` — all endpoints, contracts, auth |
+| **DependencyMapper**   | `DEPENDENCIES.md` — packages, versions, risk flags |
+
+Plus three synthesis documents: `ENTRY-POINTS.md`, `RISK-MAP.md`, and `KNOWLEDGE-INDEX.md`.
+
+> [!TIP]
+> Use `/map-codebase` for fast brownfield orientation. Use `/onboard` when you want the full analysis including self-test loop and per-area PRDs.
+
+---
+
+### Autonomous Loop — Self-Awareness Features (v0.16.0)
+
+Three new mechanisms make Ralph Loop trustworthy enough for overnight builds:
+
+#### Context Budget Monitor
+
+The loop monitors its own context usage. At **80% of the context budget**, it automatically:
+
+1. Writes a clean `HANDOFF.md` to the project root — what's done, what's left, iteration count
+2. Commits current state to git
+3. Stops cleanly
+
+The next Claude Code session can pick up exactly where it left off. Use `/forensics` to analyze the handoff, then `/prd:resume` to continue.
+
+#### Stuck Detection
+
+If the loop encounters the **same error twice in a row**, it:
+
+1. Writes `STUCK.md` with the error, the context that produced it, and a preliminary diagnosis
+2. Stops the loop
+3. Returns control to you
+
+This prevents the loop from burning 20 iterations on the same problem. Use `/forensics` to get a full diagnosis and recommended fix.
+
+#### Per-Iteration Loop State
+
+Every iteration, the loop persists its state to `.effectum/loop-state.json`:
+
+```json
+{
+  "iteration": 14,
+  "maxIterations": 30,
+  "lastAction": "Fixed failing auth test",
+  "qualityGateStatus": { "build": "pass", "tests": "fail", "lint": "pass" },
+  "blockers": [],
+  "prdHash": "a3f8d2c1"
+}
+```
+
+This enables `/forensics` to reconstruct exactly what the loop was doing when it stopped — even if it crashed mid-iteration.
+
+---
+
+### Sentinel CLAUDE.md Split
+
+Starting in v0.16.0, CLAUDE.md uses sentinel markers to separate system-managed content from your project context:
+
+```
+[System-managed Effectum configuration]
+...
+
+<!-- effectum:project-context:start -->
+[Your project context — written by /effectum:init]
+<!-- effectum:project-context:end -->
+```
+
+When you run `npx @aslomon/effectum update`, the system-managed section is refreshed with the latest templates and rules. Your project context between the sentinel markers is **never touched**. You can also edit the sentinel block manually — Effectum will preserve your changes across updates.
+
+---
+
+### Hook Modernization
+
+Foundation hooks now support richer configuration:
+
+| Feature             | Example                                              |
+| ------------------- | ---------------------------------------------------- |
+| **Conditional `if:`** | Run a hook only when specific files are staged       |
+| **Multi-glob**       | Match multiple file patterns in a single hook rule   |
+| **`effort:` level**  | Tag commands as `low`, `medium`, or `high` effort for context budgeting |
+
+Hooks remain always-active for the three core guardrails (secret detection, TDD enforcement, destructive command blocking). The new features apply to custom hooks you add in `system/hooks/`.
 
 ---
 
@@ -621,22 +771,23 @@ docs/
 
 ## 🧠 Foundation
 
-### 19 Agent Specializations
+### 25 Agent Specializations
 
 Effectum ships with pre-configured agent roles. Each has a distinct behavior profile, toolset, and communication style appropriate to its function:
 
-| Category          | Agents                                                                 |
-| ----------------- | ---------------------------------------------------------------------- |
-| **Planning**      | Architect, Decomposer, Risk Analyst                                    |
-| **Build**         | Engineer, TDD Driver, Refactor Specialist                              |
-| **Quality**       | QA Reviewer, Security Auditor, Performance Analyst                     |
-| **Documentation** | Spec Writer, API Documenter, Onboarding Analyst                        |
-| **Orchestration** | Ralph (autonomous loop), Checkpoint Manager, Delta Tracker             |
-| **Analysis**      | Architecture Agent, Data Model Agent, Test Coverage Agent, Dep Auditor |
+| Category          | Agents                                                                                           |
+| ----------------- | ------------------------------------------------------------------------------------------------ |
+| **Planning**      | Architect, Decomposer, Risk Analyst                                                              |
+| **Build**         | Engineer, TDD Driver, Refactor Specialist, Fullstack Developer, Next.js Developer                |
+| **Quality**       | QA Reviewer, Security Auditor, Performance Analyst, Code Reviewer                               |
+| **Documentation** | Spec Writer, API Documenter, Onboarding Analyst                                                  |
+| **Orchestration** | Ralph (autonomous loop), Checkpoint Manager, Delta Tracker                                       |
+| **Analysis**      | Architecture Analyst, DB Analyst, API Analyst, Frontend Analyst, Stack Analyst, Test Analyst     |
+| **Specialist**    | Mobile Developer, Docker Expert, MCP Developer, Postgres Pro, Data Engineer, Debugger, UI Designer |
 
 Each specialization is defined in `system/agents/` and composed from shared skills.
 
-### 22+ Skills
+### 43+ Skills
 
 Skills are reusable capability blocks that agent specializations are composed from:
 
@@ -662,7 +813,7 @@ These can't be disabled by mistake. They're the safety net.
 
 ### 📑 YAML Frontmatter
 
-All 28 command files now include YAML frontmatter with machine-readable metadata:
+All 31 command files now include YAML frontmatter with machine-readable metadata:
 
 ```yaml
 ---
@@ -877,10 +1028,10 @@ effectum/
 ├── system/                          The installable workflow
 │   ├── configurator/                Stack detection + setup recommender
 │   ├── templates/                   CLAUDE.md, settings, guardrails (parameterized)
-│   ├── commands/                    28 workflow commands (with YAML frontmatter)
+│   ├── commands/                    31 workflow commands (with YAML frontmatter)
 │   │   └── README.md               Command index by category
-│   ├── agents/                      19 agent specializations
-│   ├── skills/                      22+ reusable skill blocks
+│   ├── agents/                      25 agent specializations
+│   ├── skills/                      43+ reusable skill blocks
 │   ├── tools/                       JSON-based tool definitions
 │   ├── stacks/                      6 full presets + community/
 │   │   └── community/               Drop JSON presets here
@@ -947,7 +1098,7 @@ Yes. Everything is plain text or JSON — edit `CLAUDE.md` for rules, `.claude/s
 <details>
 <summary><strong>What if Ralph Loop gets stuck?</strong></summary>
 
-Built-in error recovery: reads errors, tries alternatives, documents blockers. At 80% of max iterations, writes a status report of what's done and what's left. Use `/cancel-ralph` to stop it manually anytime. If the spec changed mid-run, PRD-hash detection will cause it to pause and reconcile before continuing.
+**Stuck detection** kicks in automatically: if the same error appears twice in a row, the loop writes `STUCK.md` with a preliminary diagnosis and stops. Run `/forensics` for a full post-mortem. At **80% context budget**, the loop writes `HANDOFF.md` and stops cleanly so the next session can resume. Use `/cancel-ralph` to stop it manually anytime. If the spec changed mid-run, PRD-hash detection will cause it to pause and reconcile before continuing. Loop state is persisted to `.effectum/loop-state.json` every iteration.
 
 </details>
 
