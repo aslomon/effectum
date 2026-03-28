@@ -1,9 +1,11 @@
 ---
-name: "Map Codebase"
+name: "Explore (alias for /map-codebase)"
 description: "Spawn 4 parallel analysis agents to produce structured codebase knowledge documents."
 allowed-tools: ["Read", "Write", "Edit", "Bash", "Glob", "Grep", "Agent"]
 effort: "high"
 ---
+
+> **Alias:** /explore is an alias for /map-codebase. Both names work identically.
 
 # /map-codebase — Parallel Codebase Analysis
 
@@ -167,7 +169,7 @@ Verify each expected file exists. If any agent failed, report which files are mi
 
 After codebase mapping is complete:
 
-- → `/context:init` (formerly `/effectum:init`) — Use the analysis to populate project context in CLAUDE.md
+- → `/context:init` (or `/effectum:init`) — Use the analysis to populate project context in CLAUDE.md
 - → `/prd:new` — Start a PRD session with full architectural understanding
 - → `/plan` — Create an implementation plan informed by the knowledge documents
 

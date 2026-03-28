@@ -1,11 +1,9 @@
 ---
-name: "workshop:init [DEPRECATED]"
-description: "DEPRECATED: Use /project:init instead."
+name: "Project Init"
+description: "Create the complete directory structure and template files for a new project."
 allowed-tools: ["Read", "Write", "Bash"]
 effort: "low"
 ---
-
-> **⚠️ DEPRECATED:** `/workshop:init` has been renamed to `/project:init`. Both names work identically. `/workshop:init` will be removed in v0.19.
 
 # /project:init — Initialize a New Project Workspace
 
