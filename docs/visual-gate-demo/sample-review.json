@@ -1,0 +1,17 @@
+{
+  "average_score": 9,
+  "total_reviews": 1,
+  "has_critical": false,
+  "reviews": [
+    {
+      "score": 9,
+      "critical": [],
+      "warnings": [],
+      "passed": [
+        "Overall layout is clean and visually appealing.",
+        "Text is legible and well-structured.",
+        "Images are appropriately placed and relevant."
+      ]
+    }
+  ]
+}
