@@ -2,6 +2,7 @@
 name: "Orchestrate"
 description: "Manage Agent Teams: create teams, distribute tasks, monitor progress, and control lifecycle."
 allowed-tools: ["Read", "Write", "Edit", "Bash", "Agent"]
+effort: "high"
 ---
 
 # /orchestrate — Agent Teams Orchestration
@@ -60,6 +61,45 @@ Parse `$ARGUMENTS` for:
 4. Log the shutdown in `.claude/logs/team-activity.log`.
 5. Set `active: false` in `.claude/team-state.local.md`.
 6. Print summary: tasks completed, tasks remaining, total tokens used.
+
+## Context Management
+
+Before each major phase (task distribution, monitoring cycle, completion check), estimate remaining context capacity:
+
+1. **Estimate context usage**: Consider the number of teammates spawned, messages exchanged, and tool output accumulated.
+2. **If estimated context usage exceeds 80%**:
+   - Send each teammate a checkpoint message: "Commit your current work immediately."
+   - Wait for acknowledgments (timeout: 30s).
+   - Write `HANDOFF.md` in the project root with:
+
+     ```markdown
+     # Orchestration Handoff
+
+     ## Team State
+
+     [Team name, profile, active teammates]
+
+     ## What Was Done
+
+     [Tasks completed by each teammate]
+
+     ## What Remains
+
+     [Incomplete tasks with assigned teammates]
+
+     ## Last Error
+
+     [Most recent error from any teammate, if any]
+
+     ## Next Recommended Step
+
+     [How to resume — e.g., "Run /orchestrate resume to pick up where the team left off"]
+     ```
+
+   - Set `active: false` in `.claude/team-state.local.md`.
+   - **STOP immediately**. Do not continue orchestration.
+
+3. A clean handoff preserves more value than a context-exhausted orchestrator that loses track of teammates.
 
 ## Step 2: Validate Prerequisites
 

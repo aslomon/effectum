@@ -52,9 +52,10 @@
 
 ### Loop Control
 
-| Command         | Description                            |
-| --------------- | -------------------------------------- |
-| `/cancel-ralph` | Gracefully cancel a running Ralph Loop |
+| Command         | Description                             |
+| --------------- | --------------------------------------- |
+| `/cancel-ralph` | Gracefully cancel a running Ralph Loop  |
+| `/forensics`    | Post-mortem diagnosis for loop failures |
 
 ### Orchestration
 
@@ -62,13 +63,15 @@
 | -------------- | ------------------------------------ |
 | `/orchestrate` | Manage Agent Teams (requires opt-in) |
 
-### Setup
+### Setup & Brownfield
 
-| Command           | Description                                     |
-| ----------------- | ----------------------------------------------- |
-| `/setup`          | Install Effectum workflow into a project        |
-| `/onboard`        | Reverse-engineer existing project into Effectum |
-| `/onboard:review` | Review onboarded PRDs for consistency           |
+| Command           | Description                                                    |
+| ----------------- | -------------------------------------------------------------- |
+| `/setup`          | Install Effectum workflow into a project                       |
+| `/onboard`        | Reverse-engineer existing project into Effectum                |
+| `/onboard:review` | Review onboarded PRDs for consistency                          |
+| `/effectum:init`  | Interactive interview to populate project context in CLAUDE.md |
+| `/map-codebase`   | Spawn 4 parallel agents to produce codebase knowledge docs     |
 
 ### PRD Workshop
 

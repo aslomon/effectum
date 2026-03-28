@@ -43,11 +43,13 @@
           },
           {
             "type": "command",
+            "if": "Bash(git commit*)",
             "command": "bash -c 'CMD=$(jq -r \".tool_input.command\" <<< \"$(cat)\"); if echo \"$CMD\" | grep -qE \"^git commit\"; then MSG=$(echo \"$CMD\" | grep -oP \"(?<=-m \\\")[^\\\"]+|(?<=-m \\x27)[^\\x27]+\" || echo \"\"); if [ -n \"$MSG\" ] && [ ${#MSG} -lt 10 ]; then echo \"Commit message too short (min 10 chars). Be descriptive.\" >&2; exit 2; fi; fi; exit 0'",
             "statusMessage": "Checking commit message..."
           },
           {
             "type": "command",
+            "if": "Bash(git commit*) || Bash(git push*)",
             "command": "bash -c 'CMD=$(jq -r \".tool_input.command\" <<< \"$(cat)\"); if echo \"$CMD\" | grep -qE \"^git (commit|push)\"; then DIFF=$(git diff --cached --diff-filter=ACM 2>/dev/null || git diff HEAD 2>/dev/null); if echo \"$DIFF\" | grep -qEi \"(sk-[a-zA-Z0-9]{20,}|sk_live_|sk_test_|AKIA[A-Z0-9]{16}|ghp_[a-zA-Z0-9]{36}|gho_[a-zA-Z0-9]{36}|glpat-[a-zA-Z0-9-]{20}|xox[bpras]-[a-zA-Z0-9-]+|password\\s*[:=]\\s*[\\x27\\\"][^\\x27\\\"]{8,})\"; then echo \"Potential secret detected in staged changes! Review before committing.\" >&2; exit 2; fi; fi; exit 0'",
             "statusMessage": "Scanning for secrets..."
           }

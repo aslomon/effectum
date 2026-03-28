@@ -2,6 +2,7 @@
 name: "Ralph Loop"
 description: "Autonomous iterative implementation loop that runs until all acceptance criteria are met."
 allowed-tools: ["Read", "Write", "Edit", "Bash", "Glob", "Grep", "Agent"]
+effort: "high"
 ---
 
 # /ralph-loop -- Self-Referential Agentic Loop for Autonomous Implementation
@@ -24,6 +25,137 @@ If either `--max-iterations` or `--completion-promise` is missing, ask the user 
 2. **One step per iteration**: Each iteration should accomplish one meaningful piece of work. Do not try to implement the entire feature in a single iteration.
 3. **Always run quality gates**: After every significant change, verify the build and tests. Do not accumulate changes without verification.
 4. **Self-awareness**: Read your own progress log to avoid repeating failed approaches. Learn from previous iterations.
+
+## Context Management
+
+Before each iteration, estimate remaining context capacity:
+
+1. **Estimate context usage**: Consider the number of iterations completed, the volume of code read/written, and tool output accumulated.
+2. **If estimated context usage exceeds 80%**:
+   - Immediately commit current state with a descriptive message: `wip: ralph-loop checkpoint at iteration N`
+   - Write `HANDOFF.md` in the project root with:
+
+     ```markdown
+     # Ralph Loop Handoff
+
+     ## What Was Done
+
+     [List of completed work with iteration numbers]
+
+     ## What Remains
+
+     [Remaining acceptance criteria / tasks]
+
+     ## Last Error
+
+     [Most recent error message, if any]
+
+     ## Next Recommended Step
+
+     [Specific instruction for the next session to pick up from]
+
+     ## Loop State
+
+     - Iteration: N of M
+     - Branch: [current branch]
+     - Last commit: [hash]
+     ```
+
+   - **STOP immediately**. Do not attempt another iteration.
+
+3. Do not continue when context is nearly full — a clean handoff is better than a corrupted loop.
+
+## Stuck Detection
+
+Track error messages across iterations to detect loops:
+
+1. After each failed iteration, compare the current error message against the previous iteration's error.
+2. **If the SAME error message appears in 2 consecutive iterations**: STOP immediately.
+3. Write `STUCK.md` in the project root with:
+
+   ```markdown
+   # Ralph Loop — Stuck Report
+
+   ## Repeated Error
+
+   [The exact error message that repeated]
+
+   ## What Was Tried
+
+   [Approaches attempted across the stuck iterations]
+
+   ## Why It Didn't Work
+
+   [Analysis of why the approaches failed]
+
+   ## Suggested Next Steps
+
+   [Concrete recommendations for a human or fresh session]
+
+   ## Loop State
+
+   - Iteration: N of M
+   - Task: [current task]
+   - Branch: [current branch]
+   ```
+
+4. Do NOT continue looping on the same error. Two repetitions means the approach is fundamentally wrong.
+
+## Per-Iteration Loop State
+
+Persist loop state to disk after every iteration for crash recovery:
+
+1. **After EVERY iteration**, write/update `.effectum/loop-state.json`:
+   ```json
+   {
+     "task": "current task description",
+     "iteration": 5,
+     "maxIterations": 30,
+     "status": "running",
+     "lastError": "error message or null",
+     "timestamp": "2026-03-28T12:00:00Z",
+     "artifacts_created": ["src/auth.ts", "test/auth.test.ts"],
+     "completionPromise": "the promise text",
+     "branch": "feat/my-feature"
+   }
+   ```
+2. **At the START of a new run**: Check if `.effectum/loop-state.json` exists with `status` != `"complete"`.
+   - If found: Ask the user — **"Incomplete run detected (iteration N of M, status: STATUS). Resume or start fresh?"**
+   - If "resume": Continue from the recorded iteration, re-read progress log.
+   - If "start fresh": Delete the state file and begin from iteration 1.
+3. **On successful completion**: Set `status` to `"complete"` and write final metrics (see Loop Ledger below).
+4. **On stuck/budget stop**: Set `status` to `"stuck"` or `"budget_exceeded"` respectively.
+
+## Loop Ledger (effectum-metrics.json)
+
+On run completion (success, stuck, or budget stop), append a session entry to `effectum-metrics.json` in the project root:
+
+```json
+{
+  "sessions": [
+    {
+      "command": "ralph-loop",
+      "started": "2026-03-28T10:00:00Z",
+      "finished": "2026-03-28T11:30:00Z",
+      "iterations": 12,
+      "maxIterations": 30,
+      "outcome": "success|stuck|budget_exceeded|max_iterations",
+      "qualityGates": {
+        "build": true,
+        "types": true,
+        "tests": true,
+        "lint": true
+      },
+      "duration_estimate": "~90 minutes",
+      "notes": "Implemented auth flow. Stuck on OAuth callback for 3 iterations before switching approach."
+    }
+  ]
+}
+```
+
+- If `effectum-metrics.json` already exists, read it and append to the `sessions` array.
+- If it does not exist, create it with the first session entry.
+- This ledger is append-only — never remove previous entries.
 
 ## Step 2: Initialize State
 

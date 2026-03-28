@@ -16,7 +16,7 @@ _Effectum (Latin): the result, the accomplishment — that which has been brough
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Built%20for-Claude%20Code-blueviolet)](https://claude.ai/claude-code)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
-[![Version](https://img.shields.io/badge/version-0.15.0-orange)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.16.0-orange)](CHANGELOG.md)
 [![Website](https://img.shields.io/badge/Website-aslomon.github.io%2Feffectum-D97706)](https://aslomon.github.io/effectum/)
 
 <br>
@@ -35,9 +35,9 @@ I'm a solo developer who builds everything with Claude Code. I tried BMAD, SpecK
 
 So I built Effectum. It combines what I learned from all of them: structured specifications (like SpecKit), autonomous execution (like GSD's approach), and quality gates that actually enforce standards.
 
-**v0.15.0 is a different animal.** The original was a workflow tool. This is closer to a development operating system. There's now an intelligent configurator that detects your stack and package manager in one step. There's a full PRD lifecycle with changelogs, semantic diffs, and delta handoffs. There's `/design` to generate a visual spec before you write a line of CSS. And there's `/onboard` — my personal favorite — which drops 6 parallel agents into any unfamiliar codebase and produces a complete understanding of it in minutes.
+**v0.16.0 is the trust + brownfield release.** The autonomous loop now knows when it's stuck (2 repeated errors → stop + diagnosis), when it's running out of context (80% budget → clean handoff), and it persists state to disk so crashed sessions can resume. There's `/forensics` for post-mortem analysis, `/effectum:init` to teach Claude about your domain, and `/map-codebase` that drops 4 parallel agents to produce 7 structured knowledge docs. Plus sentinel-based CLAUDE.md splitting so your project context survives updates.
 
-The result: from zero to autonomous development, for any stack, any language, with the quality gates that make overnight builds actually trustworthy.
+The result: from zero to autonomous development, for any stack, any language, with the self-awareness and crash recovery that make overnight builds actually trustworthy.
 
 This isn't a new idea — it's the best combination of existing ideas I've found, packaged so it actually works.
 

@@ -78,6 +78,9 @@
 | `/refactor-clean` | Cleanup        | Remove dead code                         |
 | `/checkpoint`     | Safety         | Create a restore point                   |
 | `/ralph-loop`     | Full Auto      | Iterative autonomous implementation      |
+| `/forensics`      | Diagnosis      | Post-mortem analysis of loop failures    |
+| `/effectum:init`  | Setup          | Populate project context in CLAUDE.md    |
+| `/map-codebase`   | Setup          | 4 parallel agents → 7 knowledge docs    |
 
 
 ## Available CLI Tools
@@ -153,3 +156,9 @@ Three execution tiers exist — use the simplest that fits:
 - Commit messages must be >= 10 characters and descriptive
 - Prefer specific file staging over `git add .`
 - Only commit when explicitly asked
+
+<!-- effectum:project-context:start -->
+<!-- Project-specific context goes here. This block is preserved across effectum updates.
+     Use /effectum:init to populate this section interactively, or edit manually.
+     Content between these sentinel markers will NOT be overwritten by effectum update. -->
+<!-- effectum:project-context:end -->

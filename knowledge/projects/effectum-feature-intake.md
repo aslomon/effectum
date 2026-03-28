@@ -137,3 +137,78 @@
 ---
 
 *Dieses File wird automatisch durch den 07:30-Cron ergänzt. Einträge hier sind nicht automatisch in TASKS.md — nur P0/P1 `implement-now`/`spec` werden manuell promoted.*
+
+---
+
+### 2026-03-28 — Batch 2 (aus 07:30 Cron, Claude Code v2.1.86)
+
+---
+
+#### #006 — Skill-Descriptions auf 250 Zeichen gecappt
+
+| Feld | Inhalt |
+| ---- | ------ |
+| **Datum** | 2026-03-28 |
+| **Signal** | Claude Code v2.1.86: `/skills`-Listing cappt Descriptions auf 250 Zeichen — längere werden abgeschnitten und erhöhen unnötig Context |
+| **Quelle** | Claude Code Changelog v2.1.86 |
+| **Bereich** | YAML-Frontmatter, generierte Command-Files, `/setup`, Frontmatter-Tests |
+| **Entscheidung** | `implement-now` |
+| **Priorität** | P1 |
+| **Aktion** | `test/frontmatter.test.js` um ≤250-Zeichen-Assertion erweitern; alle 28 Command-Descriptions prüfen und ggf. kürzen |
+| **Roadmap** | `v0.16` |
+| **Confidence** | hoch |
+| **Status** | ⏳ offen |
+
+---
+
+#### #007 — X-Claude-Code-Session-Id Header (API-Proxy-Support)
+
+| Feld | Inhalt |
+| ---- | ------ |
+| **Datum** | 2026-03-28 |
+| **Signal** | Neuer HTTP-Header `X-Claude-Code-Session-Id` in API-Requests — Proxies können Requests session-übergreifend aggregieren |
+| **Quelle** | Claude Code Changelog v2.1.86 |
+| **Bereich** | `/orchestrate`, Agent Teams, Monitoring |
+| **Entscheidung** | `watchlist` |
+| **Priorität** | P2 |
+| **Aktion** | Im Agent-Teams-Kontext bewerten: Könnten wir Session-IDs für Logging/Tracing nutzen? |
+| **Roadmap** | `later` |
+| **Confidence** | mittel |
+| **Status** | ⏳ offen |
+
+---
+
+#### #008 — /skills-Listing alphabetisch sortiert
+
+| Feld | Inhalt |
+| ---- | ------ |
+| **Datum** | 2026-03-28 |
+| **Signal** | `/skills`-Menü jetzt alphabetisch sortiert — UX-Verbesserung, keine Effectum-Aktion nötig |
+| **Quelle** | Claude Code Changelog v2.1.86 |
+| **Bereich** | Docs |
+| **Entscheidung** | `docs-only` |
+| **Priorität** | skip |
+| **Aktion** | Ggf. kurze Erwähnung in Skill-Naming-Conventions-Doku |
+| **Roadmap** | `none` |
+| **Confidence** | hoch |
+| **Status** | ⏳ offen |
+
+---
+
+#### #009 — Read-Tool: Kompaktes Zeilenformat + Deduplizierung
+
+| Feld | Inhalt |
+| ---- | ------ |
+| **Datum** | 2026-03-28 |
+| **Signal** | Read-Tool nutzt kompaktes Zeilennummernformat und dedupliziert unveränderte Re-Reads → passiv weniger Token-Verbrauch in allen Effectum-Workflows |
+| **Quelle** | Claude Code Changelog v2.1.86 |
+| **Bereich** | alle Workflows passiv |
+| **Entscheidung** | `skip` |
+| **Priorität** | skip |
+| **Aktion** | keine |
+| **Roadmap** | `none` |
+| **Confidence** | hoch |
+| **Status** | ✅ kein Handlungsbedarf |
+
+---
+
