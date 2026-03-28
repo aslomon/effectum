@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Feature Intake Batch 2 (2026-03-28)** — Tracked three new feature signals: Description length capping in v2.1.86 (P1: cap to 250 chars), X-Claude-Code-Session-Id header support for API proxies (P2: watchlist), and improvements to `/skills` listing (docs-only).
+- **Effort Field on Commands** — Added `effort: "high"` annotation to `/ralph-loop` and `/orchestrate` commands to signal context-intensive operations.
+
+### Changed
+
+- **Hook Conditionals in Templates** — Updated `settings.json.tmpl` templates to add `"if"` conditional fields: commit message validation only fires on `git commit*`, secret scanning fires on `git commit*` or `git push*`. Applied consistently across `.claude/settings.json`, `.effectum/templates/settings.json.tmpl`, and `system/templates/settings.json.tmpl`.
+- **README.md Command Tables** — Updated formatting for consistency in Loop Control and Setup & Brownfield sections; added descriptions for `/forensics`, `/effectum:init`, and `/map-codebase` to command reference tables.
+
 ## [0.16.0] - 2026-03-28
 
 ### Added
