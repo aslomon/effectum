@@ -2,6 +2,7 @@
 name: "PRD Network Map"
 description: "Create or update the visual network map of a project as a Mermaid diagram."
 allowed-tools: ["Read", "Write", "Bash"]
+effort: "medium"
 ---
 
 # /prd:network-map — Create or Update the Project Network Map
@@ -106,14 +107,13 @@ Overall: {PASS | WARN | FAIL}
 
 Report FAIL if circular dependencies or orphaned references are found. Report WARN for isolated nodes or status mismatches. Report PASS if all checks pass.
 
-## Step 9: Display Result
+## Next Steps
 
-Show the user:
+After the network map is generated:
 
-1. The complete Mermaid source in a code block (if generating/updating).
-2. A brief summary: number of features, PRDs, connections, identified dependencies.
-3. Validation results (if `--validate` was used, or always run basic checks after generation).
-4. Notes on potential issues (circular dependencies, isolated nodes, too many connections).
+- → `/prd:discuss {slug}/{number}` — Dive deeper into features identified in the map
+- → `/prd:decompose {slug}` — If the map reveals a large scope, decompose into focused PRDs
+- → `/prd:handoff {slug}/{number}` — Hand off a PRD whose features are fully mapped
 
 ## Communication
 
@@ -132,7 +132,16 @@ Before writing the `.mmd` file, ensure valid Mermaid syntax:
 3. **Validate subgraph names don't conflict with node IDs**
 4. **Test:** The generated Mermaid must parse without errors on mermaid.live
 
-## Step 9: Generate HTML Viewer
+## Step 9: Display Result
+
+Show the user:
+
+1. The complete Mermaid source in a code block (if generating/updating).
+2. A brief summary: number of features, PRDs, connections, identified dependencies.
+3. Validation results (if `--validate` was used, or always run basic checks after generation).
+4. Notes on potential issues (circular dependencies, isolated nodes, too many connections).
+
+## Step 10: Generate HTML Viewer
 
 After writing the `.mmd` file, ALWAYS generate an interactive HTML viewer:
 
@@ -150,6 +159,6 @@ The HTML viewer includes:
 - SVG export button
 - Legend (Planned / In Progress / Done)
 
-## Step 10: Also Generate on /onboard
+## Note: Also runs on /onboard
 
 When called as part of `/onboard`, the HTML viewer is generated automatically after the Network Map is written. The user can immediately see the visual map in their browser.

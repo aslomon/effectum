@@ -2,6 +2,7 @@
 name: "Cancel Ralph"
 description: "Gracefully cancel a running Ralph Loop, preserve progress, and report current state."
 allowed-tools: ["Read", "Write", "Bash"]
+effort: "low"
 ---
 
 # /cancel-ralph -- Cancel an Active Ralph Loop

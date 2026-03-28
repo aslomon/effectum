@@ -2,6 +2,7 @@
 name: "Onboard"
 description: "Reverse-engineer an existing project into Effectum with 6 parallel analysis agents and PRD generation."
 allowed-tools: ["Read", "Write", "Edit", "Bash", "Glob", "Grep", "Agent"]
+effort: "high"
 ---
 
 # /onboard — Reverse-Engineer an Existing Project into Effectum

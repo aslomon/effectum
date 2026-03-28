@@ -2,6 +2,7 @@
 name: "PRD Update"
 description: "Update an existing PRD with semantic diff, impact analysis, and delta handoff generation."
 allowed-tools: ["Read", "Write", "Bash"]
+effort: "medium"
 ---
 
 # /prd:update — Update an Existing PRD with Change Tracking
@@ -193,6 +194,14 @@ Display:
 2. Changes: {count} additive, {count} modified, {count} removed
 3. Delta handoff location
 4. Next steps: how to use the delta handoff prompt
+
+## Next Steps
+
+After the PRD update:
+
+- → `/prd:handoff {slug}/{number}` — Generate an updated handoff with the delta prompt
+- → `/ralph-loop` — Run the delta handoff prompt to implement the changes
+- → `/prd:review {slug}/{number}` — Re-review the updated PRD before handing off
 
 ## Communication
 

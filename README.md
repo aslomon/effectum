@@ -1117,7 +1117,7 @@ Yes. Foundation hooks are always active: secret detection blocks writes to `.env
 </details>
 
 <details>
-<summary><strong>How do the 19 agent specializations work?</strong></summary>
+<summary><strong>How do the 25 agent specializations work?</strong></summary>
 
 Each specialization is a pre-configured behavior profile that Claude adopts when running a particular command. When you run `/tdd`, Claude behaves as the TDD Driver agent — test-first mindset, specific communication style, specific toolset. You don't configure this; Effectum sets it up automatically based on which command you're running.
 

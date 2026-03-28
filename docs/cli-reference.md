@@ -9,6 +9,7 @@ Complete reference for all Effectum CLI commands, flags, and exit codes.
   - [`effectum` (default install)](#effectum-default-install)
   - [`effectum init`](#effectum-init)
   - [`effectum reconfigure`](#effectum-reconfigure)
+  - [`effectum update`](#effectum-update)
 - [Flags](#flags)
 - [Examples](#examples)
 - [Exit Codes](#exit-codes)
@@ -98,6 +99,39 @@ Use this when:
 - `--dry-run` — show what would be written without writing
 
 **Error:** If no `.effectum.json` is found, exits with code `1` and prints an error.
+
+---
+
+### `effectum update`
+
+**Usage:** `npx @aslomon/effectum update`
+
+Updates the Effectum workflow files in the current project to the latest version. Reads the installed `.effectum.json` to determine scope and configuration, then:
+
+- **Diffs commands** — shows new and changed commands available in the latest version
+- **Adds new commands** — copies any commands that don't yet exist in `.claude/commands/`
+- **Updates changed commands** — overwrites command files that have changed upstream
+- **Refreshes CLAUDE.md** — updates the system-managed section while **preserving** your project context (sentinel blocks are never touched)
+- **Preserves config** — never overwrites `.effectum.json`, `guardrails.md`, or your custom content
+
+```bash
+cd ~/my-project
+npx @aslomon/effectum update
+```
+
+Example output:
+
+```
+✔ Checking for updates...
+ℹ 3 new command(s) available: /forensics, /effectum:init, /map-codebase
+ℹ 5 command(s) with updates
+✔ Updated: 3 new command(s) added, 5 command(s) updated, CLAUDE.md refreshed
+```
+
+**Flags:**
+- `--dry-run` — show what would be updated without writing any files
+
+**Error:** If no `.effectum.json` is found in the current directory, exits with code `1`.
 
 ---
 

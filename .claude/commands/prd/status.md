@@ -2,6 +2,7 @@
 name: "PRD Status"
 description: "Display a dashboard overview of all projects and their PRD statuses."
 allowed-tools: ["Read", "Bash", "Glob"]
+effort: "low"
 ---
 
 # /prd:status — Dashboard of All Projects and PRDs
@@ -61,6 +62,14 @@ For each project, provide a concrete recommendation:
 - `review` → "Run `/prd:review {slug}`"
 - `ready` → "Ready for `/prd:handoff {slug}/001`"
 - `handed-off` → "All PRDs handed off. `/workshop:archive {slug}` is available."
+
+## Next Steps
+
+Based on the dashboard, continue with the appropriate action:
+
+- → `/prd:new {slug}` — Continue a project in discovery phase
+- → `/prd:handoff {slug}/{number}` — Hand off a ready PRD
+- → `/workshop:archive {slug}` — Archive a fully handed-off project
 
 ## Communication
 

@@ -316,17 +316,11 @@ Continue to the next iteration.
 
 Apply these escalation rules:
 
+> **Note:** Stuck Detection (see above) fires at **2 consecutive identical errors** and stops the loop entirely. The rules below apply to *different* errors or recoverable transient failures — not repeated identical errors.
+
 ### Build/Test Error
 
 - Next iteration sees the error output and fixes it. This is normal -- continue.
-
-### Same Error 3 Consecutive Times
-
-- The current approach is not working. Try a fundamentally different approach:
-  - Different algorithm or data structure.
-  - Different library or API.
-  - Simpler implementation that still satisfies the criteria.
-- Document what was tried and why it failed in the progress log.
 
 ### Same Error 5 Consecutive Times
 

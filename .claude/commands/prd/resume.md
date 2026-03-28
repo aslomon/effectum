@@ -2,6 +2,7 @@
 name: "PRD Resume"
 description: "Resume work on an existing project or PRD from where things left off."
 allowed-tools: ["Read", "Write", "Bash"]
+effort: "low"
 ---
 
 # /prd:resume — Resume Work on an Existing Project/PRD
@@ -60,6 +61,14 @@ Offer the user to continue with the next logical step:
 - If a specific PRD is referenced: Focus on that.
 - If the overall project: Suggest the most important next step.
 - Wait for the user's confirmation before starting.
+
+## Next Steps
+
+Based on the resumed project state, continue with the appropriate command:
+
+- → `/prd:discuss {slug}/{number}` — Resume deep-dive on an in-progress PRD
+- → `/prd:review {slug}` — Review PRDs that are ready for quality scoring
+- → `/prd:handoff {slug}/{number}` — Hand off a ready PRD for implementation
 
 ## Communication
 

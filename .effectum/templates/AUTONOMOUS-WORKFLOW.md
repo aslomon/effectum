@@ -1402,6 +1402,17 @@ Test fails
 | `/build-fix`      | Debugging      | Incremental error resolution             |
 | `/refactor-clean` | Cleanup        | Remove dead code                         |
 | `/checkpoint`     | Safety         | Create a restore point                   |
+| `/forensics`      | Diagnosis      | Post-mortem analysis for stuck/failed runs — explains what went wrong and why |
+| `/effectum:init`  | Setup          | Teach Claude about your domain model, naming conventions, and key business rules — persisted across updates |
+| `/map-codebase`   | Onboarding     | Drops 4 parallel agents to produce 7 structured knowledge documents about an existing codebase |
+
+### v0.16 Autonomous Loop Features
+
+| Feature                    | Description                                                                                                                                               |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Context Budget Monitor** | Tracks estimated context usage each iteration. At 80% capacity, the loop writes `HANDOFF.md` with a clean resume point and stops — preventing corrupted or truncated runs. |
+| **Stuck Detection**        | Compares the current error against the previous iteration's error. If the **same error appears 2 consecutive times**, the loop writes `STUCK.md` with a diagnosis and stops. Two repetitions means the approach is fundamentally wrong. |
+| **Loop State**             | After every iteration, the loop persists its full state to `.effectum/loop-state.json` (iteration, task, last error, artifacts, status). On a new run, if an incomplete state file is found, Claude offers to resume or start fresh — enabling crash recovery for overnight builds. |
 
 ### MCP Servers (automatically available)
 

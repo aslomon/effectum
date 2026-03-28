@@ -2,6 +2,7 @@
 name: "PRD Express"
 description: "Create a complete PRD from structured input with minimal follow-up questions."
 allowed-tools: ["Read", "Write", "Bash"]
+effort: "medium"
 ---
 
 # /prd:express — Quick PRD from Structured/Semi-Structured Input
@@ -79,6 +80,14 @@ Show the user:
 2. List of all assumptions — the user should confirm or correct these.
 3. The chosen workflow mode with justification.
 4. Next steps: recommend review (`/prd:review`) or direct handoff.
+
+## Next Steps
+
+After the Express PRD is generated:
+
+- → `/prd:review {slug}/{number}` — Review the PRD before handing off
+- → `/prd:handoff {slug}/{number}` — Export the PRD as a handoff package
+- → `/prd:discuss {slug}/{number}` — Deepen the discussion if assumptions need clarification
 
 ## Communication
 

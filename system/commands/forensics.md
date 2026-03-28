@@ -120,6 +120,16 @@ Root cause: [one-line summary]
 Recommended: [primary next step]
 ```
 
+## Next Steps
+
+After the forensics report is generated:
+
+- → `/ralph-loop` — Restart with the suggested command from the report
+- → `/build-fix` — If the root cause is a build failure, fix errors incrementally
+- → `/verify` — Assess the current state before deciding on the next action
+
+ℹ️ Always read the full `FORENSICS-YYYY-MM-DD.md` report before restarting a loop — it contains the recommended approach for the next session.
+
 ## Communication
 
 Follow the language settings defined in CLAUDE.md for user-facing communication.

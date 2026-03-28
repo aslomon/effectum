@@ -2,6 +2,7 @@
 name: "Plan"
 description: "Create a detailed implementation plan from requirements, then stop for approval before coding."
 allowed-tools: ["Read", "Bash", "Glob", "Grep"]
+effort: "medium"
 ---
 
 # /plan -- Analyze Requirements and Create Implementation Plan

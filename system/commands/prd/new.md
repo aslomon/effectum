@@ -2,6 +2,7 @@
 name: "PRD New"
 description: "Start a new PRD workshop session, working interactively with the user."
 allowed-tools: ["Read", "Write", "Bash"]
+effort: "high"
 ---
 
 # /prd:new — Start a New Project or PRD
@@ -93,6 +94,14 @@ After the PRD is saved, automatically generate a Stage 1 network map:
    - Group features in a `subgraph PRD-{number}` boundary
 5. If a network map already exists (from a previous PRD): Merge the new PRD's features into the existing map as a new subgraph.
 6. Show the generated map to the user.
+
+## Next Steps
+
+After the PRD is saved:
+
+- → `/prd:discuss {slug}/{number}` — Dive deeper into specific feature details
+- → `/prd:review {slug}/{number}` — Score the PRD for handoff readiness
+- → `/prd:decompose {slug}` — Split into multiple PRDs if the scope is large
 
 ## Communication
 

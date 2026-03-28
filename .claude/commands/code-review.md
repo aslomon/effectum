@@ -2,6 +2,7 @@
 name: "Code Review"
 description: "Security and code quality review of all changes with severity levels and suggested fixes."
 allowed-tools: ["Read", "Bash", "Grep", "Glob"]
+effort: "medium"
 ---
 
 # /code-review -- Security and Quality Review

@@ -2,6 +2,7 @@
 name: "Workshop Init"
 description: "Create the complete directory structure and template files for a new project."
 allowed-tools: ["Read", "Write", "Bash"]
+effort: "low"
 ---
 
 # /workshop:init — Initialize a New Project Workspace
@@ -76,6 +77,13 @@ Confirm to the user:
 - Which directory was created.
 - Which files were set up.
 - Suggest continuing with `/prd:new {slug}`.
+
+## Next Steps
+
+After initialization:
+
+- → `/prd:new {slug}` — Start the discovery phase for the new project
+- → `/prd:status` — See all projects including the newly created one
 
 ## Communication
 

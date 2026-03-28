@@ -2,6 +2,7 @@
 name: "Refactor Clean"
 description: "Remove dead code and improve quality without changing observable behavior."
 allowed-tools: ["Read", "Edit", "Bash", "Glob", "Grep"]
+effort: "medium"
 ---
 
 # /refactor-clean -- Remove Dead Code and Improve Quality

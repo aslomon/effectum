@@ -2,6 +2,7 @@
 name: "E2E Tests"
 description: "Write and run end-to-end tests for critical user journeys using Playwright or similar."
 allowed-tools: ["Read", "Write", "Edit", "Bash", "Glob", "Grep"]
+effort: "medium"
 ---
 
 # /e2e -- Write and Run End-to-End Tests

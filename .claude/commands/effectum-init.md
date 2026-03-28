@@ -145,6 +145,16 @@ This context will be preserved across effectum updates.
 Edit it anytime — just keep the sentinel markers intact.
 ```
 
+## Next Steps
+
+After populating project context:
+
+- → `/plan` — Create an implementation plan using the new context
+- → `/prd:new` — Start a PRD workshop session with domain context in place
+- → `/map-codebase` — Run parallel codebase analysis to complement the context
+
+ℹ️ The sentinel block can be updated at any time by re-running `/effectum:init`.
+
 ## Communication
 
 Follow the language settings defined in CLAUDE.md for user-facing communication.

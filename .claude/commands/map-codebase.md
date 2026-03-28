@@ -163,6 +163,16 @@ Total: 7 knowledge documents generated.
 
 Verify each expected file exists. If any agent failed, report which files are missing.
 
+## Next Steps
+
+After codebase mapping is complete:
+
+- → `/effectum:init` — Use the analysis to populate project context in CLAUDE.md
+- → `/prd:new` — Start a PRD session with full architectural understanding
+- → `/plan` — Create an implementation plan informed by the knowledge documents
+
+ℹ️ Knowledge documents in `knowledge/codebase/` can be referenced by agents in subsequent sessions.
+
 ## Communication
 
 Follow the language settings defined in CLAUDE.md for user-facing communication.

@@ -226,51 +226,68 @@ Effectum uses **ESLint** and **Prettier** (configuration TBD — follow the patt
 
 ## Testing
 
-> **Note:** Effectum does not yet have an automated test suite — this is a known gap and a great area to contribute. See the open issue.
+Effectum has a comprehensive automated test suite. **Run it before every PR.**
 
-### Manual Testing Protocol
-
-Until automated tests exist, test manually before every PR:
+### Running Tests
 
 ```bash
-# 1. Basic smoke test
-node bin/effectum.js --version
-node bin/effectum.js --help
-
-# 2. Interactive install (global)
-mkdir /tmp/test-global && cd /tmp/test-global
-node /path/to/effectum/bin/effectum.js --global
-ls ~/.claude/  # Verify files were installed
-
-# 3. Interactive install (local)
-mkdir /tmp/test-local && cd /tmp/test-local
-node /path/to/effectum/bin/effectum.js --local
-ls .claude/   # Verify files were installed
-
-# 4. Non-interactive install
-mkdir /tmp/test-noninteractive && cd /tmp/test-noninteractive
-node /path/to/effectum/bin/effectum.js --global --claude --yes
-
-# 5. Dry run (nothing should be written)
-mkdir /tmp/test-dryrun && cd /tmp/test-dryrun
-node /path/to/effectum/bin/effectum.js --dry-run
-
-# 6. Reconfigure (needs a prior install with .effectum.json)
-cd /tmp/test-local
-node /path/to/effectum/bin/effectum.js reconfigure
-
-# 7. Stack-specific: verify the chosen stack preset is applied
-#    Check that CLAUDE.md contains the expected stack section
-grep "TECH_STACK" .claude/CLAUDE.md
+# Run the full test suite (414+ tests)
+npm test
 ```
 
-### What to Verify
+Tests use the **Node.js built-in test runner** (`node:test`) — no additional test framework needed. All tests live in the `test/` directory.
 
-- Files are written to the correct target directory
-- Placeholders in templates are fully substituted (no `{{PROJECT_NAME}}` left)
-- Stack-specific sections appear in `CLAUDE.md`
-- `--dry-run` produces no file writes
-- `reconfigure` reads `.effectum.json` and regenerates correctly
+### Test Structure
+
+```
+test/
+├── cli/          CLI flag and subcommand tests
+├── install/      Installer logic, file generation, placeholder substitution
+├── detect/       Stack and language auto-detection tests
+├── recommend/    Recommendation engine tests
+├── template/     Template rendering tests
+└── utils/        Utility function tests
+```
+
+### Adding Tests
+
+1. Create a file in the appropriate `test/` subdirectory (e.g., `test/install/my-feature.test.js`)
+2. Use the Node.js built-in test runner:
+
+```js
+import { test, describe } from 'node:test';
+import assert from 'node:assert/strict';
+
+describe('my feature', () => {
+  test('does the expected thing', () => {
+    assert.equal(myFunction('input'), 'expected-output');
+  });
+});
+```
+
+3. Run `npm test` to verify your tests pass.
+
+### PR Checklist for Tests
+
+- [ ] `npm test` passes — all 414+ tests green
+- [ ] New behaviour is covered by at least one test
+- [ ] No `console.log` left in test files
+
+### Manual Smoke Test (optional, for install behaviour)
+
+For changes that touch the installer or file-writing logic, a quick manual check is useful in addition to the automated suite:
+
+```bash
+# Dry run — nothing written, output only
+mkdir /tmp/effectum-smoke && cd /tmp/effectum-smoke
+node /path/to/effectum/bin/effectum.js --local --dry-run
+
+# Verify a real local install
+mkdir /tmp/effectum-local && cd /tmp/effectum-local
+node /path/to/effectum/bin/effectum.js --local --claude --yes
+ls .claude/  # Check files are present
+grep -v '{{' .claude/CLAUDE.md | head -5  # No unresolved placeholders
+```
 
 ---
 

@@ -2,6 +2,7 @@
 name: "Verify"
 description: "Run all quality gates (build, types, lint, tests) and report pass/fail without fixing."
 allowed-tools: ["Bash", "Read"]
+effort: "low"
 ---
 
 # /verify -- Run All Quality Gates and Report Results

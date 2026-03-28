@@ -2,6 +2,7 @@
 name: "PRD Handoff"
 description: "Export a completed PRD as a handoff package for implementation in the target project."
 allowed-tools: ["Read", "Write", "Bash"]
+effort: "medium"
 ---
 
 # /prd:handoff — Hand Off PRD to the Target Project

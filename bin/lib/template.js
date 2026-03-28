@@ -142,7 +142,7 @@ function buildSubstitutionMap(config, stackSections) {
     FORMATTER: formatter.command,
     FORMATTER_NAME: formatter.name,
     FORMATTER_GLOB: formatter.glob,
-    PACKAGE_MANAGER: config.packageManager,
+    PACKAGE_MANAGER: config.packageManager || "npm",
     TOOL_SPECIFIC_GUARDRAILS:
       stackSections.TOOL_SPECIFIC_GUARDRAILS || "[Not configured]",
     AVAILABLE_TOOLS: availableTools,

@@ -2,6 +2,7 @@
 name: "Design"
 description: "Generate a structured DESIGN.md visual specification for frontend projects."
 allowed-tools: ["Read", "Write", "Bash", "Glob", "Grep"]
+effort: "medium"
 ---
 
 # /design — Generate DESIGN.md

@@ -2,6 +2,7 @@
 name: "Workshop Archive"
 description: "Archive a completed project by moving it to workshop/archive/."
 allowed-tools: ["Read", "Bash"]
+effort: "low"
 ---
 
 # /workshop:archive — Archive a Completed Project
@@ -56,6 +57,13 @@ Confirm to the user:
 - Which project was archived.
 - Where it was moved to.
 - Whether all PRDs were in `handed-off` status.
+
+## Next Steps
+
+After archiving:
+
+- → `/prd:status` — Review remaining active projects
+- → `/workshop:init {new-slug}` — Start a new project
 
 ## Communication
 

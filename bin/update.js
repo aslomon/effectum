@@ -439,8 +439,6 @@ async function main() {
   const s = p.spinner();
   s.start("Applying updates...");
 
-  const totalCommands = commandsToAdd.length + commandsToUpdate.length;
-
   if (commandsToAdd.length > 0) {
     copyCommandFiles(commandsToAdd, sourceCommands, installedCommands);
   }

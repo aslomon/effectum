@@ -2,6 +2,7 @@
 name: "Setup"
 description: "Install the complete Effectum autonomous development workflow into a target project."
 allowed-tools: ["Read", "Write", "Bash", "Glob"]
+effort: "medium"
 ---
 
 # /setup — Install Autonomous Development Workflow
@@ -121,9 +122,9 @@ Create these files in the target project:
 
 4. **`{target}/AUTONOMOUS-WORKFLOW.md`** — Copy `system/templates/AUTONOMOUS-WORKFLOW.md` as-is
 
-### Workflow Commands (10)
+### Workflow Commands
 
-Copy ALL files from `system/commands/` to `{target}/.claude/commands/`:
+Copy ALL files from `system/commands/` to `{target}/.claude/commands/`. This includes every `.md` file and subdirectory found there. Current base set:
 
 5. `plan.md` — Analysis + implementation plan + wait for approval
 6. `tdd.md` — Test-first development (RED → GREEN → REFACTOR)
@@ -135,6 +136,16 @@ Copy ALL files from `system/commands/` to `{target}/.claude/commands/`:
 12. `ralph-loop.md` — Iterative autonomous implementation loop
 13. `cancel-ralph.md` — Stop a running Ralph Loop
 14. `checkpoint.md` — Create a git restore point
+15. `design.md` — Generate DESIGN.md for frontend projects
+16. `orchestrate.md` — Multi-agent orchestration
+17. `forensics.md` — Post-mortem analysis for stuck/failed runs
+18. `effectum-init.md` — Teach Claude about your project domain
+19. `map-codebase.md` — 4-agent parallel codebase mapping (7 knowledge docs)
+20. `onboard.md` + `onboard/` — Existing codebase onboarding
+21. `setup.md` — Install the workflow into a project
+22. `workshop/` — PRD Workshop commands (`prd:new`, `prd:express`, etc.)
+
+> **Do not hardcode a count.** Copy the entire `system/commands/` tree. New commands are added with each Effectum release.
 
 ## Step 5: Verify Installation
 
@@ -157,7 +168,7 @@ Show a configuration summary:
 | Stack | {stack} |
 | Language | {language} |
 | Autonomy | {level} |
-| Commands installed | 10 |
+| Commands installed | {count of files copied from system/commands/} |
 | Files created | {total count} |
 ```
 

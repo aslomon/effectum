@@ -2,6 +2,7 @@
 name: "PRD Prompt"
 description: "Generate a handoff prompt for a PRD without performing the full export process."
 allowed-tools: ["Read", "Write"]
+effort: "low"
 ---
 
 # /prd:prompt — Generate Handoff Prompt for a PRD
@@ -60,6 +61,14 @@ Briefly explain (2-3 sentences) why this workflow mode was chosen. For example:
 
 - "Full-Auto, because the PRD is clearly defined, affects few files, and has no external dependencies."
 - "Ralph Loop, because the feature is security-critical and needs iterative review."
+
+## Next Steps
+
+After the handoff prompt is generated:
+
+- → Copy the prompt and use it in the target project's Claude Code session
+- → `/prd:handoff {slug}/{number}` — Full export (also copies files to target repo if configured)
+- → `/ralph-loop` — Paste the prompt into a Ralph Loop for autonomous implementation
 
 ## Communication
 

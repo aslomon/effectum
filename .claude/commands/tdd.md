@@ -2,6 +2,7 @@
 name: "TDD"
 description: "Test-driven development: write failing tests first, then implement minimal code to pass."
 allowed-tools: ["Read", "Write", "Edit", "Bash", "Glob", "Grep"]
+effort: "medium"
 ---
 
 # /tdd -- Test-Driven Development: RED -> GREEN -> REFACTOR

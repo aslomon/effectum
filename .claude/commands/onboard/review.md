@@ -2,6 +2,7 @@
 name: "Onboard Review"
 description: "Review onboarded PRDs for cross-PRD consistency, duplicates, and best practices."
 allowed-tools: ["Read", "Write"]
+effort: "medium"
 ---
 
 # /onboard:review — Onboarding Consistency Review

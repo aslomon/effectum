@@ -2,6 +2,7 @@
 name: "Build Fix"
 description: "Incrementally fix build and type errors one at a time, re-running after each fix."
 allowed-tools: ["Bash", "Read", "Edit"]
+effort: "medium"
 ---
 
 # /build-fix -- Incrementally Fix Build and Type Errors

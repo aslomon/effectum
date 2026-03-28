@@ -2,6 +2,7 @@
 name: "PRD Discuss"
 description: "Conduct an in-depth discussion about a specific PRD to clarify all details."
 allowed-tools: ["Read", "Write"]
+effort: "medium"
 ---
 
 # /prd:discuss — Deep-Dive Discussion for a Specific PRD (Phase 4)
@@ -63,6 +64,14 @@ If the discussion uncovered new connections, dependencies, or components:
 
 - Update `network-map.mmd` accordingly.
 - Inform the user about the changes.
+
+## Next Steps
+
+After the deep-dive discussion:
+
+- → `/prd:review {slug}/{number}` — Score the PRD for handoff readiness
+- → `/prd:discuss {slug}/{next}` — Continue deep-diving the next PRD in the project
+- → `/prd:handoff {slug}/{number}` — Export the PRD as a handoff package
 
 ## Communication
 

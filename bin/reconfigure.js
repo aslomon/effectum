@@ -15,6 +15,10 @@ const {
   renderTemplate,
   findTemplatePath,
 } = require("./lib/template");
+const {
+  extractSentinelBlock,
+  replaceSentinelBlock,
+} = require("./update");
 const { AUTONOMY_MAP, FORMATTER_MAP } = require("./lib/constants");
 const { ensureDir, deepMerge, findRepoRoot } = require("./lib/utils");
 const { initClack } = require("./lib/ui");
@@ -85,11 +89,23 @@ async function main() {
   const s = p.spinner();
   s.start("Regenerating configuration files...");
 
-  // 1. CLAUDE.md
+  // 1. CLAUDE.md — preserve sentinel block across re-renders
+  const claudeMdPath = path.join(targetDir, "CLAUDE.md");
+  let preservedBlock = null;
+  if (fs.existsSync(claudeMdPath)) {
+    const existingContent = fs.readFileSync(claudeMdPath, "utf8");
+    preservedBlock = extractSentinelBlock(existingContent);
+  }
+
   const claudeMdTmpl = findTemplatePath("CLAUDE.md.tmpl", targetDir, repoRoot);
-  const { content: claudeMdContent, remaining: claudeMdRemaining } =
+  let { content: claudeMdContent, remaining: claudeMdRemaining } =
     renderTemplate(claudeMdTmpl, vars);
-  fs.writeFileSync(path.join(targetDir, "CLAUDE.md"), claudeMdContent, "utf8");
+
+  if (preservedBlock) {
+    claudeMdContent = replaceSentinelBlock(claudeMdContent, preservedBlock);
+  }
+
+  fs.writeFileSync(claudeMdPath, claudeMdContent, "utf8");
 
   if (claudeMdRemaining.length > 0) {
     p.log.warn(

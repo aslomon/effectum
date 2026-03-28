@@ -2,6 +2,7 @@
 name: "PRD Review"
 description: "Systematic quality review and readiness scoring for one or more PRDs."
 allowed-tools: ["Read", "Write"]
+effort: "medium"
 ---
 
 # /prd:review — Quality Review and Readiness Scoring (Phase 7)
@@ -57,6 +58,14 @@ Give the user a clear recommendation:
 - Ready for handoff? → Suggest `/prd:handoff`.
 - Rework needed? → Suggest concrete next steps.
 - For multiple PRDs: Sort by readiness, show which should be addressed first.
+
+## Next Steps
+
+After the review:
+
+- → `/prd:handoff {slug}/{number}` — Hand off a PRD that scored >= 2.0
+- → `/prd:discuss {slug}/{number}` — Improve weak areas before handing off
+- → `/prd:update {slug}/{number}` — Apply structural changes identified in the review
 
 ## Communication
 
