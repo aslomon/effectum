@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.17.7] - 2026-03-29
+
+### Changed
+
+- **Auto Mode as Default for Full Autonomy** — `full` autonomy level now uses `auto` mode as default (safer than `bypassPermissions`, aligns with Claude Code Auto Mode).
+
+## [0.17.6] - 2026-03-29
+
+### Fixed
+
+- **Autonomy Detection from All Claude Code Modes** — Detect autonomy level from both `defaultMode` and `allow` list, supporting all 6 Claude Code permission modes.
+
 ## [0.17.5] - 2026-03-29
 
 ### Fixed
