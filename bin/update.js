@@ -334,10 +334,39 @@ async function main() {
     process.exit(1);
   }
   if (!config) {
-    console.error(
-      "✖ No .effectum.json found. Run `npx @aslomon/effectum` first to set up.",
-    );
-    process.exit(1);
+    // Legacy project: has .claude/commands but no .effectum.json
+    // Infer minimal config from existing setup
+    const hasCommands = fs.existsSync(path.join(targetDir, ".claude", "commands"));
+    if (hasCommands) {
+      p.log.warn("No .effectum.json found — inferring config from existing setup.");
+      const pkgPath = path.join(targetDir, "package.json");
+      let projectName = path.basename(targetDir);
+      let stack = "generic";
+      if (fs.existsSync(pkgPath)) {
+        try {
+          const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"));
+          projectName = pkg.name || projectName;
+          const deps = { ...pkg.dependencies, ...pkg.devDependencies };
+          if (deps["next"]) stack = deps["@supabase/supabase-js"] ? "nextjs-supabase" : "nextjs";
+          else if (deps["fastapi"] || deps["django"]) stack = "python";
+        } catch (_) {}
+      }
+      config = {
+        projectName,
+        stack,
+        scope: "local",
+        autonomyLevel: "standard",
+        language: "english",
+      };
+      // Write the config so future updates work directly
+      writeConfig(targetDir, config);
+      p.log.success(`.effectum.json created: "${projectName}" (${stack})`);
+    } else {
+      console.error(
+        "✖ No effectum installation found. Run `npx @aslomon/effectum` to set up.",
+      );
+      process.exit(1);
+    }
   }
 
   p.log.info(`Project: "${config.projectName}" (${config.stack})`);

@@ -53,12 +53,23 @@ switch (subcommand) {
     break;
 
   default: {
-    // If .effectum.json exists in CWD, auto-route to update instead of install
+    // If effectum is already installed in CWD, auto-route to update
     const fs = require("fs");
-    const configPath = path.join(process.cwd(), ".effectum.json");
-    if (!args.includes("--help") && !args.includes("-h") && fs.existsSync(configPath)) {
-      console.log("  effectum project detected (.effectum.json found)");
-      console.log("  → Running update instead of install.\n");
+    const cwd = process.cwd();
+    const hasConfig = fs.existsSync(path.join(cwd, ".effectum.json"));
+    const hasClaudeCommands = fs.existsSync(path.join(cwd, ".claude", "commands"));
+    const hasClaude = fs.existsSync(path.join(cwd, "CLAUDE.md"));
+    const isEffectumProject = hasConfig || (hasClaudeCommands && hasClaude);
+
+    if (!args.includes("--help") && !args.includes("-h") && !args.includes("--force-install") && isEffectumProject) {
+      if (!hasConfig) {
+        console.log("  effectum project detected (.claude/commands + CLAUDE.md found)");
+        console.log("  Note: No .effectum.json found — will be created during update.\n");
+      } else {
+        console.log("  effectum project detected (.effectum.json found)");
+      }
+      console.log("  → Running update instead of install.");
+      console.log("  (Use --force-install to run the full installer instead.)\n");
       require("./update.js");
     } else {
       // Fresh install
