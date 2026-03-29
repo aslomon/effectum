@@ -12,7 +12,7 @@ function read(relPath) {
 }
 
 describe("/prd:update smoke contract", () => {
-  const command = read("system/commands/prd/update.md");
+  const command = read("system/commands/effect/prd/update.md");
   const deltaTemplate = read("workshop/templates/delta-handoff.md");
   const taskTemplate = read("workshop/templates/tasks.md");
   const networkGuide = read("workshop/knowledge/06-network-map-guide.md");

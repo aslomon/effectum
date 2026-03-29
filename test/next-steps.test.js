@@ -34,7 +34,7 @@ function getNextStepsSection(content) {
 
 describe("Next Steps — core commands", () => {
   test("/plan shows next steps (→ /tdd or /ralph-loop)", () => {
-    const content = readCommand("plan.md");
+    const content = readCommand("effect/dev/plan.md");
     assert.ok(hasNextSteps(content), "/plan should have ## Next Steps");
     const section = getNextStepsSection(content);
     assert.ok(section.includes("/tdd") || section.includes("effect:dev:tdd"), "/plan next steps should mention /tdd");
@@ -45,7 +45,7 @@ describe("Next Steps — core commands", () => {
   });
 
   test("/tdd shows next steps (→ /verify or /build-fix)", () => {
-    const content = readCommand("tdd.md");
+    const content = readCommand("effect/dev/tdd.md");
     assert.ok(hasNextSteps(content), "/tdd should have ## Next Steps");
     const section = getNextStepsSection(content);
     assert.ok(
@@ -59,7 +59,7 @@ describe("Next Steps — core commands", () => {
   });
 
   test("/verify shows next steps (→ /code-review or /build-fix)", () => {
-    const content = readCommand("verify.md");
+    const content = readCommand("effect/dev/verify.md");
     assert.ok(hasNextSteps(content), "/verify should have ## Next Steps");
     const section = getNextStepsSection(content);
     assert.ok(
@@ -73,7 +73,7 @@ describe("Next Steps — core commands", () => {
   });
 
   test("/code-review shows next steps (→ Done or feedback loop)", () => {
-    const content = readCommand("code-review.md");
+    const content = readCommand("effect/dev/review.md");
     assert.ok(hasNextSteps(content), "/code-review should have ## Next Steps");
     const section = getNextStepsSection(content);
     assert.ok(
@@ -83,7 +83,7 @@ describe("Next Steps — core commands", () => {
   });
 
   test("/design shows next steps (→ /plan)", () => {
-    const content = readCommand("design.md");
+    const content = readCommand("effect/design.md");
     assert.ok(hasNextSteps(content), "/design should have ## Next Steps");
     const section = getNextStepsSection(content);
     assert.ok(
@@ -98,10 +98,10 @@ describe("Next Steps — core commands", () => {
 describe("Next Steps — PRD commands", () => {
   test("/prd:handoff shows next steps (→ /design or /plan)", () => {
     const content = fs.readFileSync(
-      path.join(commandsDir, "prd", "handoff.md"),
+      path.join(commandsDir, "effect", "prd", "handoff.md"),
       "utf8",
     );
-    assert.ok(hasNextSteps(content), "/prd:handoff should have ## Next Steps");
+    assert.ok(hasNextSteps(content), "effect:prd:handoff should have ## Next Steps");
     const section = getNextStepsSection(content);
     assert.ok(
       section.includes("/design") || section.includes("effect:design"),
@@ -115,20 +115,20 @@ describe("Next Steps — PRD commands", () => {
 
 describe("Next Steps — completeness check", () => {
   const coreCommands = [
-    "plan.md",
-    "tdd.md",
-    "verify.md",
-    "code-review.md",
-    "build-fix.md",
-    "design.md",
-    "ralph-loop.md",
-    "e2e.md",
-    "refactor-clean.md",
-    "checkpoint.md",
-    "cancel-ralph.md",
-    "setup.md",
-    "onboard.md",
-    "orchestrate.md",
+    "effect/dev/plan.md",
+    "effect/dev/tdd.md",
+    "effect/dev/verify.md",
+    "effect/dev/review.md",
+    "effect/dev/fix.md",
+    "effect/design.md",
+    "effect/dev/run.md",
+    "effect/dev/e2e.md",
+    "effect/dev/refactor.md",
+    "effect/dev/save.md",
+    "effect/dev/stop.md",
+    "effectum/setup.md",
+    "effectum/onboard.md",
+    "effect/dev/orchestrate.md",
   ];
 
   for (const cmd of coreCommands) {
@@ -141,17 +141,17 @@ describe("Next Steps — completeness check", () => {
     });
   }
 
-  test("prd/handoff.md has ## Next Steps section", () => {
+  test("effect/prd/handoff.md has ## Next Steps section", () => {
     const content = fs.readFileSync(
-      path.join(commandsDir, "prd", "handoff.md"),
+      path.join(commandsDir, "effect", "prd", "handoff.md"),
       "utf8",
     );
     assert.ok(hasNextSteps(content));
   });
 
-  test("onboard/review.md has ## Next Steps section", () => {
+  test("effectum/onboard/review.md has ## Next Steps section", () => {
     const content = fs.readFileSync(
-      path.join(commandsDir, "onboard", "review.md"),
+      path.join(commandsDir, "effectum", "onboard", "review.md"),
       "utf8",
     );
     assert.ok(hasNextSteps(content));
@@ -162,7 +162,7 @@ describe("Next Steps — completeness check", () => {
 
 describe("Next Steps — format", () => {
   test("each next step has a one-line explanation (→ format)", () => {
-    const content = readCommand("plan.md");
+    const content = readCommand("effect/dev/plan.md");
     const section = getNextStepsSection(content);
     // Check for the → format with explanation (commands may be wrapped in backticks)
     const arrows = section.match(/→\s+`?\/?[\w:.-]+`?\s+—\s+.+/g);
@@ -173,7 +173,7 @@ describe("Next Steps — format", () => {
   });
 
   test("next steps include alternative section", () => {
-    const content = readCommand("tdd.md");
+    const content = readCommand("effect/dev/tdd.md");
     const section = getNextStepsSection(content);
     assert.ok(
       section.includes("Alternative"),

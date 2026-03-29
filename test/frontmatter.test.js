@@ -122,15 +122,15 @@ describe("command frontmatter", () => {
 });
 
 describe("onboard.md structure", () => {
-  test("onboard.md is under 250 lines", () => {
+  test("effectum/onboard.md is under 250 lines", () => {
     const content = fs.readFileSync(
-      path.join(COMMANDS_DIR, "onboard.md"),
+      path.join(COMMANDS_DIR, "effectum/onboard.md"),
       "utf8",
     );
     const lineCount = content.split("\n").length;
     assert.ok(
       lineCount <= 250,
-      `onboard.md should be ≤250 lines, got ${lineCount}`,
+      `effectum/onboard.md should be ≤250 lines, got ${lineCount}`,
     );
   });
 
@@ -152,9 +152,9 @@ describe("onboard.md structure", () => {
     }
   });
 
-  test("onboard.md references agent spec files", () => {
+  test("effectum/onboard.md references agent spec files", () => {
     const content = fs.readFileSync(
-      path.join(COMMANDS_DIR, "onboard.md"),
+      path.join(COMMANDS_DIR, "effectum/onboard.md"),
       "utf8",
     );
     assert.ok(

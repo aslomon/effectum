@@ -76,12 +76,12 @@ describe("listCommandFiles", () => {
 
   test("lists .md files in subdirectories with relative paths", () => {
     writeFile(tmpDir, "plan.md", "# Plan");
-    writeFile(tmpDir, "prd/handoff.md", "# Handoff");
+    writeFile(tmpDir, "effect/prd/handoff.md", "# Handoff");
     writeFile(tmpDir, "prd/new.md", "# New");
 
     const result = listCommandFiles(tmpDir);
     assert.ok(result.includes("plan.md"));
-    assert.ok(result.includes("prd/handoff.md"));
+    assert.ok(result.includes("effect/prd/handoff.md"));
     assert.ok(result.includes("prd/new.md"));
     assert.equal(result.length, 3);
   });
@@ -129,11 +129,11 @@ describe("diffCommands", () => {
 
   test("detects new subdirectory commands", () => {
     writeFile(sourceDir, "plan.md", "# Plan");
-    writeFile(sourceDir, "prd/handoff.md", "# Handoff");
+    writeFile(sourceDir, "effect/prd/handoff.md", "# Handoff");
     writeFile(installedDir, "plan.md", "# Plan");
 
     const diff = diffCommands(sourceDir, installedDir);
-    assert.deepEqual(diff.newCommands, ["prd/handoff.md"]);
+    assert.deepEqual(diff.newCommands, ["effect/prd/handoff.md"]);
   });
 
   test("returns all unchanged when source matches installed", () => {
@@ -198,13 +198,13 @@ describe("copyCommandFiles", () => {
   });
 
   test("creates subdirectories when copying nested files", () => {
-    writeFile(sourceDir, "prd/handoff.md", "# Handoff");
+    writeFile(sourceDir, "effect/prd/handoff.md", "# Handoff");
 
-    copyCommandFiles(["prd/handoff.md"], sourceDir, destDir);
+    copyCommandFiles(["effect/prd/handoff.md"], sourceDir, destDir);
 
-    assert.ok(fs.existsSync(path.join(destDir, "prd", "handoff.md")));
+    assert.ok(fs.existsSync(path.join(destDir, "effect", "prd", "handoff.md")));
     assert.equal(
-      fs.readFileSync(path.join(destDir, "prd", "handoff.md"), "utf8"),
+      fs.readFileSync(path.join(destDir, "effect", "prd", "handoff.md"), "utf8"),
       "# Handoff",
     );
   });

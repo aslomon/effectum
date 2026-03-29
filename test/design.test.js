@@ -381,7 +381,7 @@ describe("/design command", () => {
     "..",
     "system",
     "commands",
-    "design.md",
+    "effect/design.md",
   );
 
   test("command file exists", () => {
