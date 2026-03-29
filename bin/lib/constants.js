@@ -38,7 +38,7 @@ const AUTONOMY_MAP = {
     },
   },
   full: {
-    defaultMode: "bypassPermissions",
+    defaultMode: "auto",
     permissions: {
       allow: [
         "Bash(*)",

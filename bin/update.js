@@ -365,12 +365,12 @@ async function main() {
           const allow = settings.permissions?.allow || [];
           const allowStr = allow.join(",");
 
-          if (mode === "bypassPermissions") {
+          if (mode === "auto" || mode === "bypassPermissions") {
             autonomyLevel = "full";
           } else if (mode === "plan" || mode === "dontAsk") {
             autonomyLevel = "conservative";
-          } else if (mode === "auto" || mode === "acceptEdits") {
-            autonomyLevel = allowStr.includes("Bash(*)") ? "standard" : "conservative";
+          } else if (mode === "acceptEdits") {
+            autonomyLevel = "standard";
           } else {
             // defaultMode: "default" or unset — check allow list
             if (allowStr.includes("Bash(*)") && allowStr.includes("Write(*)")) {
