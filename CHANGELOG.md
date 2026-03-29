@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.18.1] - 2026-03-29
+
+### Fixed
+
+- **Thin Redirects for Deprecated Aliases** — Deprecated command aliases converted from duplicated content to thin redirects. Content now exists only once at the new canonical location; aliases simply include the target file.
+
 ## [0.18.0] - 2026-03-29
 
 ### Added
