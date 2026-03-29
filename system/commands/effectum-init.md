@@ -1,13 +1,21 @@
 ---
-name: "effectum:init [DEPRECATED]"
-description: "DEPRECATED: Use /context:init instead."
+name: "effectum-init [DEPRECATED → effectum:init]"
+description: "DEPRECATED: Use /effectum:init instead. This alias will be removed in v0.20."
 allowed-tools: ["Read", "Write", "Edit", "Bash", "Glob", "Grep"]
 effort: "medium"
 ---
 
-> **⚠️ DEPRECATED:** `/effectum:init` has been renamed to `/context:init`. Both names work identically. `/effectum:init` will be removed in v0.19.
+> ⚠️ **Deprecated as of v0.18.0**
+>
+> `/effectum-init` has been renamed to `effectum:init` (previously `context:init`).
+> This alias will be **removed in v0.20.0**.
+>
+> Please update your workflow: type `/effectum:init` going forward.
+> (Running `effectum:init` now...)
 
-# /context:init — Project Context Interview
+---
+
+# effectum:init — Project Context Interview
 
 Populates the project-context sentinel block in CLAUDE.md through an interactive interview. This provides Claude with domain knowledge that cannot be inferred from code alone.
 
@@ -151,11 +159,11 @@ Edit it anytime — just keep the sentinel markers intact.
 
 After populating project context:
 
-- → `/plan` — Create an implementation plan using the new context
-- → `/prd:new` — Start a PRD workshop session with domain context in place
-- → `/map-codebase` (`/explore`) — Run parallel codebase analysis to complement the context
+- → `effect:dev:plan` — Create an implementation plan using the new context
+- → `effect:prd:new` — Start a PRD workshop session with domain context in place
+- → `effectum:explore` — Run parallel codebase analysis to complement the context
 
-ℹ️ The sentinel block can be updated at any time by re-running `/context:init` (or `/effectum:init`).
+ℹ️ The sentinel block can be updated at any time by re-running `effectum:init`.
 
 ## Communication
 

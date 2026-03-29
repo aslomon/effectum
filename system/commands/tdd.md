@@ -1,11 +1,21 @@
 ---
-name: "TDD"
-description: "Test-driven development: write failing tests first, then implement minimal code to pass."
+name: "tdd [DEPRECATED → effect:dev:tdd]"
+description: "DEPRECATED: Use /effect:dev:tdd instead. This alias will be removed in v0.20."
 allowed-tools: ["Read", "Write", "Edit", "Bash", "Glob", "Grep"]
 effort: "medium"
 ---
 
-# /tdd -- Test-Driven Development: RED -> GREEN -> REFACTOR
+> ⚠️ **Deprecated as of v0.18.0**
+>
+> `/tdd` has been renamed to `effect:dev:tdd`.
+> This alias will be **removed in v0.20.0**.
+>
+> Please update your workflow: type `/effect:dev:tdd` going forward.
+> (Running `effect:dev:tdd` now...)
+
+---
+
+# effect:dev:tdd — Test-Driven Development: RED → GREEN → REFACTOR
 
 You implement features using strict Test-Driven Development. Every piece of functionality starts with a failing test.
 
@@ -82,7 +92,7 @@ When the feature is fully implemented:
    - Tasks with all ACs implemented and tests passing: `🔄 IN_PROGRESS` → `✅ DONE`
    - Write the file to disk immediately.
 6. Report results: what was implemented, how many tests were written, and the pass/fail status of each quality gate.
-7. Suggest running `/verify` for the full quality gate check or `/e2e` for end-to-end tests.
+7. Suggest running `effect:dev:verify` for the full quality gate check or `effect:dev:e2e` for end-to-end tests.
 
 ## Error Recovery
 
@@ -95,10 +105,10 @@ When the feature is fully implemented:
 
 After TDD implementation is complete:
 
-- → `/verify` — Run all quality gates (build, types, lint, tests) to confirm everything passes
-- → `/build-fix` — If any build or type errors remain, fix them incrementally
+- → `effect:dev:verify` — Run all quality gates (build, types, lint, tests) to confirm everything passes
+- → `effect:dev:fix` — If any build or type errors remain, fix them incrementally
 
-ℹ️ Alternative: If all tests pass and build is clean, proceed to `/code-review` for a security and quality audit.
+ℹ️ Alternative: If all tests pass and build is clean, proceed to `effect:dev:review` for a security and quality audit.
 
 ## Communication
 

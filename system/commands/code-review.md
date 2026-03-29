@@ -1,11 +1,21 @@
 ---
-name: "Code Review"
-description: "Security and code quality review of all changes with severity levels and suggested fixes."
+name: "code-review [DEPRECATED → effect:dev:review]"
+description: "DEPRECATED: Use /effect:dev:review instead. This alias will be removed in v0.20."
 allowed-tools: ["Read", "Bash", "Grep", "Glob"]
 effort: "medium"
 ---
 
-# /code-review -- Security and Quality Review
+> ⚠️ **Deprecated as of v0.18.0**
+>
+> `/code-review` has been renamed to `effect:dev:review`.
+> This alias will be **removed in v0.20.0**.
+>
+> Please update your workflow: type `/effect:dev:review` going forward.
+> (Running `effect:dev:review` now...)
+
+---
+
+# effect:dev:review — Security and Quality Review
 
 You perform a thorough security and code quality review of all changes. You report findings with severity levels and suggested fixes.
 
@@ -126,10 +136,10 @@ Provide a summary:
 After code review:
 
 - → Done — If zero CRITICAL findings, the code is ready for commit and PR
-- → `/build-fix` — If review uncovered issues that need fixing, resolve them first
-- → `/verify` — After fixing review findings, re-run quality gates to confirm
+- → `effect:dev:fix` — If review uncovered issues that need fixing, resolve them first
+- → `effect:dev:verify` — After fixing review findings, re-run quality gates to confirm
 
-ℹ️ Alternative: For critical security findings, fix immediately and re-run `/code-review` to verify the fixes.
+ℹ️ Alternative: For critical security findings, fix immediately and re-run `effect:dev:review` to verify the fixes.
 
 ## Communication
 

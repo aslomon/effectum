@@ -1,8 +1,18 @@
 ---
-name: "PRD Decompose"
-description: "Split a large project scope into manageable, individually implementable PRDs."
+name: "prd:decompose [DEPRECATED → effect:prd:decompose]"
+description: "DEPRECATED: Use /effect:prd:decompose instead. This alias will be removed in v0.20."
 allowed-tools: ["Read", "Write", "Bash"]
 effort: "medium"
+---
+
+> ⚠️ **Deprecated as of v0.18.0**
+>
+> `/prd:decompose` has been renamed to `effect:prd:decompose`.
+> This alias will be **removed in v0.20.0**.
+>
+> Please update your workflow: type `/effect:prd:decompose` going forward.
+> (Running `effect:prd:decompose` now...)
+
 ---
 
 # /prd:decompose — Split Large Scope into Multiple PRDs (Phase 3)
@@ -86,15 +96,15 @@ Show the user:
 
 1. The final decomposition as an overview.
 2. A recommended processing order (dependency-based).
-3. Suggest starting with `/prd:discuss {slug}/001` for the first PRD.
+3. Suggest starting with `effect:prd:discuss {slug}/001` for the first PRD.
 
 ## Next Steps
 
 After decomposition is complete:
 
-- → `/prd:discuss {slug}/001` — Start deep-dive on the first PRD
-- → `/prd:review {slug}` — Review all PRDs for quality and readiness
-- → `/prd:network-map {slug}` — Visualize the full network of PRDs and dependencies
+- → `effect:prd:discuss {slug}/001` — Start deep-dive on the first PRD
+- → `effect:prd:review {slug}` — Review all PRDs for quality and readiness
+- → `effect:prd:network-map {slug}` — Visualize the full network of PRDs and dependencies
 
 ## Communication
 

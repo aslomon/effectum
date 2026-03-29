@@ -1,11 +1,21 @@
 ---
-name: "Onboard"
-description: "Reverse-engineer an existing project into Effectum with 6 parallel analysis agents and PRD generation."
+name: "onboard [DEPRECATED → effectum:onboard]"
+description: "DEPRECATED: Use /effectum:onboard instead. This alias will be removed in v0.20."
 allowed-tools: ["Read", "Write", "Edit", "Bash", "Glob", "Grep", "Agent"]
 effort: "high"
 ---
 
-# /onboard — Reverse-Engineer an Existing Project into Effectum
+> ⚠️ **Deprecated as of v0.18.0**
+>
+> `/onboard` has been renamed to `effectum:onboard`.
+> This alias will be **removed in v0.20.0**.
+>
+> Please update your workflow: type `/effectum:onboard` going forward.
+> (Running `effectum:onboard` now...)
+
+---
+
+# effectum:onboard — Reverse-Engineer an Existing Project into Effectum
 
 You onboard an existing codebase into the Effectum autonomous development system. You analyze the project with 6 parallel agents, self-test the results, run a consistency review, and — only after everything passes — present verified PRDs to the user for confirmation before writing any files.
 
@@ -40,7 +50,7 @@ Parse `$ARGUMENTS` for:
 2. Check if the project is already onboarded: look for `.effectum.json` in the project root.
    - If found, ask: **"This project was already onboarded. Re-analyze from scratch or update incrementally?"**
    - Re-analyze: continue with full onboarding (overwrites existing PRDs).
-   - Update: abort and suggest `/prd:new` for adding new features.
+   - Update: abort and suggest `effect:prd:new` for adding new features.
 3. Create the workspace: `workshop/projects/{slug}/` with subdirectories `prds/`, `prompts/`, `notes/`.
 4. Create `PROJECT.md` with status `discovery` and today's date.
 
@@ -144,7 +154,7 @@ Also generate:
 
 ## Step 6: Run Onboarding Review
 
-Execute `/onboard:review` automatically. This is a separate review step that checks cross-PRD consistency.
+Execute `effectum:onboard:review` automatically. This is a separate review step that checks cross-PRD consistency.
 
 If the review finds issues, apply the suggested fixes automatically, then re-run the review. Maximum 3 review iterations.
 
@@ -184,17 +194,17 @@ Only after explicit user confirmation, write all files:
 
 - **Agent failure**: Log in `notes/analysis-report.md`, continue with remaining agents, mark affected areas as `uncertain`. Do NOT block on a single agent failure.
 - **Self-test loop stuck** (5 iterations): Proceed with WARN/FAIL items documented. Flag to user.
-- **Empty project** (< 2 features): Suggest `/prd:new` for manual documentation instead.
+- **Empty project** (< 2 features): Suggest `effect:prd:new` for manual documentation instead.
 
 ## Next Steps
 
 After onboarding is complete:
 
-- → `/prd:new` — Create a new PRD for the next feature you want to build
-- → `/plan` — Start planning implementation for an existing PRD
-- → `/design` — Generate a DESIGN.md if the project has a frontend
+- → `effect:prd:new` — Create a new PRD for the next feature you want to build
+- → `effect:dev:plan` — Start planning implementation for an existing PRD
+- → `effect:design` — Generate a DESIGN.md if the project has a frontend
 
-ℹ️ Alternative: Run `/prd:status` to see a dashboard of all onboarded PRDs and their statuses.
+ℹ️ Alternative: Run `effect:prd:status` to see a dashboard of all onboarded PRDs and their statuses.
 
 ## Communication
 

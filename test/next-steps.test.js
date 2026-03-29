@@ -37,9 +37,9 @@ describe("Next Steps — core commands", () => {
     const content = readCommand("plan.md");
     assert.ok(hasNextSteps(content), "/plan should have ## Next Steps");
     const section = getNextStepsSection(content);
-    assert.ok(section.includes("/tdd"), "/plan next steps should mention /tdd");
+    assert.ok(section.includes("/tdd") || section.includes("effect:dev:tdd"), "/plan next steps should mention /tdd");
     assert.ok(
-      section.includes("/ralph-loop"),
+      section.includes("/ralph-loop") || section.includes("effect:dev:run"),
       "/plan next steps should mention /ralph-loop for full autonomy",
     );
   });
@@ -49,11 +49,11 @@ describe("Next Steps — core commands", () => {
     assert.ok(hasNextSteps(content), "/tdd should have ## Next Steps");
     const section = getNextStepsSection(content);
     assert.ok(
-      section.includes("/verify"),
+      section.includes("/verify") || section.includes("effect:dev:verify"),
       "/tdd next steps should mention /verify",
     );
     assert.ok(
-      section.includes("/build-fix"),
+      section.includes("/build-fix") || section.includes("effect:dev:fix"),
       "/tdd next steps should mention /build-fix",
     );
   });
@@ -63,11 +63,11 @@ describe("Next Steps — core commands", () => {
     assert.ok(hasNextSteps(content), "/verify should have ## Next Steps");
     const section = getNextStepsSection(content);
     assert.ok(
-      section.includes("/code-review"),
+      section.includes("/code-review") || section.includes("effect:dev:review"),
       "/verify next steps should mention /code-review",
     );
     assert.ok(
-      section.includes("/build-fix"),
+      section.includes("/build-fix") || section.includes("effect:dev:fix"),
       "/verify next steps should mention /build-fix",
     );
   });
@@ -87,7 +87,7 @@ describe("Next Steps — core commands", () => {
     assert.ok(hasNextSteps(content), "/design should have ## Next Steps");
     const section = getNextStepsSection(content);
     assert.ok(
-      section.includes("/plan"),
+      section.includes("/plan") || section.includes("effect:dev:plan"),
       "/design next steps should mention /plan",
     );
   });
@@ -104,10 +104,10 @@ describe("Next Steps — PRD commands", () => {
     assert.ok(hasNextSteps(content), "/prd:handoff should have ## Next Steps");
     const section = getNextStepsSection(content);
     assert.ok(
-      section.includes("/design"),
+      section.includes("/design") || section.includes("effect:design"),
       "/prd:handoff should mention /design for frontend",
     );
-    assert.ok(section.includes("/plan"), "/prd:handoff should mention /plan");
+    assert.ok(section.includes("/plan") || section.includes("effect:dev:plan"), "/prd:handoff should mention /plan");
   });
 });
 
@@ -165,7 +165,7 @@ describe("Next Steps — format", () => {
     const content = readCommand("plan.md");
     const section = getNextStepsSection(content);
     // Check for the → format with explanation (commands may be wrapped in backticks)
-    const arrows = section.match(/→\s+`?\/\S+`?\s+—\s+.+/g);
+    const arrows = section.match(/→\s+`?\/?[\w:.-]+`?\s+—\s+.+/g);
     assert.ok(
       arrows && arrows.length > 0,
       "Next steps should use → /command — explanation format",

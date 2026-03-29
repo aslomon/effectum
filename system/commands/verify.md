@@ -1,11 +1,21 @@
 ---
-name: "Verify"
-description: "Run all quality gates (build, types, lint, tests) and report pass/fail without fixing."
+name: "verify [DEPRECATED → effect:dev:verify]"
+description: "DEPRECATED: Use /effect:dev:verify instead. This alias will be removed in v0.20."
 allowed-tools: ["Bash", "Read"]
 effort: "low"
 ---
 
-# /verify -- Run All Quality Gates and Report Results
+> ⚠️ **Deprecated as of v0.18.0**
+>
+> `/verify` has been renamed to `effect:dev:verify`.
+> This alias will be **removed in v0.20.0**.
+>
+> Please update your workflow: type `/effect:dev:verify` going forward.
+> (Running `effect:dev:verify` now...)
+
+---
+
+# effect:dev:verify — Run All Quality Gates and Report Results
 
 You run every quality gate for the project and report a clear pass/fail summary. You do NOT fix failures automatically.
 
@@ -13,9 +23,9 @@ You run every quality gate for the project and report a clear pass/fail summary.
 
 Parse `$ARGUMENTS` to determine the scope:
 
-- **No arguments** (`/verify`): Standard verification -- build + types + lint + tests.
-- **`quick`** (`/verify quick`): Minimal verification -- build + types only.
-- **`full`** (`/verify full`): Complete verification -- all gates including E2E, debug checks, and file size analysis.
+- **No arguments** (`effect:dev:verify`): Standard verification -- build + types + lint + tests.
+- **`quick`** (`effect:dev:verify quick`): Minimal verification -- build + types only.
+- **`full`** (`effect:dev:verify full`): Complete verification -- all gates including E2E, debug checks, and file size analysis.
 
 ## Step 2: Read Project Configuration
 
@@ -61,7 +71,7 @@ Present results as a clear table:
 | Type Check      | PASS    | 0 errors                         |
 | Lint            | FAIL    | 3 errors in src/lib/auth.ts      |
 | Tests           | PASS    | 47/47 passed                     |
-| E2E Tests       | SKIPPED | Not requested (use /verify full) |
+| E2E Tests       | SKIPPED | Not requested (use effect:dev:verify full) |
 | Debug Statements| PASS    | 0 found                          |
 | File Size       | WARNING | 2 files exceed 300 lines         |
 ```
@@ -70,14 +80,14 @@ Present results as a clear table:
 
 - **All gates PASS**: Report success. The project is in a clean state.
 - **Any gate FAIL**: Report which gates failed with the specific error details (file, line, error message). List the failures in priority order (build errors first, then types, then lint, then tests).
-- **Do NOT attempt to fix failures automatically.** Present the findings and ask the user what to do. Suggest `/build-fix` for build/type errors, or specific actions for other failures.
+- **Do NOT attempt to fix failures automatically.** Present the findings and ask the user what to do. Suggest `effect:dev:fix` for build/type errors, or specific actions for other failures.
 
 ## Next Steps
 
 After verification:
 
-- → `/code-review` — If all gates pass, run a security and quality audit before shipping
-- → `/build-fix` — If any gates failed, fix the errors incrementally
+- → `effect:dev:review` — If all gates pass, run a security and quality audit before shipping
+- → `effect:dev:fix` — If any gates failed, fix the errors incrementally
 
 ℹ️ Alternative: If this is a final check before merge, proceed directly to committing and creating a PR.
 

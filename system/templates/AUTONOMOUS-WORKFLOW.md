@@ -87,9 +87,9 @@ What should work when this is done? (1-3 sentences, measurable)
 - List out-of-scope items explicitly -- this prevents scope creep more effectively than vague boundaries
 - Include example request/response shapes for APIs -- this removes ambiguity about data contracts
 
-### Agent-Ready PRD Extension (for Ralph Loop / Full Autonomy)
+### Agent-Ready PRD Extension (for effect:dev:run / Full Autonomy)
 
-When using Ralph Loop or full-auto mode, add these three sections to your PRD. They bridge the gap between "what to build" and "how to verify it autonomously."
+When using `effect:dev:run` (formerly /ralph-loop) or full-auto mode, add these three sections to your PRD. They bridge the gap between "what to build" and "how to verify it autonomously."
 
 ```markdown
 ### Quality Gates
@@ -114,30 +114,30 @@ Where Claude can make its own decisions vs. where it should follow strict guidel
 
 ### Completion Promise
 
-Exact phrase for Ralph Loop (must be 100% true before outputting):
+Exact phrase for `effect:dev:run` (must be 100% true before outputting):
 
 "All acceptance criteria met, build passes, tests pass, 0 lint errors"
 ```
 
 **Why these fields matter for autonomy:**
 
-| Field              | Without it, Claude will...                                                |
-| ------------------ | ------------------------------------------------------------------------- |
-| Quality Gates      | ...use default checks that may miss project-specific requirements         |
-| Autonomy Rules     | ...stop and ask about decisions it could safely make on its own           |
-| Completion Promise | ...not know when to stop iterating (Ralph Loop runs until max-iterations) |
+| Field              | Without it, Claude will...                                                      |
+| ------------------ | ------------------------------------------------------------------------------- |
+| Quality Gates      | ...use default checks that may miss project-specific requirements               |
+| Autonomy Rules     | ...stop and ask about decisions it could safely make on its own                 |
+| Completion Promise | ...not know when to stop iterating (`effect:dev:run` runs until max-iterations) |
 
 ---
 
-## 1.5 PRD -> Ralph Loop Conversion
+## 1.5 PRD -> effect:dev:run Conversion
 
 ### Quick Conversion
 
 1. Write your PRD using the Agent-Ready template (Section 1 + extension)
-2. Copy it into this Ralph Loop prompt template:
+2. Copy it into this `effect:dev:run` prompt template:
 
 ```
-/ralph-loop Implement the following feature fully autonomously from database to frontend.
+effect:dev:run Implement the following feature fully autonomously from database to frontend.
 
 <workflow>
 Each iteration:
@@ -201,11 +201,11 @@ All prompts follow Anthropic's prompt engineering best practices: clear structur
 Implement the following feature autonomously from database to frontend.
 
 <workflow>
-1. /plan -- Create an implementation plan and wait for my approval
-2. After approval: Implement using /tdd (tests first, then code)
-3. /verify after each phase
-4. /e2e for critical user journeys
-5. /code-review at the end
+1. effect:dev:plan -- Create an implementation plan and wait for my approval
+2. After approval: Implement using effect:dev:tdd (tests first, then code)
+3. effect:dev:verify after each phase
+4. effect:dev:e2e for critical user journeys
+5. effect:dev:review at the end
 6. Do NOT commit -- show me the final git diff
 </workflow>
 
@@ -230,7 +230,7 @@ Implement: [1-2 sentence feature description]
 - [ ] [AC2]
 </acceptance_criteria>
 
-Workflow: /tdd -> /verify -> /code-review. Do not commit.
+Workflow: effect:dev:tdd -> effect:dev:verify -> effect:dev:review. Do not commit.
 ```
 
 ### Full-Auto Prompt (Maximum Autonomy)
@@ -240,7 +240,7 @@ Implement the following feature fully autonomously.
 Make your own decisions on architecture and UI details.
 Only ask when encountering breaking changes or genuinely ambiguous scope.
 
-Workflow: /plan -> /tdd -> /e2e -> /verify -> /code-review
+Workflow: effect:dev:plan -> effect:dev:tdd -> effect:dev:e2e -> effect:dev:verify -> effect:dev:review
 Commit when all quality gates pass.
 
 <prd>
@@ -263,7 +263,7 @@ These guidelines are derived from Anthropic's official prompt engineering docume
 
 Use this table to decide which workflow mode fits your situation:
 
-| Criterion                 | Normal Session | Full-Auto Prompt | Ralph Loop        |
+| Criterion                 | Normal Session | Full-Auto Prompt | effect:dev:run    |
 | ------------------------- | -------------- | ---------------- | ----------------- |
 | Subjective UI decisions   | Yes            | No               | No                |
 | Clear acceptance criteria | Optional       | Recommended      | **Required**      |
@@ -279,14 +279,14 @@ Use this table to decide which workflow mode fits your situation:
 
 - **No PRD?** -> Normal Session
 - **PRD without quality gates?** -> Full-Auto Prompt
-- **PRD with quality gates + completion promise?** -> Ralph Loop
-- **PRD + Agent Teams flag?** -> /orchestrate (with Teams)
+- **PRD with quality gates + completion promise?** -> `effect:dev:run`
+- **PRD + Agent Teams flag?** -> `effect:dev:orchestrate` (with Teams)
 
 ---
 
 ## 3. Autonomous Workflow Phases
 
-### Phase 1: Analysis & Planning (`/plan`)
+### Phase 1: Analysis & Planning (`effect:dev:plan`)
 
 ```
 Read PRD -> Explore codebase -> Identify risks -> Write plan -> STOP and wait for approval
@@ -310,7 +310,7 @@ Write migration -> RLS policies -> Generate types -> Derive Zod schemas
 - TypeScript types generated via `generate_typescript_types`
 - Zod schemas derived for API validation
 
-### Phase 3: Backend / API (`/tdd`)
+### Phase 3: Backend / API (`effect:dev:tdd`)
 
 ```
 Write tests (RED) -> Implement API (GREEN) -> Refactor
@@ -322,7 +322,7 @@ Write tests (RED) -> Implement API (GREEN) -> Refactor
 - Result pattern `{ data, error }` for all operations that can fail
 - Tests with Vitest + Testing Library
 
-### Phase 4: Frontend (`/tdd`)
+### Phase 4: Frontend (`effect:dev:tdd`)
 
 ```
 Write component tests (RED) -> Implement components (GREEN) -> Refactor
@@ -334,7 +334,7 @@ Write component tests (RED) -> Implement components (GREEN) -> Refactor
 - Feature components in `src/components/[feature]/`
 - Hooks in `src/hooks/`
 
-### Phase 5: E2E Tests (`/e2e`)
+### Phase 5: E2E Tests (`effect:dev:e2e`)
 
 ```
 Write Playwright tests -> Browser automation -> Verify user journeys
@@ -348,7 +348,7 @@ Write Playwright tests -> Browser automation -> Verify user journeys
 Write a trivial smoke test immediately after scaffolding (Phase 2) to validate that the test environment works correctly -- routing is accessible, middleware fires, API responds. Do not wait until Phase 5 to discover infrastructure misconfigurations.
 </important>
 
-### Phase 6: Verification (`/verify` + `/code-review`)
+### Phase 6: Verification (`effect:dev:verify` + `effect:dev:review`)
 
 ```
 Build -> Types -> Lint -> Tests -> Security -> Review
@@ -368,31 +368,31 @@ Build -> Types -> Lint -> Tests -> Security -> Review
 ### New Feature (Standard)
 
 ```
-/plan -> [approval] -> /tdd -> /verify -> /e2e -> /verify -> /code-review
+effect:dev:plan -> [approval] -> effect:dev:tdd -> effect:dev:verify -> effect:dev:e2e -> effect:dev:verify -> effect:dev:review
 ```
 
 ### Small Feature / Bugfix
 
 ```
-/tdd -> /verify -> /code-review
+effect:dev:tdd -> effect:dev:verify -> effect:dev:review
 ```
 
 ### Large Feature (Multi-Domain)
 
 ```
-/plan -> [approval] -> /tdd (DB+API) -> /verify -> /tdd (Frontend) -> /verify -> /e2e -> /code-review
+effect:dev:plan -> [approval] -> effect:dev:tdd (DB+API) -> effect:dev:verify -> effect:dev:tdd (Frontend) -> effect:dev:verify -> effect:dev:e2e -> effect:dev:review
 ```
 
 ### Refactoring
 
 ```
-/plan -> [approval] -> /refactor-clean -> /verify -> /code-review
+effect:dev:plan -> [approval] -> effect:dev:refactor -> effect:dev:verify -> effect:dev:review
 ```
 
 ### Performance Optimization
 
 ```
-/plan -> [approval] -> [profiling] -> /tdd -> /verify -> /e2e
+effect:dev:plan -> [approval] -> [profiling] -> effect:dev:tdd -> effect:dev:verify -> effect:dev:e2e
 ```
 
 ---
@@ -401,13 +401,13 @@ Build -> Types -> Lint -> Tests -> Security -> Review
 
 These are the moments where Claude Code pauses and waits for your input.
 
-| Point                 | Why                          | What you do                         |
-| --------------------- | ---------------------------- | ----------------------------------- |
-| After `/plan`         | Plan approval required       | "OK", "Change X", or "Start over"   |
-| Ambiguous scope       | PRD has gaps                 | Answer the question                 |
-| Breaking change       | Existing API/DB modification | Confirm or choose alternative       |
-| Architecture decision | Multiple valid approaches    | Pick one                            |
-| Test failure          | Unexpected error             | Provide context or allow workaround |
+| Point                   | Why                          | What you do                         |
+| ----------------------- | ---------------------------- | ----------------------------------- |
+| After `effect:dev:plan` | Plan approval required       | "OK", "Change X", or "Start over"   |
+| Ambiguous scope         | PRD has gaps                 | Answer the question                 |
+| Breaking change         | Existing API/DB modification | Confirm or choose alternative       |
+| Architecture decision   | Multiple valid approaches    | Pick one                            |
+| Test failure            | Unexpected error             | Provide context or allow workaround |
 
 ### How to Minimize Interaction Stops
 
@@ -423,17 +423,17 @@ These are the moments where Claude Code pauses and waits for your input.
 
 Before Claude Code reports "done", it verifies all of these automatically:
 
-| Gate          | Tool             | Criterion                             |
-| ------------- | ---------------- | ------------------------------------- |
-| Compilation   | `tsc --noEmit`   | 0 errors                              |
-| Linting       | ESLint/Biome     | 0 errors, 0 warnings                  |
-| Unit Tests    | Vitest           | 80%+ coverage, all passing            |
-| E2E Tests     | Playwright       | All journeys passing                  |
-| Security      | `/code-review`   | No OWASP vulnerabilities              |
-| RLS Check     | Supabase Advisor | All tables have RLS policies          |
-| No Debug Logs | `/verify`        | 0 console.log hits in production code |
-| Type Safety   | Zod + TS Strict  | No `any`, no `as` casts               |
-| File Size     | Check            | No file exceeds 300 lines             |
+| Gate          | Tool                | Criterion                             |
+| ------------- | ------------------- | ------------------------------------- |
+| Compilation   | `tsc --noEmit`      | 0 errors                              |
+| Linting       | ESLint/Biome        | 0 errors, 0 warnings                  |
+| Unit Tests    | Vitest              | 80%+ coverage, all passing            |
+| E2E Tests     | Playwright          | All journeys passing                  |
+| Security      | `effect:dev:review` | No OWASP vulnerabilities              |
+| RLS Check     | Supabase Advisor    | All tables have RLS policies          |
+| No Debug Logs | `effect:dev:verify` | 0 console.log hits in production code |
+| Type Safety   | Zod + TS Strict     | No `any`, no `as` casts               |
+| File Size     | Check               | No file exceeds 300 lines             |
 
 ---
 
@@ -480,7 +480,7 @@ Users can upload a profile picture that is displayed across the application.
 
 ```
 Implement the avatar upload feature.
-Workflow: /plan -> /tdd -> /e2e -> /verify -> /code-review. Do not commit.
+Workflow: effect:dev:plan -> effect:dev:tdd -> effect:dev:e2e -> effect:dev:verify -> effect:dev:review. Do not commit.
 
 <prd>
 [Insert PRD above]
@@ -548,7 +548,7 @@ Implement the team invitation system fully autonomously.
 Make your own decisions on UI details.
 Only ask about architectural ambiguities.
 
-Workflow: /plan -> /tdd -> /e2e -> /verify -> /code-review
+Workflow: effect:dev:plan -> effect:dev:tdd -> effect:dev:e2e -> effect:dev:verify -> effect:dev:review
 Commit when all quality gates pass.
 
 <prd>
@@ -587,14 +587,14 @@ Empty state with a "Create your first project" CTA button.
 
 ```
 Find and fix the dashboard bug for new users.
-Workflow: /tdd -> /verify. Do not commit.
+Workflow: effect:dev:tdd -> effect:dev:verify. Do not commit.
 
 <prd>
 [Insert PRD above]
 </prd>
 ```
 
-### Example D: Agent-Ready Frontend Feature (with Ralph Loop)
+### Example D: Agent-Ready Frontend Feature (with effect:dev:run)
 
 ```markdown
 # PRD: Dark Mode Toggle
@@ -645,10 +645,10 @@ Users can toggle between light and dark mode. The preference persists across ses
 "All acceptance criteria met, build passes, tests pass, 0 lint errors"
 ```
 
-**Ralph Loop Prompt:**
+**effect:dev:run Prompt:**
 
 ```
-/ralph-loop Implement dark mode toggle per the PRD below.
+effect:dev:run Implement dark mode toggle per the PRD below.
 
 <workflow>
 Each iteration:
@@ -679,7 +679,7 @@ Each iteration:
 --max-iterations 20 --completion-promise 'DARK MODE COMPLETE'
 ```
 
-### Example E: Agent-Ready Full-Stack Feature (with Ralph Loop)
+### Example E: Agent-Ready Full-Stack Feature (with effect:dev:run)
 
 ```markdown
 # PRD: API Key Management
@@ -754,10 +754,10 @@ Each key has a name, scoped permissions, and expiration date.
 "All acceptance criteria met, migration applied, RLS active, all tests pass, build succeeds, 0 lint errors"
 ```
 
-**Ralph Loop Prompt:**
+**effect:dev:run Prompt:**
 
 ```
-/ralph-loop Implement API key management per the PRD below.
+effect:dev:run Implement API key management per the PRD below.
 
 <iteration_plan>
 Iterations 1-5: DB migration, RLS, types, Zod schemas
@@ -802,7 +802,7 @@ Iterations 29-30: Polish, code review, final verification
 
 # Effective -- Clear scope, explicit workflow, referenced spec
 "Implement the invite system per the attached PRD.
- Workflow: /plan -> /tdd -> /verify"
+ Workflow: effect:dev:plan -> effect:dev:tdd -> effect:dev:verify"
 ```
 
 ### Missing acceptance criteria
@@ -822,7 +822,7 @@ Iterations 29-30: Polish, code review, final verification
 "Just do it"
 
 # Effective -- Explicit sequence of operations
-"Workflow: /plan -> /tdd -> /e2e -> /verify"
+"Workflow: effect:dev:plan -> effect:dev:tdd -> effect:dev:e2e -> effect:dev:verify"
 ```
 
 ### Unbounded scope
@@ -893,7 +893,7 @@ When you include the Supabase Project ID, database connection details, or deploy
 1. /api/projects (PRD A)
 2. /api/teams (PRD B)
 3. /api/invitations (PRD C)
-Use /plan for the overall architecture, then /tdd per endpoint."
+Use effect:dev:plan for the overall architecture, then effect:dev:tdd per endpoint."
 ```
 
 ---
@@ -928,41 +928,41 @@ Use /plan for the overall architecture, then /tdd per endpoint."
 
 The Recommendation Engine automatically suggests Agent Teams when a PRD has >10 ACs, >2 modules, and >2 parallelizable workstreams.
 
-### The `/orchestrate` Command
+### The `effect:dev:orchestrate` Command
 
-`/orchestrate` is the central command for Agent Teams workflows. It handles the full lifecycle:
+`effect:dev:orchestrate` is the central command for Agent Teams workflows. It handles the full lifecycle:
 
 ```
-/orchestrate [profile]           -- Create team and start work
-/orchestrate status              -- Show team progress and token usage
-/orchestrate nudge [teammate]    -- Prod a stuck teammate
-/orchestrate shutdown            -- Gracefully terminate all teammates
+effect:dev:orchestrate [profile]           -- Create team and start work
+effect:dev:orchestrate status              -- Show team progress and token usage
+effect:dev:orchestrate nudge [teammate]    -- Prod a stuck teammate
+effect:dev:orchestrate shutdown            -- Gracefully terminate all teammates
 ```
 
 **Flags:**
 
-| Flag           | Default | Description                                        |
-| -------------- | ------- | -------------------------------------------------- |
-| `--plan-first` | `true`  | Require an approved /plan before spawning the team |
-| `--max-cost`   | none    | Token budget limit — warns at 80%, stops at 100%   |
-| `--dry-run`    | `false` | Show cost estimate without creating the team       |
+| Flag           | Default | Description                                                  |
+| -------------- | ------- | ------------------------------------------------------------ |
+| `--plan-first` | `true`  | Require an approved effect:dev:plan before spawning the team |
+| `--max-cost`   | none    | Token budget limit — warns at 80%, stops at 100%             |
+| `--dry-run`    | `false` | Show cost estimate without creating the team                 |
 
 **Full workflow:**
 
 ```
-/plan -> [approval] -> /tasks (with Teammate assignments) -> /orchestrate [profile] -> [parallel work] -> /verify -> /code-review
+effect:dev:plan -> [approval] -> /tasks (with Teammate assignments) -> effect:dev:orchestrate [profile] -> [parallel work] -> effect:dev:verify -> effect:dev:review
 ```
 
-**What `/orchestrate` does internally:**
+**What `effect:dev:orchestrate` does internally:**
 
 1. **Loads the YAML profile** from `system/teams/{profile}.yaml`
-2. **Validates prerequisites** -- checks for approved /plan, existing PRD/tasks
+2. **Validates prerequisites** -- checks for approved effect:dev:plan, existing PRD/tasks
 3. **Estimates cost** -- shows token budget and asks for confirmation
 4. **Creates the team** and spawns teammates with role-specific instructions
 5. **Distributes tasks** from the PRD — maps ACs to teammates based on file ownership
 6. **Monitors progress** via TeammateIdle and TaskCompleted hooks
 7. **Runs quality gates** at phase transitions
-8. **Completes** with /verify + /code-review when all tasks are done
+8. **Completes** with effect:dev:verify + effect:dev:review when all tasks are done
 
 ### Team Profiles (YAML)
 
@@ -987,7 +987,7 @@ Each profile defines:
 
 ### Cost Awareness
 
-Agent Teams cost 3-4x more than Subagents (N separate Claude instances). `/orchestrate` always shows a cost estimate before starting:
+Agent Teams cost 3-4x more than Subagents (N separate Claude instances). `effect:dev:orchestrate` always shows a cost estimate before starting:
 
 ```
 Teammates: 3
@@ -1009,8 +1009,8 @@ Use `--max-cost` to set a token budget. The system warns at 80% and initiates gr
 4. **Database first** -- schema changes must complete before other Teammates start
 5. **Reviewer last** -- code review Teammate begins after implementation is done
 6. **Use task dependencies** -- `blocked by:` prevents premature work
-7. **Monitor costs** -- use `/orchestrate status` to track token usage
-8. **Plan first** -- never skip /plan for Agent Teams workflows (default enforced)
+7. **Monitor costs** -- use `effect:dev:orchestrate status` to track token usage
+8. **Plan first** -- never skip effect:dev:plan for Agent Teams workflows (default enforced)
 
 ### Display Modes
 
@@ -1021,30 +1021,30 @@ Configure via `"teammateMode": "in-process"` or `"tmux"` in settings.json.
 
 ---
 
-## 10. Ralph Loop -- Iterative Autonomy
+## 10. effect:dev:run — Iterative Autonomy
 
-### What is Ralph Loop?
+### What is effect:dev:run?
 
-Ralph Loop is a **self-referential agentic loop**: you start Claude Code once with a prompt, and it iterates autonomously over its own work -- until the quality criteria are met or the max-iterations limit is reached.
+`effect:dev:run` (formerly `/ralph-loop`) is a **self-referential agentic loop**: you start Claude Code once with a prompt, and it iterates autonomously over its own work -- until the quality criteria are met or the max-iterations limit is reached.
 
 **Comparison with a normal session:**
 
-|             | Normal Session                       | Ralph Loop                                |
+|             | Normal Session                       | effect:dev:run                            |
 | ----------- | ------------------------------------ | ----------------------------------------- |
 | Interaction | You provide prompts, Claude responds | One prompt, Claude iterates alone         |
 | Stops       | Possible at every phase              | Only at max-iterations or completion      |
 | Feedback    | You review each step                 | Claude reviews itself via git/files       |
 | Best for    | Exploratory work, design decisions   | Well-defined tasks with testable criteria |
 
-### When to Use Ralph Loop
+### When to Use effect:dev:run
 
 | Autonomy Level | Mode                              | Rationale                                                       |
 | -------------- | --------------------------------- | --------------------------------------------------------------- |
 | **Standard**   | Normal session                    | You want control over each step                                 |
 | **High**       | Normal session + full-auto prompt | Few stops, but you're present                                   |
-| **Full Auto**  | **Ralph Loop**                    | Well-defined goal, measurable criteria, no subjective decisions |
+| **Full Auto**  | **effect:dev:run**                | Well-defined goal, measurable criteria, no subjective decisions |
 
-**Use Ralph Loop when:**
+**Use `effect:dev:run` when:**
 
 - Acceptance criteria are 100% testable (tests, build, lint)
 - No subjective UI/UX decisions are needed
@@ -1061,7 +1061,7 @@ Ralph Loop is a **self-referential agentic loop**: you start Claude Code once wi
 ### How to Start
 
 ```bash
-/ralph-loop "PROMPT" --max-iterations N --completion-promise "PHRASE"
+effect:dev:run "PROMPT" --max-iterations N --completion-promise "PHRASE"
 ```
 
 **Parameters:**
@@ -1073,7 +1073,7 @@ Ralph Loop is a **self-referential agentic loop**: you start Claude Code once wi
 **To stop:**
 
 ```bash
-/cancel-ralph
+effect:dev:stop
 ```
 
 ### Max-Iterations Recommendations
@@ -1123,19 +1123,19 @@ The completion promise must align with your quality gates. Claude may only outpu
 --completion-promise "Migration applied, RLS policies active, all tests pass, build succeeds, 0 lint errors, types generated"
 ```
 
-### Complete Ralph Loop Prompt Examples
+### Complete effect:dev:run Prompt Examples
 
 #### Standard Feature
 
 ```
-/ralph-loop "
+effect:dev:run "
 Implement the following feature fully autonomously from database to frontend.
 
 <workflow>
 Each iteration:
 1. Check current state (git diff, test results)
 2. Implement the next logical step
-3. Run /verify after every significant change
+3. Run effect:dev:verify after every significant change
 4. When all acceptance criteria are met: output <promise>COMPLETE</promise>
 </workflow>
 
@@ -1157,7 +1157,7 @@ All of these must pass before outputting the completion promise:
 #### Bugfix
 
 ```
-/ralph-loop "
+effect:dev:run "
 Find and fix the following bug. Write a regression test.
 
 <bug>
@@ -1178,7 +1178,7 @@ Each iteration:
 #### Large Feature (Overnight)
 
 ```
-/ralph-loop "
+effect:dev:run "
 Implement the team invitation system fully autonomously.
 Make your own decisions on all details.
 
@@ -1196,7 +1196,7 @@ Iterations 36-50: Polish, code review, cleanup
 - vitest: 80%+ coverage
 - playwright e2e: all journeys passing
 - eslint: 0 errors
-- /code-review: no security issues
+- effect:dev:review: no security issues
 - No console.log, no hardcoded strings
 </quality_gates>
 
@@ -1208,7 +1208,7 @@ When ALL quality gates pass: output <promise>FEATURE COMPLETE</promise>
 " --max-iterations 50 --completion-promise "FEATURE COMPLETE"
 ```
 
-### Ralph Loop Best Practices
+### effect:dev:run Best Practices
 
 1. **Always set --max-iterations** -- Safety net against infinite loops
 2. **Make the completion promise specific** -- "COMPLETE" works, but "All tests pass and build succeeds" forces Claude to verify honestly
@@ -1217,12 +1217,12 @@ When ALL quality gates pass: output <promise>FEATURE COMPLETE</promise>
 5. **Initialize a git repo first** -- Claude tracks its own progress via git diff/log
 6. **Build in an escape hatch** -- "After 80% of max-iterations: document blockers and open items"
 
-### Tasks as Ralph Loop Roadmap
+### Tasks as effect:dev:run Roadmap
 
-When you run `/tasks` before the Ralph Loop, Claude can use the generated tasks.md as a progress tracker across iterations:
+When you run `/tasks` before `effect:dev:run`, Claude can use the generated tasks.md as a progress tracker across iterations:
 
 ```
-/ralph-loop Implement all tasks from tasks.md in this project.
+effect:dev:run Implement all tasks from tasks.md in this project.
 
 <workflow>
 Each iteration:
@@ -1392,26 +1392,26 @@ Test fails
 
 ### Commands (usable in prompts)
 
-| Command           | Phase          | Function                                 |
-| ----------------- | -------------- | ---------------------------------------- |
-| `/plan`           | Start          | Analysis + plan + **waits for approval** |
-| `/tdd`            | Implementation | Tests first -> code -> refactor          |
-| `/verify`         | QA             | Build + types + lint + tests             |
-| `/e2e`            | QA             | Playwright E2E tests                     |
-| `/code-review`    | Review         | Security + quality audit                 |
-| `/build-fix`      | Debugging      | Incremental error resolution             |
-| `/refactor-clean` | Cleanup        | Remove dead code                         |
-| `/checkpoint`     | Safety         | Create a restore point                   |
-| `/forensics`      | Diagnosis      | Post-mortem analysis for stuck/failed runs — explains what went wrong and why |
-| `/effectum:init`  | Setup          | Teach Claude about your domain model, naming conventions, and key business rules — persisted across updates |
-| `/map-codebase`   | Onboarding     | Drops 4 parallel agents to produce 7 structured knowledge documents about an existing codebase |
+| Command               | Phase          | Function                                                                                                    |
+| --------------------- | -------------- | ----------------------------------------------------------------------------------------------------------- |
+| `effect:dev:plan`     | Start          | Analysis + plan + **waits for approval**                                                                    |
+| `effect:dev:tdd`      | Implementation | Tests first -> code -> refactor                                                                             |
+| `effect:dev:verify`   | QA             | Build + types + lint + tests                                                                                |
+| `effect:dev:e2e`      | QA             | Playwright E2E tests                                                                                        |
+| `effect:dev:review`   | Review         | Security + quality audit                                                                                    |
+| `effect:dev:fix`      | Debugging      | Incremental error resolution                                                                                |
+| `effect:dev:refactor` | Cleanup        | Remove dead code                                                                                            |
+| `effect:dev:save`     | Safety         | Create a restore point                                                                                      |
+| `effect:dev:diagnose` | Diagnosis      | Post-mortem analysis for stuck/failed runs — explains what went wrong and why                               |
+| `effectum:init`       | Setup          | Teach Claude about your domain model, naming conventions, and key business rules — persisted across updates |
+| `effectum:explore`    | Onboarding     | Drops 4 parallel agents to produce 7 structured knowledge documents about an existing codebase              |
 
 ### v0.16 Autonomous Loop Features
 
-| Feature                    | Description                                                                                                                                               |
-| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Context Budget Monitor** | Tracks estimated context usage each iteration. At 80% capacity, the loop writes `HANDOFF.md` with a clean resume point and stops — preventing corrupted or truncated runs. |
-| **Stuck Detection**        | Compares the current error against the previous iteration's error. If the **same error appears 2 consecutive times**, the loop writes `STUCK.md` with a diagnosis and stops. Two repetitions means the approach is fundamentally wrong. |
+| Feature                    | Description                                                                                                                                                                                                                                                                         |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Context Budget Monitor** | Tracks estimated context usage each iteration. At 80% capacity, the loop writes `HANDOFF.md` with a clean resume point and stops — preventing corrupted or truncated runs.                                                                                                          |
+| **Stuck Detection**        | Compares the current error against the previous iteration's error. If the **same error appears 2 consecutive times**, the loop writes `STUCK.md` with a diagnosis and stops. Two repetitions means the approach is fundamentally wrong.                                             |
 | **Loop State**             | After every iteration, the loop persists its full state to `.effectum/loop-state.json` (iteration, task, last error, artifacts, status). On a new run, if an incomplete state file is found, Claude offers to resume or start fresh — enabling crash recovery for overnight builds. |
 
 ### MCP Servers (automatically available)

@@ -1,8 +1,18 @@
 ---
-name: "PRD Discuss"
-description: "Conduct an in-depth discussion about a specific PRD to clarify all details."
+name: "prd:discuss [DEPRECATED → effect:prd:discuss]"
+description: "DEPRECATED: Use /effect:prd:discuss instead. This alias will be removed in v0.20."
 allowed-tools: ["Read", "Write"]
 effort: "medium"
+---
+
+> ⚠️ **Deprecated as of v0.18.0**
+>
+> `/prd:discuss` has been renamed to `effect:prd:discuss`.
+> This alias will be **removed in v0.20.0**.
+>
+> Please update your workflow: type `/effect:prd:discuss` going forward.
+> (Running `effect:prd:discuss` now...)
+
 ---
 
 # /prd:discuss — Deep-Dive Discussion for a Specific PRD (Phase 4)
@@ -69,9 +79,9 @@ If the discussion uncovered new connections, dependencies, or components:
 
 After the deep-dive discussion:
 
-- → `/prd:review {slug}/{number}` — Score the PRD for handoff readiness
-- → `/prd:discuss {slug}/{next}` — Continue deep-diving the next PRD in the project
-- → `/prd:handoff {slug}/{number}` — Export the PRD as a handoff package
+- → `effect:prd:review {slug}/{number}` — Score the PRD for handoff readiness
+- → `effect:prd:discuss {slug}/{next}` — Continue deep-diving the next PRD in the project
+- → `effect:prd:handoff {slug}/{number}` — Export the PRD as a handoff package
 
 ## Communication
 

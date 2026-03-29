@@ -1,11 +1,21 @@
 ---
-name: "Refactor Clean"
-description: "Remove dead code and improve quality without changing observable behavior."
+name: "refactor-clean [DEPRECATED → effect:dev:refactor]"
+description: "DEPRECATED: Use /effect:dev:refactor instead. This alias will be removed in v0.20."
 allowed-tools: ["Read", "Edit", "Bash", "Glob", "Grep"]
 effort: "medium"
 ---
 
-# /refactor-clean -- Remove Dead Code and Improve Quality
+> ⚠️ **Deprecated as of v0.18.0**
+>
+> `/refactor-clean` has been renamed to `effect:dev:refactor`.
+> This alias will be **removed in v0.20.0**.
+>
+> Please update your workflow: type `/effect:dev:refactor` going forward.
+> (Running `effect:dev:refactor` now...)
+
+---
+
+# effect:dev:refactor — Remove Dead Code and Improve Quality
 
 You clean up the codebase by removing dead code and improving quality, without changing any observable behavior. Every change is validated by the test suite.
 
@@ -13,7 +23,7 @@ You clean up the codebase by removing dead code and improving quality, without c
 
 1. Read `CLAUDE.md` for the project's test command, build command, and lint command.
 2. Run the full test suite.
-3. **If any tests fail: STOP immediately.** Do not refactor a codebase with failing tests. Report the failures and suggest running `/build-fix` or `/tdd` first.
+3. **If any tests fail: STOP immediately.** Do not refactor a codebase with failing tests. Report the failures and suggest running `effect:dev:fix` or `effect:dev:tdd` first.
 4. Record the test count and pass rate as the baseline.
 
 ## Step 2: Analyze the Codebase
@@ -103,16 +113,16 @@ Present a summary:
 | Lint status           | PASS   | PASS   |
 ```
 
-List each refactoring that was applied and its impact. Suggest running `/verify` for a full quality gate check.
+List each refactoring that was applied and its impact. Suggest running `effect:dev:verify` for a full quality gate check.
 
 ## Next Steps
 
 After refactoring is complete:
 
-- → `/verify` — Run full quality gates to confirm no regressions
-- → `/code-review` — Review the cleaned-up code for any remaining issues
+- → `effect:dev:verify` — Run full quality gates to confirm no regressions
+- → `effect:dev:review` — Review the cleaned-up code for any remaining issues
 
-ℹ️ Alternative: If refactoring uncovered test gaps, run `/tdd` to add missing tests first.
+ℹ️ Alternative: If refactoring uncovered test gaps, run `effect:dev:tdd` to add missing tests first.
 
 ## Communication
 

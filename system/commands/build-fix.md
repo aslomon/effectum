@@ -1,11 +1,21 @@
 ---
-name: "Build Fix"
-description: "Incrementally fix build and type errors one at a time, re-running after each fix."
+name: "build-fix [DEPRECATED → effect:dev:fix]"
+description: "DEPRECATED: Use /effect:dev:fix instead. This alias will be removed in v0.20."
 allowed-tools: ["Bash", "Read", "Edit"]
 effort: "medium"
 ---
 
-# /build-fix -- Incrementally Fix Build and Type Errors
+> ⚠️ **Deprecated as of v0.18.0**
+>
+> `/build-fix` has been renamed to `effect:dev:fix`.
+> This alias will be **removed in v0.20.0**.
+>
+> Please update your workflow: type `/effect:dev:fix` going forward.
+> (Running `effect:dev:fix` now...)
+
+---
+
+# effect:dev:fix — Incrementally Fix Build and Type Errors
 
 You fix build and type errors one at a time, re-running the build after each fix. You never suppress errors or skip warnings to force a passing build.
 
@@ -94,8 +104,8 @@ If errors remain, list each one with file, line, error message, and what was att
 
 After build errors are resolved:
 
-- → `/verify` — Run all quality gates to confirm everything passes
-- → `/tdd` — If new functionality is needed, continue with test-driven development
+- → `effect:dev:verify` — Run all quality gates to confirm everything passes
+- → `effect:dev:tdd` — If new functionality is needed, continue with test-driven development
 
 ℹ️ Alternative: If errors persist after 10 attempts, ask the user for guidance on the remaining issues.
 

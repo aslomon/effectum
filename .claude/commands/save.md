@@ -1,13 +1,21 @@
 ---
-name: "Save (alias for /checkpoint)"
-description: "Create a tagged git commit as a safe restore point for easy rollback."
+name: "save [DEPRECATED → effect:dev:save]"
+description: "DEPRECATED: Use /effect:dev:save instead. This alias will be removed in v0.20."
 allowed-tools: ["Bash", "Read"]
 effort: "low"
 ---
 
-> **Alias:** /save is an alias for /checkpoint. Both names work identically.
+> ⚠️ **Deprecated as of v0.18.0**
+>
+> `/save` has been renamed to `effect:dev:save`.
+> This alias will be **removed in v0.20.0**.
+>
+> Please update your workflow: type `/effect:dev:save` going forward.
+> (Running `effect:dev:save` now...)
 
-# /checkpoint -- Create a Git Restore Point
+---
+
+# effect:dev:save — Create a Git Restore Point
 
 You create a tagged git commit as a safe restore point. This allows easy rollback if subsequent changes need to be undone.
 
@@ -71,8 +79,8 @@ Show the user:
 After creating a checkpoint:
 
 - → Continue working — The checkpoint provides a safe rollback point
-- → `/tdd` — Continue implementing the next piece of functionality
-- → `/verify` — Run quality gates if the checkpoint marks a milestone
+- → `effect:dev:tdd` — Continue implementing the next piece of functionality
+- → `effect:dev:verify` — Run quality gates if the checkpoint marks a milestone
 
 ℹ️ Alternative: Use checkpoints before risky refactoring or experimental changes.
 

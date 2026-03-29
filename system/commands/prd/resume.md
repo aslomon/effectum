@@ -1,8 +1,18 @@
 ---
-name: "PRD Resume"
-description: "Resume work on an existing project or PRD from where things left off."
+name: "prd:resume [DEPRECATED → effect:prd:resume]"
+description: "DEPRECATED: Use /effect:prd:resume instead. This alias will be removed in v0.20."
 allowed-tools: ["Read", "Write", "Bash"]
 effort: "low"
+---
+
+> ⚠️ **Deprecated as of v0.18.0**
+>
+> `/prd:resume` has been renamed to `effect:prd:resume`.
+> This alias will be **removed in v0.20.0**.
+>
+> Please update your workflow: type `/effect:prd:resume` going forward.
+> (Running `effect:prd:resume` now...)
+
 ---
 
 # /prd:resume — Resume Work on an Existing Project/PRD
@@ -66,9 +76,9 @@ Offer the user to continue with the next logical step:
 
 Based on the resumed project state, continue with the appropriate command:
 
-- → `/prd:discuss {slug}/{number}` — Resume deep-dive on an in-progress PRD
-- → `/prd:review {slug}` — Review PRDs that are ready for quality scoring
-- → `/prd:handoff {slug}/{number}` — Hand off a ready PRD for implementation
+- → `effect:prd:discuss {slug}/{number}` — Resume deep-dive on an in-progress PRD
+- → `effect:prd:review {slug}` — Review PRDs that are ready for quality scoring
+- → `effect:prd:handoff {slug}/{number}` — Hand off a ready PRD for implementation
 
 ## Communication
 

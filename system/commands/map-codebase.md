@@ -1,11 +1,21 @@
 ---
-name: "Map Codebase"
-description: "Spawn 4 parallel analysis agents to produce structured codebase knowledge documents."
+name: "map-codebase [DEPRECATED → effectum:explore]"
+description: "DEPRECATED: Use /effectum:explore instead. This alias will be removed in v0.20."
 allowed-tools: ["Read", "Write", "Edit", "Bash", "Glob", "Grep", "Agent"]
 effort: "high"
 ---
 
-# /map-codebase — Parallel Codebase Analysis
+> ⚠️ **Deprecated as of v0.18.0**
+>
+> `/map-codebase` has been renamed to `effectum:explore`.
+> This alias will be **removed in v0.20.0**.
+>
+> Please update your workflow: type `/effectum:explore` going forward.
+> (Running `effectum:explore` now...)
+
+---
+
+# effectum:explore — Parallel Codebase Analysis
 
 Spawns 4 specialized analysis agents in parallel to produce structured knowledge documents about the codebase. Each agent writes its output to `knowledge/codebase/`.
 
@@ -167,9 +177,9 @@ Verify each expected file exists. If any agent failed, report which files are mi
 
 After codebase mapping is complete:
 
-- → `/context:init` (formerly `/effectum:init`) — Use the analysis to populate project context in CLAUDE.md
-- → `/prd:new` — Start a PRD session with full architectural understanding
-- → `/plan` — Create an implementation plan informed by the knowledge documents
+- → `effectum:init` — Use the analysis to populate project context in CLAUDE.md
+- → `effect:prd:new` — Start a PRD session with full architectural understanding
+- → `effect:dev:plan` — Create an implementation plan informed by the knowledge documents
 
 ℹ️ Knowledge documents in `knowledge/codebase/` can be referenced by agents in subsequent sessions.
 

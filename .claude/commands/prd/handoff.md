@@ -1,13 +1,34 @@
 ---
-name: "PRD Handoff"
-description: "Export a completed PRD as a handoff package for implementation in the target project."
+name: "prd:handoff [DEPRECATED → effect:prd:handoff]"
+description: "DEPRECATED: Use /effect:prd:handoff instead. This alias will be removed in v0.20."
 allowed-tools: ["Read", "Write", "Bash"]
 effort: "medium"
+---
+
+> ⚠️ **Deprecated as of v0.18.0**
+>
+> `/prd:handoff` has been renamed to `effect:prd:handoff`.
+> This alias will be **removed in v0.20.0**.
+>
+> Please update your workflow: type `/effect:prd:handoff` going forward.
+> (Running `effect:prd:handoff` now...)
+
 ---
 
 # /prd:handoff — Hand Off PRD to the Target Project
 
 You export a completed PRD as a handoff package for implementation in the target project.
+
+## Prompt-Only Mode
+
+If the user passes `--prompt-only` (or says "prompt only" or "just the prompt"):
+→ Run the prompt-generation logic only. Print the handoff prompt text to the conversation.
+→ Do NOT write HANDOFF.md, tasks.md, or PLAN.md.
+→ At the end, output: "Handoff prompt generated. Copy it to your target Claude Code session to start implementation."
+
+Otherwise: Run the full export (existing behavior below).
+
+---
 
 ## Step 1: Load PRD and Check Readiness
 
@@ -19,7 +40,7 @@ Read the PRD: `workshop/projects/{project-slug}/prds/001-*.md`
 
 Check the readiness score:
 
-- If no review has been performed yet: Automatically perform a review (like `/prd:review`). Read `workshop/knowledge/05-quality-checklist.md` for this.
+- If no review has been performed yet: Automatically perform a review (like `effect:prd:review`). Read `workshop/knowledge/05-quality-checklist.md` for this.
 - If score < 2.0: Warn the user and ask whether to proceed anyway. List the weaknesses.
 - If score >= 2.0: Proceed.
 
@@ -108,9 +129,9 @@ Show the user:
 
 After handoff:
 
-- → `/ralph-loop` — Run autonomous implementation with the handoff prompt to implement the PRD end-to-end (recommended for full-auto mode)
-- → `/plan` — Create a detailed implementation plan from the handed-off PRD
-- → `/design` — If frontend work is detected, create a DESIGN.md before planning
+- → `effect:dev:run` (`/ralph-loop`) — Run autonomous implementation with the handoff prompt to implement the PRD end-to-end (recommended for full-auto mode)
+- → `effect:dev:plan` — Create a detailed implementation plan from the handed-off PRD
+- → `effect:design` — If frontend work is detected, create a DESIGN.md before planning
 
 ## Communication
 

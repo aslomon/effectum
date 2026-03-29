@@ -1,11 +1,21 @@
 ---
-name: "Orchestrate"
-description: "Manage Agent Teams: create teams, distribute tasks, monitor progress, and control lifecycle."
+name: "orchestrate [DEPRECATED → effect:dev:orchestrate]"
+description: "DEPRECATED: Use /effect:dev:orchestrate instead. This alias will be removed in v0.20."
 allowed-tools: ["Read", "Write", "Edit", "Bash", "Agent"]
 effort: "high"
 ---
 
-# /orchestrate — Agent Teams Orchestration
+> ⚠️ **Deprecated as of v0.18.0**
+>
+> `/orchestrate` has been renamed to `effect:dev:orchestrate`.
+> This alias will be **removed in v0.20.0**.
+>
+> Please update your workflow: type `/effect:dev:orchestrate` going forward.
+> (Running `effect:dev:orchestrate` now...)
+
+---
+
+# effect:dev:orchestrate — Agent Teams Orchestration
 
 Manage Agent Teams: create teams from YAML profiles, distribute tasks from PRDs, monitor progress, and control team lifecycle.
 
@@ -22,11 +32,11 @@ Manage Agent Teams: create teams from YAML profiles, distribute tasks from PRDs,
 
 ## Options
 
-| Flag           | Default | Description                                        |
-| -------------- | ------- | -------------------------------------------------- |
-| `--plan-first` | `true`  | Require an approved /plan before spawning the team |
-| `--max-cost`   | none    | Token budget limit — warns at 80%, stops at 100%   |
-| `--dry-run`    | `false` | Show what would happen without creating the team   |
+| Flag           | Default | Description                                                  |
+| -------------- | ------- | ------------------------------------------------------------ |
+| `--plan-first` | `true`  | Require an approved effect:dev:plan before spawning the team |
+| `--max-cost`   | none    | Token budget limit — warns at 80%, stops at 100%             |
+| `--dry-run`    | `false` | Show what would happen without creating the team             |
 
 ## Step 1: Parse Arguments
 
@@ -45,7 +55,7 @@ Parse `$ARGUMENTS` for:
    - Task progress: completed / total
    - Estimated token usage vs. budget (if `--max-cost` was set)
    - Messages sent between teammates
-3. If no active team, print "No active team. Use `/orchestrate [profile]` to start one."
+3. If no active team, print "No active team. Use `effect:dev:orchestrate [profile]` to start one."
 
 ### Subcommand: `nudge [teammate]`
 
@@ -93,7 +103,7 @@ Before each major phase (task distribution, monitoring cycle, completion check),
 
      ## Next Recommended Step
 
-     [How to resume — e.g., "Run /orchestrate resume to pick up where the team left off"]
+     [How to resume — e.g., "Run effect:dev:orchestrate resume to pick up where the team left off"]
      ```
 
    - Set `active: false` in `.claude/team-state.local.md`.
@@ -118,7 +128,7 @@ Before creating a team:
    - Look for an approved plan in the conversation context or `.claude/plan.local.md`.
    - If no approved plan exists:
      ```
-     Error: No approved plan found. Run /plan first, then /orchestrate.
+     Error: No approved plan found. Run effect:dev:plan first, then effect:dev:orchestrate.
      Use --plan-first=false to skip this check (not recommended).
      ```
 
@@ -232,8 +242,8 @@ The lead monitors progress through:
 
 When all tasks are done:
 
-1. **Run /verify** — full quality gate check (build, types, tests, lint).
-2. **Run /code-review** — automated code review of all changes.
+1. **Run effect:dev:verify** — full quality gate check (build, types, tests, lint).
+2. **Run effect:dev:review** — automated code review of all changes.
 3. **Shut down the team** — send completion message to all teammates.
 4. **Generate summary**:
 
@@ -259,16 +269,16 @@ When all tasks are done:
 3. **Phase ordering is enforced**: Teammates MUST NOT start phase N+1 work until phase N's quality gate passes.
 4. **Cost awareness**: Always show the cost estimate. Agent Teams cost 3-4x more than Subagents — the user must make an informed choice.
 5. **Graceful degradation**: If a teammate fails or gets stuck, the lead reassigns their tasks rather than spawning a new teammate.
-6. **Subagents still work**: When Agent Teams are disabled, `/orchestrate` prints an error directing the user to enable the feature flag. It does NOT fall back to subagents — that's what the normal workflow commands do.
+6. **Subagents still work**: When Agent Teams are disabled, `effect:dev:orchestrate` prints an error directing the user to enable the feature flag. It does NOT fall back to subagents — that's what the normal workflow commands do.
 
 ## Next Steps
 
 After orchestration is complete:
 
-- → `/verify` — Run full quality gates on the combined output from all teammates
-- → `/code-review` — Review all changes for security and quality
+- → `effect:dev:verify` — Run full quality gates on the combined output from all teammates
+- → `effect:dev:review` — Review all changes for security and quality
 
-ℹ️ Alternative: If a teammate got stuck, use `/build-fix` to resolve errors before running verification.
+ℹ️ Alternative: If a teammate got stuck, use `effect:dev:fix` to resolve errors before running verification.
 
 ## Communication
 

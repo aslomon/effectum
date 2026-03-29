@@ -1,15 +1,36 @@
 ---
-name: "PRD Prompt"
-description: "Generate a handoff prompt for a PRD without performing the full export process."
-allowed-tools: ["Read", "Write"]
-effort: "low"
+name: "/prd:prompt [DEPRECATED → effect:prd:handoff --prompt-only]"
+description: "DEPRECATED: Merged into effect:prd:handoff. Use /effect:prd:handoff --prompt-only instead. This alias will be removed in v0.20."
+allowed-tools: ["Read", "Write", "Bash"]
+effort: "medium"
 ---
 
-# /prd:prompt — Generate Handoff Prompt for a PRD
+> ⚠️ **Deprecated as of v0.18.0**
+>
+> `/prd:prompt` has been **merged** into `effect:prd:handoff`.
+> Use: `/effect:prd:handoff <slug> --prompt-only`
+>
+> This alias will be **removed in v0.20.0**.
+> (Running `effect:prd:handoff` with prompt-only behavior now...)
 
-You generate a handoff prompt for a PRD without performing the full export process.
+---
 
-## Step 1: Load PRD
+# /prd:handoff — Hand Off PRD to the Target Project
+
+You export a completed PRD as a handoff package for implementation in the target project.
+
+## Prompt-Only Mode
+
+If the user passes `--prompt-only` (or says "prompt only" or "just the prompt"):
+→ Run the prompt-generation logic only. Print the handoff prompt text to the conversation.
+→ Do NOT write HANDOFF.md, tasks.md, or PLAN.md.
+→ At the end, output: "Handoff prompt generated. Copy it to your target Claude Code session to start implementation."
+
+Otherwise: Run the full export (existing behavior below).
+
+---
+
+## Step 1: Load PRD and Check Readiness
 
 Interpret `$ARGUMENTS` as `project-slug/001`.
 
@@ -17,58 +38,100 @@ Interpret `$ARGUMENTS` as `project-slug/001`.
 
 Read the PRD: `workshop/projects/{project-slug}/prds/001-*.md`
 
-## Step 2: Determine Workflow Mode
+Check the readiness score:
+
+- If no review has been performed yet: Automatically perform a review (like `effect:prd:review`). Read `workshop/knowledge/05-quality-checklist.md` for this.
+- If score < 2.0: Warn the user and ask whether to proceed anyway. List the weaknesses.
+- If score >= 2.0: Proceed.
+
+## Step 2: Load Project Information
+
+Read `workshop/projects/{slug}/PROJECT.md` for:
+
+- `target_repo`: Path to the target repository
+- Project context and tech stack information
+
+## Step 3: Determine Workflow Mode
 
 Read `workshop/knowledge/08-workflow-modes.md` for the decision matrix.
 
-Evaluate the PRD against the matrix criteria:
+Determine the appropriate mode based on:
 
-- **Complexity**: Number of ACs, data model scope, integrations
-- **Risk**: New technologies, security-relevant, critical path
-- **File Impact**: How many files are expected to be affected
-- **Autonomy Level**: How much can be implemented without follow-up questions
+- PRD complexity
+- Number of affected files
+- Risk level
+- User preference (if known)
 
-Determine the mode:
+Possible modes:
 
-- **Standard Session**: Moderate complexity, user wants to collaborate
-- **Full-Auto**: Clearly defined, low risk, high autonomy
-- **Ralph Loop**: Complex, high risk, iterative approach needed
+- **Standard Session**: Normal Claude Code session with the PRD as context
+- **Full-Auto**: Autonomous implementation with defined checkpoints
+- **Ralph Loop**: Iterative Review-Adjust-Learn-Polish-Harden cycle
 
-## Step 3: Generate Prompt
+## Step 4: Generate Handoff Prompt
 
 Read `workshop/knowledge/07-prompt-templates.md` for the appropriate template.
 
-Build the complete prompt:
+Generate the complete handoff prompt:
 
-1. **Context Section**: Project name, tech stack, relevant context from PROJECT.md.
-2. **PRD Content**: Embed the complete PRD.
-3. **Workflow Instructions**: According to the chosen mode.
-4. **Quality Gates**: Quality criteria adopted from the PRD.
-5. **Completion Criteria**: When is the implementation done.
-6. **Autonomy Rules**: What the implementing agent may decide on its own.
+1. Embed or reference the PRD content.
+2. Workflow instructions according to the chosen mode.
+3. Adopt Quality Gates and Completion Criteria from the PRD.
+4. Include tech stack context from PROJECT.md.
 
-## Step 4: Save Prompt
+## Step 5: Save Files
 
 Save the prompt under: `workshop/projects/{slug}/prompts/{number}-{name}-handoff.md`
 
-## Step 5: Display Prompt
+## Step 6: Serve Target Repository (optional)
 
-Show the complete prompt in a code block so the user can easily copy it.
+If `target_repo` is defined in PROJECT.md and the path exists:
 
-## Step 6: Explain Mode
+- Ask the user whether PRD and prompt should be copied there.
+- If yes: Copy both files to the target repository (e.g., under `docs/prds/`).
 
-Briefly explain (2-3 sentences) why this workflow mode was chosen. For example:
+## Step 7: Initialize Task Registry
 
-- "Full-Auto, because the PRD is clearly defined, affects few files, and has no external dependencies."
-- "Ralph Loop, because the feature is security-critical and needs iterative review."
+On first handoff (no `tasks.md` exists yet), create the task registry:
+
+1. Read `workshop/templates/tasks.md` for the template.
+2. Create `workshop/projects/{slug}/tasks.md`.
+3. Generate one task per acceptance criterion from the PRD:
+   - Task ID: `T1`, `T2`, etc. (sequential)
+   - AC reference: `AC-1`, `AC-2`, etc.
+   - Description: Derived from the AC text (concise summary)
+   - Status: `📋 TODO`
+   - Since: `v{PRD version from frontmatter}`
+4. Group tasks under a section header: `## PRD-{number}: {title} (v{version})`
+
+If `tasks.md` already exists (subsequent handoff for a different PRD in the same project):
+
+1. Read the existing task registry.
+2. Append a new PRD section with tasks for the new PRD.
+3. Do not modify existing tasks from other PRDs.
+
+## Step 8: Update PRD Status
+
+Update the PRD frontmatter `status` to `in-progress`.
+Update the PRD status in `PROJECT.md` to `handed-off`.
+
+## Step 9: Show Next Steps
+
+Show the user:
+
+1. Where the handoff prompt was saved.
+2. Where the task registry was created/updated.
+3. How the prompt is used in the target project (brief instructions).
+4. The chosen workflow mode and why.
+5. If additional PRDs are open in the project: what comes next.
 
 ## Next Steps
 
-After the handoff prompt is generated:
+After handoff:
 
-- → Copy the prompt and use it in the target project's Claude Code session
-- → `/prd:handoff {slug}/{number}` — Full export (also copies files to target repo if configured)
-- → `/ralph-loop` — Paste the prompt into a Ralph Loop for autonomous implementation
+- → `effect:dev:run` (`/ralph-loop`) — Run autonomous implementation with the handoff prompt to implement the PRD end-to-end (recommended for full-auto mode)
+- → `effect:dev:plan` — Create a detailed implementation plan from the handed-off PRD
+- → `effect:design` — If frontend work is detected, create a DESIGN.md before planning
 
 ## Communication
 

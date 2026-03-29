@@ -1,11 +1,21 @@
 ---
-name: "E2E Tests"
-description: "Write and run end-to-end tests for critical user journeys using Playwright or similar."
+name: "e2e [DEPRECATED → effect:dev:e2e]"
+description: "DEPRECATED: Use /effect:dev:e2e instead. This alias will be removed in v0.20."
 allowed-tools: ["Read", "Write", "Edit", "Bash", "Glob", "Grep"]
 effort: "medium"
 ---
 
-# /e2e -- Write and Run End-to-End Tests
+> ⚠️ **Deprecated as of v0.18.0**
+>
+> `/e2e` has been renamed to `effect:dev:e2e`.
+> This alias will be **removed in v0.20.0**.
+>
+> Please update your workflow: type `/effect:dev:e2e` going forward.
+> (Running `effect:dev:e2e` now...)
+
+---
+
+# effect:dev:e2e — Write and Run End-to-End Tests
 
 You write and execute end-to-end tests for critical user journeys. Focus on testing the application as a real user would interact with it.
 
@@ -97,10 +107,10 @@ For failures, include:
 
 After E2E tests:
 
-- → `/verify` — Run the full quality gate suite including the new E2E tests
-- → `/code-review` — If all tests pass, proceed to security and quality audit
+- → `effect:dev:verify` — Run the full quality gate suite including the new E2E tests
+- → `effect:dev:review` — If all tests pass, proceed to security and quality audit
 
-ℹ️ Alternative: If E2E tests fail due to application bugs, fix them with `/build-fix` or `/tdd` first.
+ℹ️ Alternative: If E2E tests fail due to application bugs, fix them with `effect:dev:fix` or `effect:dev:tdd` first.
 
 ## Communication
 
