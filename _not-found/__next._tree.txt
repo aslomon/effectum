@@ -1,2 +1,2 @@
-:HL["/effectum/_next/static/chunks/0fo61cbc.r6mu.css","style"]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"/_not-found","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}},"staleTime":300,"buildId":"aqpUK-obi8Quo9gevHZZ7"}
+:HL["/_next/static/chunks/0fo61cbc.r6mu.css","style"]
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"/_not-found","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}},"staleTime":300,"buildId":"GNQdc2VGvHfASa4MNhCNg"}
