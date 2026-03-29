@@ -19,6 +19,7 @@ const {
   listAllFiles,
   extractSentinelBlock,
   replaceSentinelBlock,
+  migrateRemovePromptTypeHooks,
   SENTINEL_START,
   SENTINEL_END,
 } = require("../bin/update.js");
@@ -468,5 +469,109 @@ describe("sentinel constants", () => {
   test("both contain effectum:project-context", () => {
     assert.ok(SENTINEL_START.includes("effectum:project-context"));
     assert.ok(SENTINEL_END.includes("effectum:project-context"));
+  });
+});
+
+// ─── migrateRemovePromptTypeHooks ────────────────────────────────────────────
+
+describe("migrateRemovePromptTypeHooks", () => {
+  test("removes prompt-type hooks from Stop event", () => {
+    const settings = {
+      hooks: {
+        Stop: [
+          {
+            hooks: [
+              { type: "prompt", prompt: "Evaluate...", timeout: 30 },
+              { type: "agent", prompt: "Update CHANGELOG..." },
+            ],
+          },
+        ],
+      },
+    };
+    migrateRemovePromptTypeHooks(settings);
+    assert.equal(settings.hooks.Stop[0].hooks.length, 1);
+    assert.equal(settings.hooks.Stop[0].hooks[0].type, "agent");
+  });
+
+  test("removes entire hook group when all hooks are prompt-type", () => {
+    const settings = {
+      hooks: {
+        SubagentStop: [
+          {
+            hooks: [{ type: "prompt", prompt: "Verify subagent...", timeout: 30 }],
+          },
+        ],
+      },
+    };
+    migrateRemovePromptTypeHooks(settings);
+    assert.equal(Object.keys(settings.hooks).length, 0);
+  });
+
+  test("removes entire event key when all groups become empty", () => {
+    const settings = {
+      hooks: {
+        TeammateIdle: [
+          { hooks: [{ type: "prompt", prompt: "Check teammate..." }] },
+        ],
+        PreToolUse: [
+          { matcher: "Bash", hooks: [{ type: "command", command: "exit 0" }] },
+        ],
+      },
+    };
+    migrateRemovePromptTypeHooks(settings);
+    assert.ok(!settings.hooks.TeammateIdle, "TeammateIdle should be removed");
+    assert.ok(settings.hooks.PreToolUse, "PreToolUse should be preserved");
+  });
+
+  test("preserves command and agent type hooks", () => {
+    const settings = {
+      hooks: {
+        Stop: [
+          {
+            hooks: [
+              { type: "command", command: "exit 0" },
+              { type: "agent", prompt: "Update CHANGELOG..." },
+            ],
+          },
+        ],
+      },
+    };
+    migrateRemovePromptTypeHooks(settings);
+    assert.equal(settings.hooks.Stop[0].hooks.length, 2);
+  });
+
+  test("is a no-op when there are no hooks", () => {
+    const settings = { permissions: { allow: ["Bash(*)"] } };
+    migrateRemovePromptTypeHooks(settings);
+    assert.deepEqual(settings, { permissions: { allow: ["Bash(*)"] } });
+  });
+
+  test("is a no-op when settings is null/undefined", () => {
+    assert.doesNotThrow(() => migrateRemovePromptTypeHooks(null));
+    assert.doesNotThrow(() => migrateRemovePromptTypeHooks(undefined));
+  });
+
+  test("handles TaskCompleted with mixed hook types", () => {
+    const settings = {
+      hooks: {
+        TaskCompleted: [
+          {
+            hooks: [
+              { type: "prompt", prompt: "Validate ACs..." },
+              { type: "command", command: "bash -c 'echo done'", async: true },
+            ],
+          },
+        ],
+      },
+    };
+    migrateRemovePromptTypeHooks(settings);
+    assert.equal(settings.hooks.TaskCompleted[0].hooks.length, 1);
+    assert.equal(settings.hooks.TaskCompleted[0].hooks[0].type, "command");
+  });
+
+  test("returns the mutated settings object", () => {
+    const settings = { hooks: {} };
+    const result = migrateRemovePromptTypeHooks(settings);
+    assert.equal(result, settings);
   });
 });

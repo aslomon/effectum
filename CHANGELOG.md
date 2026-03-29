@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Auto Mode Compatibility Fix (2026-03-29)** — Removed `"type": "prompt"` Stop hooks from `settings.json.tmpl`, `.effectum/templates/settings.json.tmpl`, and `.claude/settings.json`. Prompt-type hooks are footguns in Claude Code Auto Mode (loop risk, same bug as Tangent c62867d). `Stop` retains only the `"agent"` CHANGELOG hook; `SubagentStop` and `TeammateIdle` sections removed (were prompt-only).
+- **`migrateRemovePromptTypeHooks` in `bin/update.js`** — Migration function that strips prompt-type hooks from existing project `settings.json` on `effectum update`. Existing installations are cleaned up automatically. 8 new tests.
+- **`loop-worker` Preset** — New `system/presets/loop-worker.json` for projects using Claude Code's `/loop` scheduled execution. Configures `autonomyLevel: auto` with loop-specific defaults (hourly schedule, 300s max runtime, exitOnError: false).
+- **Loop Worker CLAUDE.md Block** — New `system/blocks/loop-worker.md` injected when loop-worker preset is active. Teaches the agent: re-read tasks.md per iteration, write summaries, combine with `/ralph-loop` for overnight builds.
+- **Specs: Auto Mode & Loop Native Patterns** — `docs/specs/auto-mode-compatibility.md` and `docs/specs/loop-native-patterns.md` documenting risk analysis and integration design for v0.18.
+
 - **Command Entry Point & Smart Router (2026-03-28)** — New `/effectum` entry point with `/help` alias; smart `/next` router that reads project state and recommends the single best next action.
 - **Namespace Reorganization (2026-03-28)** — Commands renamed for clarity: `/workshop:init` → `/project:init`, `/workshop:archive` → `/project:archive`, `/effectum:init` → `/context:init`. Deprecated old names still work with v0.19 removal notice.
 - **Command Aliases (2026-03-28)** — New convenience aliases: `/run` (→ `/tdd`), `/stop` (→ `/cancel-ralph`), `/save` (→ `/checkpoint`), `/diagnose` (→ `/forensics`), `/explore` (→ `/map-codebase`).

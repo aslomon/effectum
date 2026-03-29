@@ -78,6 +78,32 @@ function diffCommands(sourceDir, installedDir) {
   return { newCommands, updatedCommands, unchangedCommands };
 }
 
+// ─── Settings migration ──────────────────────────────────────────────────────
+
+/**
+ * Remove prompt-type hooks from an existing settings object (Auto Mode compat).
+ * Prompt-type hooks are footguns in Claude Code Auto Mode — they drive sessions
+ * into infinite loops. This migration removes them from any hook event.
+ *
+ * @param {object} settings - parsed settings.json object (mutated in place)
+ * @returns {object} the mutated settings object
+ */
+function migrateRemovePromptTypeHooks(settings) {
+  if (!settings || !settings.hooks) return settings;
+  for (const eventKey of Object.keys(settings.hooks)) {
+    settings.hooks[eventKey] = settings.hooks[eventKey]
+      .map((group) => ({
+        ...group,
+        hooks: (group.hooks || []).filter((h) => h.type !== "prompt"),
+      }))
+      .filter((group) => (group.hooks || []).length > 0);
+    if (settings.hooks[eventKey].length === 0) {
+      delete settings.hooks[eventKey];
+    }
+  }
+  return settings;
+}
+
 // ─── Copy commands ──────────────────────────────────────────────────────────
 
 /**
@@ -213,6 +239,8 @@ function reRenderTemplates(config, targetDir, repoRoot) {
       existing = JSON.parse(fs.readFileSync(settingsDest, "utf8"));
     } catch (_) {}
   }
+  // Migration: remove prompt-type hooks from existing settings (Auto Mode footgun, v0.18)
+  migrateRemovePromptTypeHooks(existing);
   const merged = deepMerge(existing, settingsObj);
   ensureDir(path.dirname(settingsDest));
   fs.writeFileSync(
@@ -549,6 +577,7 @@ module.exports = {
   listAllFiles,
   extractSentinelBlock,
   replaceSentinelBlock,
+  migrateRemovePromptTypeHooks,
   SENTINEL_START,
   SENTINEL_END,
   main,

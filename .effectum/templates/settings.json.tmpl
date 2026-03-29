@@ -42,7 +42,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'cd \"$CLAUDE_PROJECT_DIR\" 2>/dev/null; echo \"=== POST-COMPACTION CONTEXT ===\"; echo \"Branch: $(git branch --show-current 2>/dev/null)\"; echo \"Modified: $(git diff --name-only 2>/dev/null | tr \"\\n\" \", \")\"; echo \"Staged: $(git diff --cached --name-only 2>/dev/null | tr \"\\n\" \", \")\"; echo \"Last 5 commits: $(git log --oneline -5 2>/dev/null)\"; echo \"Rules: npm (not others). Check DESIGN.md before UI work.\"; if [ -f DESIGN.md ]; then echo \"DESIGN.md exists — follow it.\"; fi; if [ -f .claude/logs/tool-failures.jsonl ]; then echo \"Recent errors:\"; tail -3 .claude/logs/tool-failures.jsonl 2>/dev/null; fi; GLOBAL_GR=\"$HOME/.claude/guardrails.md\"; PROJECT_GR=\"${CLAUDE_PROJECT_DIR:-.}/.claude/guardrails.md\"; if [ -f \"$GLOBAL_GR\" ]; then echo \"=== GUARDRAILS ===\"; head -50 \"$GLOBAL_GR\"; echo \"=== END ===\"; fi; if [ -f \"$PROJECT_GR\" ] && [ \"$PROJECT_GR\" != \"$GLOBAL_GR\" ]; then echo \"=== PROJECT GUARDRAILS ===\"; head -30 \"$PROJECT_GR\"; echo \"=== END ===\"; fi; echo \"=== END CONTEXT ===\"'",
+            "command": "bash -c 'cd \"$CLAUDE_PROJECT_DIR\" 2>/dev/null; echo \"=== POST-COMPACTION CONTEXT ===\"; echo \"Branch: $(git branch --show-current 2>/dev/null)\"; echo \"Modified: $(git diff --name-only 2>/dev/null | tr \"\\n\" \", \")\"; echo \"Staged: $(git diff --cached --name-only 2>/dev/null | tr \"\\n\" \", \")\"; echo \"Last 5 commits: $(git log --oneline -5 2>/dev/null)\"; echo \"Rules: npm (not others). Check DESIGN.md before UI work.\"; if [ -f DESIGN.md ]; then echo \"DESIGN.md exists \u2014 follow it.\"; fi; if [ -f .claude/logs/tool-failures.jsonl ]; then echo \"Recent errors:\"; tail -3 .claude/logs/tool-failures.jsonl 2>/dev/null; fi; GLOBAL_GR=\"$HOME/.claude/guardrails.md\"; PROJECT_GR=\"${CLAUDE_PROJECT_DIR:-.}/.claude/guardrails.md\"; if [ -f \"$GLOBAL_GR\" ]; then echo \"=== GUARDRAILS ===\"; head -50 \"$GLOBAL_GR\"; echo \"=== END ===\"; fi; if [ -f \"$PROJECT_GR\" ] && [ \"$PROJECT_GR\" != \"$GLOBAL_GR\" ]; then echo \"=== PROJECT GUARDRAILS ===\"; head -30 \"$PROJECT_GR\"; echo \"=== END ===\"; fi; echo \"=== END CONTEXT ===\"'",
             "statusMessage": "Re-injecting context..."
           }
         ]
@@ -132,46 +132,10 @@
       {
         "hooks": [
           {
-            "type": "prompt",
-            "prompt": "Evaluate if Claude should stop. Context: $ARGUMENTS\n\nCheck:\n1. Were ALL user-requested tasks completed (not just attempted)?\n2. Any unresolved errors or failed operations?\n3. If code was changed, was it verified (no obvious type errors, no broken imports)?\n4. Any TODO/FIXME comments added but not resolved?\n\nIMPORTANT: If stop_hook_active is true in the input, this is a second pass — be lenient and only block for critical unfinished work. Never block twice in a row for the same reason.\n\nRespond {\"ok\": true} to allow stopping, or {\"ok\": false, \"reason\": \"what remains\"} to continue.",
-            "timeout": 30,
-            "statusMessage": "Verifying work completion..."
-          },
-          {
-            "type": "prompt",
-            "prompt": "Check if tests were written for code changes. Run: git diff --name-only HEAD 2>/dev/null\n\nAnalyze the changed files:\n1. Identify source code files (not config, not docs, not tests)\n2. Check if corresponding test files were also changed or created\n3. If source files changed but NO test files changed, respond {\"ok\": false, \"reason\": \"Source files were modified but no tests were written. Write tests before stopping.\"}\n4. If tests exist for the changes, or only config/docs changed, respond {\"ok\": true}\n5. If stop_hook_active is true in input, be lenient — only block for completely untested new features.\n\nContext: $ARGUMENTS",
-            "timeout": 30,
-            "statusMessage": "Checking test coverage..."
-          },
-          {
             "type": "agent",
-            "prompt": "Check if meaningful code changes were made in this session by running: git diff --stat HEAD 2>/dev/null\n\nIf there are staged or unstaged changes to source code files (not just config/formatting):\n1. Read the current CHANGELOG.md if it exists\n2. Add entries under [Unreleased] following Keep a Changelog format (Added/Changed/Fixed/Removed)\n3. If CHANGELOG.md doesn't exist, create it with a proper header and the current changes\n\nIf changes are trivial (only formatting, only comments, only config), skip and respond {\"ok\": true}.\nIf stop_hook_active is true, respond {\"ok\": true} immediately — do not update CHANGELOG on second pass.\n\nContext: $ARGUMENTS",
+            "prompt": "Check if meaningful code changes were made in this session by running: git diff --stat HEAD 2>/dev/null\n\nIf there are staged or unstaged changes to source code files (not just config/formatting):\n1. Read the current CHANGELOG.md if it exists\n2. Add entries under [Unreleased] following Keep a Changelog format (Added/Changed/Fixed/Removed)\n3. If CHANGELOG.md doesn't exist, create it with a proper header and the current changes\n\nIf changes are trivial (only formatting, only comments, only config), skip and respond {\"ok\": true}.\nIf stop_hook_active is true, respond {\"ok\": true} immediately \u2014 do not update CHANGELOG on second pass.\n\nContext: $ARGUMENTS",
             "timeout": 60,
             "statusMessage": "Updating CHANGELOG..."
-          }
-        ]
-      }
-    ],
-    "SubagentStop": [
-      {
-        "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "A subagent just finished its work. Review the output in $ARGUMENTS.\n\nCheck the last_assistant_message field:\n1. Did the subagent actually complete its assigned task (not just describe findings)?\n2. Did it leave placeholder code, TODO comments, or incomplete implementations?\n3. If it was supposed to write/edit files, did it actually do so?\n\nIf complete, respond {\"ok\": true}.\nIf incomplete, respond {\"ok\": false, \"reason\": \"specific description of what the subagent still needs to do\"}.",
-            "timeout": 30,
-            "statusMessage": "Verifying subagent work..."
-          }
-        ]
-      }
-    ],
-    "TeammateIdle": [
-      {
-        "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "A teammate just became idle. Context: $ARGUMENTS\n\nPerform these quality checks:\n1. Read the teammate's assigned tasks from tasks.md — are ALL marked ✅ DONE?\n2. Run the project's test command for the teammate's file ownership scope — do tests pass?\n3. Check if the teammate left any TODO/FIXME comments in their owned files.\n4. Are there unclaimed tasks in tasks.md they could pick up?\n5. Should they assist another teammate who is blocked?\n\nIf tasks are incomplete or tests fail, respond {\"ok\": false, \"reason\": \"specific description of remaining work\"}.\nIf all tasks done and tests pass, respond {\"ok\": true}.",
-            "timeout": 45,
-            "statusMessage": "Verifying teammate completion quality..."
           }
         ]
       }
@@ -179,12 +143,6 @@
     "TaskCompleted": [
       {
         "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "A teammate completed a task. Context: $ARGUMENTS\n\nValidate:\n1. Read the task's acceptance criteria from the PRD — are they met by the implementation?\n2. Do test files exist for the implemented functionality? Check for corresponding *.test.* files.\n3. Does the code compile without type errors in the task's scope?\n\nIf ACs are met and tests exist, respond {\"ok\": true}.\nIf ACs are not met or tests are missing, respond {\"ok\": false, \"reason\": \"specific description of what's missing\"}.",
-            "timeout": 30,
-            "statusMessage": "Validating task acceptance criteria..."
-          },
           {
             "type": "command",
             "command": "bash -c 'INPUT=$(cat); TASK=$(echo \"$INPUT\" | jq -r \".task_id // empty\"); AGENT=$(echo \"$INPUT\" | jq -r \".agent_name // empty\"); STATUS=$(echo \"$INPUT\" | jq -r \".status // empty\"); mkdir -p \"${CLAUDE_PROJECT_DIR:-.}/.claude/logs\"; echo \"$(date +%Y-%m-%dT%H:%M:%S) TASK_DONE: $TASK by $AGENT [status=$STATUS]\" >> \"${CLAUDE_PROJECT_DIR:-.}/.claude/logs/team-activity.log\"; exit 0'",
