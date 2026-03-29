@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.17.8] - 2026-03-29
+
+### Fixed
+
+- **Stop Hook Ralph Loop Recognition** — Stop hook prompt now detects Ralph Loop completion via `<promise>...</promise>` tag and responds `{"ok": true}` immediately, preventing infinite loop on finished builds. Also recognizes "ralph"/"iteration" keywords in loop context.
+
 ## [0.17.7] - 2026-03-29
 
 ### Changed
