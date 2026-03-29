@@ -353,11 +353,24 @@ async function main() {
           else if (deps["fastapi"] || deps["django"]) stack = "python";
         } catch (_) {}
       }
+      // Detect autonomy level from existing settings.json
+      let autonomyLevel = "standard";
+      const settingsPath = path.join(targetDir, ".claude", "settings.json");
+      if (fs.existsSync(settingsPath)) {
+        try {
+          const settings = JSON.parse(fs.readFileSync(settingsPath, "utf8"));
+          const mode = settings.permissions?.defaultMode;
+          if (mode === "bypassPermissions") autonomyLevel = "full";
+          else if (mode === "plan") autonomyLevel = "conservative";
+          else autonomyLevel = "standard";
+        } catch (_) {}
+      }
+
       config = {
         projectName,
         stack,
         scope: "local",
-        autonomyLevel: "standard",
+        autonomyLevel,
         language: "english",
       };
       // Write the config so future updates work directly
