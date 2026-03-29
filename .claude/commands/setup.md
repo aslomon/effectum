@@ -1,10 +1,182 @@
 ---
-name: "/setup [DEPRECATED]"
-description: "DEPRECATED: Use /effectum:setup instead. Removed in v0.20."
-allowed-tools: []
-effort: "low"
+name: "effectum:setup"
+description: "Install the complete Effectum autonomous development workflow into a target project."
+allowed-tools: ["Read", "Write", "Bash", "Glob"]
+effort: "medium"
 ---
 
-> ⚠️ **Deprecated:** `/setup` has been renamed to `/effectum:setup`.
-> This alias will be removed in v0.20.0.
-> Please update your workflow: use `/effectum:setup` going forward.
+> ⚠️ **`/setup` is deprecated → use `/effectum:setup`** (removed in v0.20)
+
+
+# effectum:setup — Install Autonomous Development Workflow
+
+Install the complete autonomous development workflow into a target project.
+
+## Step 1: Determine Target
+
+If `$ARGUMENTS` contains a path, use it as the target project path.
+If `$ARGUMENTS` is empty, ask: **[in configured language] "What is the path to your project?"** — wait for a response.
+
+Validate:
+
+- The path exists. If not, ask: "This directory does not exist. Should I create it?"
+- Check for an existing `.claude/` directory at the target path.
+  - If found, ask: **"A .claude/ directory already exists. Overwrite, merge, or abort?"**
+    - **Overwrite**: Replace CONFIGURATION files only (`CLAUDE.md`, `.claude/settings.json`, `.claude/guardrails.md`) but **keep all commands** already in `.claude/commands/`.
+    - **Merge**: Keep existing files, only add missing ones. Warn about conflicts.
+    - **Abort**: Stop the installation.
+
+## Step 2: Gather Configuration
+
+Ask these questions one at a time. Skip any that you can auto-detect from the project.
+
+### 2.1 Project Name
+
+Derive from the directory name. Confirm with the user:
+**"Project name: {derived-name} — correct?"**
+
+### 2.2 Tech Stack
+
+Auto-detect first:
+
+- If `package.json` exists with `"next"` dependency → suggest **Next.js + Supabase**
+- If `pyproject.toml` or `requirements.txt` exists → suggest **Python + FastAPI**
+- If `Package.swift` exists → suggest **Swift/SwiftUI**
+- If none match → suggest **Generic**
+
+Offer presets:
+
+1. **Next.js + Supabase** — Full-stack web (TypeScript, App Router, Tailwind, Shadcn, Supabase)
+2. **Python + FastAPI** — Backend/API (Python 3.12+, FastAPI, SQLAlchemy, pytest)
+3. **Swift/SwiftUI** — iOS/macOS (Swift 6, SwiftUI, SwiftData, XCTest)
+4. **Generic** — Stack-agnostic (universal quality rules, no framework-specific config)
+5. **Custom** — Ask detailed questions about the stack
+
+### 2.3 Communication Language
+
+**"Communication language? (default: English)"**
+Options: English, German (du/informal), or specify another.
+
+### 2.4 Autonomy Level
+
+**"Autonomy level?"**
+
+1. **Conservative** — Claude asks before most actions. Best for learning the workflow or sensitive projects.
+2. **Standard** (recommended) — Autonomous within guardrails. Stops for plan approval, ambiguous scope, and breaking changes.
+3. **Full autonomy** — Decides everything. Only stops on errors or genuinely ambiguous scope.
+
+## Step 3: Read Templates and Stack Preset
+
+Read the template files — check these locations **in order** and use the first one found:
+
+1. `.effectum/templates/` — local install (created by `npx @aslomon/effectum --local`)
+2. `~/.effectum/templates/` — global install (created by `npx @aslomon/effectum --global`)
+3. `system/templates/` — development (running directly from the repo)
+
+Templates to read:
+
+- `CLAUDE.md.tmpl` — Main configuration template
+- `settings.json.tmpl` — Settings template
+- `guardrails.md.tmpl` — Guardrails template
+
+Read the stack preset file — check these locations **in order** and use the first one found:
+
+1. `.effectum/stacks/{selected-stack}.md`
+2. `~/.effectum/stacks/{selected-stack}.md`
+3. `system/stacks/{selected-stack}.md`
+
+Available stacks: `nextjs-supabase.md`, `python-fastapi.md`, `swift-ios.md`, `generic.md`
+
+The stack preset file contains values for these placeholders:
+
+- `{{TECH_STACK}}` — Technology list
+- `{{ARCHITECTURE_PRINCIPLES}}` — Architecture rules
+- `{{PROJECT_STRUCTURE}}` — Directory layout
+- `{{QUALITY_GATES}}` — Build/test/lint commands
+- `{{STACK_SPECIFIC_GUARDRAILS}}` — Framework-specific guardrails
+- `{{FORMATTER}}` — Code formatter name
+- `{{PACKAGE_MANAGER}}` — Package manager command
+
+## Step 4: Generate and Install Files
+
+Substitute all `{{PLACEHOLDER}}` values with the gathered configuration and stack preset values:
+
+| Placeholder                     | Source                                                                                |
+| ------------------------------- | ------------------------------------------------------------------------------------- |
+| `{{PROJECT_NAME}}`              | Step 2.1                                                                              |
+| `{{LANGUAGE}}`                  | Step 2.3 (formatted as instruction, e.g., "Speak German (du/informal) with the user") |
+| `{{TECH_STACK}}`                | Stack preset                                                                          |
+| `{{ARCHITECTURE_PRINCIPLES}}`   | Stack preset                                                                          |
+| `{{PROJECT_STRUCTURE}}`         | Stack preset                                                                          |
+| `{{QUALITY_GATES}}`             | Stack preset                                                                          |
+| `{{STACK_SPECIFIC_GUARDRAILS}}` | Stack preset                                                                          |
+| `{{FORMATTER}}`                 | Stack preset                                                                          |
+| `{{PACKAGE_MANAGER}}`           | Stack preset                                                                          |
+
+Create these files in the target project:
+
+### Configuration Files (3)
+
+1. **`{target}/CLAUDE.md`** — From `CLAUDE.md.tmpl` with all placeholders substituted
+2. **`{target}/.claude/settings.json`** — From `settings.json.tmpl` with placeholders substituted
+3. **`{target}/.claude/guardrails.md`** — From `guardrails.md.tmpl` with placeholders substituted
+
+### Reference Guide (1)
+
+4. **`{target}/AUTONOMOUS-WORKFLOW.md`** — Copy `system/templates/AUTONOMOUS-WORKFLOW.md` as-is
+
+### Workflow Commands
+
+Copy ALL files from `system/commands/` to `{target}/.claude/commands/`. This includes every `.md` file and subdirectory found there.
+
+> **Do not hardcode a count.** Copy the entire `system/commands/` tree. New commands are added with each Effectum release.
+
+## Step 5: Verify Installation
+
+List all created files with their absolute paths in a table:
+
+```
+| # | File | Status |
+|---|------|--------|
+| 1 | {target}/CLAUDE.md | Created |
+| 2 | {target}/.claude/settings.json | Created |
+| ... | ... | ... |
+```
+
+Show a configuration summary:
+
+```
+| Setting | Value |
+|---------|-------|
+| Project | {name} |
+| Stack | {stack} |
+| Language | {language} |
+| Autonomy | {level} |
+| Commands installed | {count of files copied from system/commands/} |
+| Files created | {total count} |
+```
+
+## Step 6: Next Steps
+
+Tell the user:
+
+1. **"Open Claude Code in `{target}` to use the workflow"**
+2. **Available commands:** `effect:dev:plan`, `effect:dev:tdd`, `effect:dev:verify`, `effect:dev:e2e`, `effect:dev:review`, `effect:dev:fix`, `effect:dev:refactor`, `effect:dev:run` (`/ralph-loop`), `effect:dev:stop`, `effect:dev:save`
+3. **"To create a PRD: come back to this repo and run `effect:prd:new`"**
+4. **"Read `AUTONOMOUS-WORKFLOW.md` for the complete reference guide"**
+5. **"Customize `CLAUDE.md` to match your specific project conventions"**
+
+## Next Steps
+
+After setup is complete:
+
+- → `effect:dev:plan` — Create an implementation plan for your first feature
+- → `effect:prd:new` — Start a new PRD to define requirements before coding
+- → `effect:design` — Generate a DESIGN.md for frontend projects
+
+ℹ️ Alternative: Read `AUTONOMOUS-WORKFLOW.md` for the complete reference guide on all available commands.
+
+## Communication
+
+Follow the language settings defined in CLAUDE.md for user-facing communication.
+All installed file content must be in English.
