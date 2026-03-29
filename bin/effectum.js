@@ -57,13 +57,16 @@ switch (subcommand) {
     const fs = require("fs");
     const cwd = process.cwd();
     const hasConfig = fs.existsSync(path.join(cwd, ".effectum.json"));
-    const hasClaudeCommands = fs.existsSync(path.join(cwd, ".claude", "commands"));
-    const hasClaude = fs.existsSync(path.join(cwd, "CLAUDE.md"));
-    const isEffectumProject = hasConfig || (hasClaudeCommands && hasClaude);
+    // Effectum-specific markers (no normal Claude Code project has these)
+    const hasRalphLoop = fs.existsSync(path.join(cwd, ".claude", "commands", "ralph-loop.md"));
+    const hasPrdCommands = fs.existsSync(path.join(cwd, ".claude", "commands", "prd"));
+    const hasEffectumCmd = fs.existsSync(path.join(cwd, ".claude", "commands", "effectum.md"));
+    const isEffectumProject = hasConfig || hasRalphLoop || hasPrdCommands || hasEffectumCmd;
 
     if (!args.includes("--help") && !args.includes("-h") && !args.includes("--force-install") && isEffectumProject) {
       if (!hasConfig) {
-        console.log("  effectum project detected (.claude/commands + CLAUDE.md found)");
+        const marker = hasRalphLoop ? "/ralph-loop" : hasPrdCommands ? "/prd:*" : "/effectum";
+        console.log(`  effectum project detected (${marker} command found)`);
         console.log("  Note: No .effectum.json found — will be created during update.\n");
       } else {
         console.log("  effectum project detected (.effectum.json found)");

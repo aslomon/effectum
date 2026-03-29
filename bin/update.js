@@ -336,7 +336,9 @@ async function main() {
   if (!config) {
     // Legacy project: has .claude/commands but no .effectum.json
     // Infer minimal config from existing setup
-    const hasCommands = fs.existsSync(path.join(targetDir, ".claude", "commands"));
+    const hasRalph = fs.existsSync(path.join(targetDir, ".claude", "commands", "ralph-loop.md"));
+    const hasPrd = fs.existsSync(path.join(targetDir, ".claude", "commands", "prd"));
+    const hasCommands = hasRalph || hasPrd;
     if (hasCommands) {
       p.log.warn("No .effectum.json found — inferring config from existing setup.");
       const pkgPath = path.join(targetDir, "package.json");
