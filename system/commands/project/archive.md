@@ -1,11 +1,21 @@
 ---
-name: "Project Archive"
-description: "Archive a completed project by moving it to workshop/archive/."
+name: "project:archive [DEPRECATED → effectum:archive]"
+description: "DEPRECATED: Use /effectum:archive instead. This alias will be removed in v0.20."
 allowed-tools: ["Read", "Bash"]
 effort: "low"
 ---
 
-# /project:archive — Archive a Completed Project
+> ⚠️ **Deprecated as of v0.18.0**
+>
+> `/project:archive` has been renamed to `effectum:archive`.
+> This alias will be **removed in v0.20.0**.
+>
+> Please update your workflow: type `/effectum:archive` going forward.
+> (Running `effectum:archive` now...)
+
+---
+
+# effectum:archive — Archive a Completed Project
 
 You archive a completed project by moving it from `workshop/projects/` to `workshop/archive/`.
 
@@ -62,8 +72,8 @@ Confirm to the user:
 
 After archiving:
 
-- → `/prd:status` — Review remaining active projects
-- → `/project:init {new-slug}` — Start a new project
+- → `effect:prd:status` — Review remaining active projects
+- → `effectum:setup` — Start a new project
 
 ## Communication
 

@@ -1,8 +1,18 @@
 ---
-name: "PRD Network Map"
-description: "Create or update the visual network map of a project as a Mermaid diagram."
+name: "prd:network-map [DEPRECATED → effect:prd:network-map]"
+description: "DEPRECATED: Use /effect:prd:network-map instead. This alias will be removed in v0.20."
 allowed-tools: ["Read", "Write", "Bash"]
 effort: "medium"
+---
+
+> ⚠️ **Deprecated as of v0.18.0**
+>
+> `/prd:network-map` has been renamed to `effect:prd:network-map`.
+> This alias will be **removed in v0.20.0**.
+>
+> Please update your workflow: type `/effect:prd:network-map` going forward.
+> (Running `effect:prd:network-map` now...)
+
 ---
 
 # /prd:network-map — Create or Update the Project Network Map
@@ -122,9 +132,9 @@ Report FAIL if circular dependencies or orphaned references are found. Report WA
 
 After the network map is generated:
 
-- → `/prd:discuss {slug}/{number}` — Dive deeper into features identified in the map
-- → `/prd:decompose {slug}` — If the map reveals a large scope, decompose into focused PRDs
-- → `/prd:handoff {slug}/{number}` — Hand off a PRD whose features are fully mapped
+- → `effect:prd:discuss {slug}/{number}` — Dive deeper into features identified in the map
+- → `effect:prd:decompose {slug}` — If the map reveals a large scope, decompose into focused PRDs
+- → `effect:prd:handoff {slug}/{number}` — Hand off a PRD whose features are fully mapped
 
 ## Communication
 

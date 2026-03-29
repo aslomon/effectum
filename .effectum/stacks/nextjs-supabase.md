@@ -66,7 +66,7 @@ tests/
 - Tests: `{{PACKAGE_MANAGER}} vitest run` — all pass, 80%+ coverage
 - Lint: `{{PACKAGE_MANAGER}} lint` — 0 errors
 - E2E: `npx playwright test` — all pass (if applicable)
-- Code Review: `/code-review` — no security issues
+- Code Review: `effect:dev:review` — no security issues
 - RLS Check: Supabase security advisor — all tables have RLS policies
 - No Debug Logs: 0 console.log in production code (`grep -r "console.log" src/`)
 - Type Safety: No `any`, no `as` casts in source code

@@ -1,11 +1,21 @@
 ---
-name: "What's Next"
-description: "Reads your project state and recommends the single best next action."
+name: "next [DEPRECATED → effect:next]"
+description: "DEPRECATED: Use /effect:next instead. This alias will be removed in v0.20."
 allowed-tools: ["Read", "Bash"]
 effort: "low"
 ---
 
-# /next — Smart Next-Action Router
+> ⚠️ **Deprecated as of v0.18.0**
+>
+> `/next` has been renamed to `effect:next`.
+> This alias will be **removed in v0.20.0**.
+>
+> Please update your workflow: type `/effect:next` going forward.
+> (Running `effect:next` now...)
+
+---
+
+# effect:next — Smart Next-Action Router
 
 You check the current project state and recommend exactly ONE next action. Never list multiple options.
 
@@ -13,16 +23,16 @@ You check the current project state and recommend exactly ONE next action. Never
 
 Check these paths **in order**. Stop at the FIRST match:
 
-1. **STUCK.md exists** in project root → Recommend `/forensics` (or `/diagnose`)
-2. **HANDOFF.md exists** AND `.effectum/loop-state.json` exists with `status` != `"complete"` → Recommend `/ralph-loop` resume (or `/run`)
-3. **FORENSICS-\*.md exists** in project root → Recommend `/ralph-loop` retry (or `/run`)
-4. **No CLAUDE.md** in project root, OR CLAUDE.md has no `<!-- effectum:project-context:start -->` sentinel → Recommend `/context:init` (or `/effectum:init`)
-5. **No `docs/prds/` directory** AND no `workshop/projects/*/prds/` with PRD files → Recommend `/prd:new`
-6. **PRD exists** but no plan (no `PLAN.md` or plan section in the PRD) → Recommend `/plan`
-7. **Plan exists** but no implementation (no source files changed since plan) → Recommend `/ralph-loop` (or `/run`)
-8. **Uncommitted changes** (`git status` shows modifications) → Recommend `/verify`
-9. **After verify** (all quality gates pass, uncommitted changes exist) → Recommend `/code-review`
-10. **Feature complete** (all tests pass, clean code review) → Recommend `/checkpoint` (or `/save`)
+1. **STUCK.md exists** in project root → Recommend `effect:dev:diagnose`
+2. **HANDOFF.md exists** AND `.effectum/loop-state.json` exists with `status` != `"complete"` → Recommend `effect:dev:run` resume
+3. **FORENSICS-\*.md exists** in project root → Recommend `effect:dev:run` retry
+4. **No CLAUDE.md** in project root, OR CLAUDE.md has no `<!-- effectum:project-context:start -->` sentinel → Recommend `effectum:init`
+5. **No `docs/prds/` directory** AND no `workshop/projects/*/prds/` with PRD files → Recommend `effect:prd:new`
+6. **PRD exists** but no plan (no `PLAN.md` or plan section in the PRD) → Recommend `effect:dev:plan`
+7. **Plan exists** but no implementation (no source files changed since plan) → Recommend `effect:dev:run`
+8. **Uncommitted changes** (`git status` shows modifications) → Recommend `effect:dev:verify`
+9. **After verify** (all quality gates pass, uncommitted changes exist) → Recommend `effect:dev:review`
+10. **Feature complete** (all tests pass, clean code review) → Recommend `effect:dev:save`
 
 Use `Read` to check for file existence and content. Use `Bash` for `git status` and `git diff --stat`.
 

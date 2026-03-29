@@ -1,23 +1,33 @@
 ---
-name: "Onboard Review"
-description: "Review onboarded PRDs for cross-PRD consistency, duplicates, and best practices."
+name: "onboard:review [DEPRECATED → effectum:onboard:review]"
+description: "DEPRECATED: Use /effectum:onboard:review instead. This alias will be removed in v0.20."
 allowed-tools: ["Read", "Write"]
 effort: "medium"
 ---
 
-# /onboard:review — Onboarding Consistency Review
+> ⚠️ **Deprecated as of v0.18.0**
+>
+> `/onboard:review` has been renamed to `effectum:onboard:review`.
+> This alias will be **removed in v0.20.0**.
+>
+> Please update your workflow: type `/effectum:onboard:review` going forward.
+> (Running `effectum:onboard:review` now...)
 
-You review onboarded PRDs for cross-PRD consistency, duplicates, simplification opportunities, and best practices. This command runs automatically as part of `/onboard` (Step 6) but can also be invoked standalone on any project that has been onboarded.
+---
+
+# effectum:onboard:review — Onboarding Consistency Review
+
+You review onboarded PRDs for cross-PRD consistency, duplicates, simplification opportunities, and best practices. This command runs automatically as part of `effectum:onboard` (Step 6) but can also be invoked standalone on any project that has been onboarded.
 
 ## Step 1: Parse Arguments
 
 Parse `$ARGUMENTS` for:
 
 - **`project-slug`**: Required. The project slug to review. If empty, list available projects under `workshop/projects/` and ask.
-- **`--fix`**: Optional. When present, automatically apply suggested fixes instead of just reporting them. Default behavior during `/onboard` is `--fix`.
+- **`--fix`**: Optional. When present, automatically apply suggested fixes instead of just reporting them. Default behavior during `effectum:onboard` is `--fix`.
 - **`--strict`**: Optional. Treat WARN results as FAIL (useful for high-quality onboarding).
 
-If no arguments and this is called from within `/onboard`, use the current project slug automatically.
+If no arguments and this is called from within `effectum:onboard`, use the current project slug automatically.
 
 ## Step 2: Load All PRDs
 
@@ -142,7 +152,7 @@ Compile all check results into a structured report:
 2. ...
 ```
 
-## Step 5: Apply Fixes (if `--fix` or called from `/onboard`)
+## Step 5: Apply Fixes (if `--fix` or called from `effectum:onboard`)
 
 For each check that returned WARN or FAIL with an auto-fixable issue:
 
@@ -158,7 +168,7 @@ For each check that returned WARN or FAIL with an auto-fixable issue:
 
 Save the review report to `workshop/projects/{slug}/notes/review-report.md`.
 
-If called from `/onboard`:
+If called from `effectum:onboard`:
 
 - Return the overall status (PASS/WARN/FAIL) to the calling command.
 - PASS or WARN → proceed to user presentation.
@@ -174,10 +184,10 @@ If called standalone:
 
 After onboarding review:
 
-- → `/prd:new` — Create new PRDs for features not yet covered
-- → `/prd:handoff` — Hand off a reviewed PRD for implementation
+- → `effect:prd:new` — Create new PRDs for features not yet covered
+- → `effect:prd:handoff` — Hand off a reviewed PRD for implementation
 
-ℹ️ Alternative: If the review found issues, fix them and re-run `/onboard:review` to verify.
+ℹ️ Alternative: If the review found issues, fix them and re-run `effectum:onboard:review` to verify.
 
 ## Communication
 

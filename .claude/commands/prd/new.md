@@ -1,8 +1,18 @@
 ---
-name: "PRD New"
-description: "Start a new PRD workshop session, working interactively with the user."
+name: "prd:new [DEPRECATED → effect:prd:new]"
+description: "DEPRECATED: Use /effect:prd:new instead. This alias will be removed in v0.20."
 allowed-tools: ["Read", "Write", "Bash"]
 effort: "high"
+---
+
+> ⚠️ **Deprecated as of v0.18.0**
+>
+> `/prd:new` has been renamed to `effect:prd:new`.
+> This alias will be **removed in v0.20.0**.
+>
+> Please update your workflow: type `/effect:prd:new` going forward.
+> (Running `effect:prd:new` now...)
+
 ---
 
 # /prd:new — Start a New Project or PRD
@@ -22,7 +32,7 @@ If `$ARGUMENTS` is provided, analyze the input:
 
 Check if a matching project already exists under `workshop/projects/`.
 
-- **New project**: Create the project structure following the `/project:init` (formerly `/workshop:init`) pattern:
+- **New project**: Create the project structure following the `effectum:setup` pattern:
   1. Derive a slug from the project name (lowercase, hyphens, no spaces).
   2. Create `workshop/projects/{slug}/` with subdirectories `prds/`, `prompts/`, `notes/`.
   3. Create `PROJECT.md` from `workshop/templates/PROJECT.md` with slug and today's date.
@@ -123,9 +133,9 @@ After the PRD is saved, automatically generate a Stage 1 network map:
 
 After the PRD is saved:
 
-- → `/prd:discuss {slug}/{number}` — Dive deeper into specific feature details
-- → `/prd:review {slug}/{number}` — Score the PRD for handoff readiness
-- → `/prd:decompose {slug}` — Split into multiple PRDs if the scope is large
+- → `effect:prd:discuss {slug}/{number}` — Dive deeper into specific feature details
+- → `effect:prd:review {slug}/{number}` — Score the PRD for handoff readiness
+- → `effect:prd:decompose {slug}` — Split into multiple PRDs if the scope is large
 
 ## Communication
 

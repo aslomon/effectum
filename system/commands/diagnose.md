@@ -1,13 +1,21 @@
 ---
-name: "Diagnose (alias for /forensics)"
-description: "Analyze loop artifacts (HANDOFF.md, STUCK.md, loop-state, metrics, git log) and produce a diagnosis report."
+name: "diagnose [DEPRECATED → effect:dev:diagnose]"
+description: "DEPRECATED: Use /effect:dev:diagnose instead. This alias will be removed in v0.20."
 allowed-tools: ["Read", "Bash", "Glob", "Grep", "Write"]
 effort: "medium"
 ---
 
-> **Alias:** /diagnose is an alias for /forensics. Both names work identically.
+> ⚠️ **Deprecated as of v0.18.0**
+>
+> `/diagnose` has been renamed to `effect:dev:diagnose`.
+> This alias will be **removed in v0.20.0**.
+>
+> Please update your workflow: type `/effect:dev:diagnose` going forward.
+> (Running `effect:dev:diagnose` now...)
 
-# /forensics — Post-Mortem Diagnosis for Loop Failures
+---
+
+# effect:dev:diagnose — Post-Mortem Diagnosis for Loop Failures
 
 Reads all loop artifacts, analyzes failure patterns, and outputs a structured diagnosis report.
 
@@ -126,9 +134,9 @@ Recommended: [primary next step]
 
 After the forensics report is generated:
 
-- → `/ralph-loop` (`/run`) — Restart with the suggested command from the report
-- → `/build-fix` — If the root cause is a build failure, fix errors incrementally
-- → `/verify` — Assess the current state before deciding on the next action
+- → `effect:dev:run` — Restart with the suggested command from the report
+- → `effect:dev:fix` — If the root cause is a build failure, fix errors incrementally
+- → `effect:dev:verify` — Assess the current state before deciding on the next action
 
 ℹ️ Always read the full `FORENSICS-YYYY-MM-DD.md` report before restarting a loop — it contains the recommended approach for the next session.
 

@@ -1,11 +1,21 @@
 ---
-name: "Setup"
-description: "Install the complete Effectum autonomous development workflow into a target project."
+name: "setup [DEPRECATED → effectum:setup]"
+description: "DEPRECATED: Use /effectum:setup instead. This alias will be removed in v0.20."
 allowed-tools: ["Read", "Write", "Bash", "Glob"]
 effort: "medium"
 ---
 
-# /setup — Install Autonomous Development Workflow
+> ⚠️ **Deprecated as of v0.18.0**
+>
+> `/setup` has been renamed to `effectum:setup`.
+> This alias will be **removed in v0.20.0**.
+>
+> Please update your workflow: type `/effectum:setup` going forward.
+> (Running `effectum:setup` now...)
+
+---
+
+# effectum:setup — Install Autonomous Development Workflow
 
 Install the complete autonomous development workflow into a target project.
 
@@ -124,26 +134,7 @@ Create these files in the target project:
 
 ### Workflow Commands
 
-Copy ALL files from `system/commands/` to `{target}/.claude/commands/`. This includes every `.md` file and subdirectory found there. Current base set:
-
-5. `plan.md` — Analysis + implementation plan + wait for approval
-6. `tdd.md` — Test-first development (RED → GREEN → REFACTOR)
-7. `verify.md` — Build + types + lint + tests verification
-8. `e2e.md` — End-to-end test creation and execution
-9. `code-review.md` — Security + quality audit
-10. `build-fix.md` — Incremental build error resolution
-11. `refactor-clean.md` — Dead code removal and cleanup
-12. `ralph-loop.md` — Iterative autonomous implementation loop
-13. `cancel-ralph.md` — Stop a running Ralph Loop
-14. `checkpoint.md` — Create a git restore point
-15. `design.md` — Generate DESIGN.md for frontend projects
-16. `orchestrate.md` — Multi-agent orchestration
-17. `forensics.md` — Post-mortem analysis for stuck/failed runs
-18. `effectum-init.md` — Teach Claude about your project domain
-19. `map-codebase.md` — 4-agent parallel codebase mapping (7 knowledge docs)
-20. `onboard.md` + `onboard/` — Existing codebase onboarding
-21. `setup.md` — Install the workflow into a project
-22. `workshop/` — PRD Workshop commands (`prd:new`, `prd:express`, etc.)
+Copy ALL files from `system/commands/` to `{target}/.claude/commands/`. This includes every `.md` file and subdirectory found there.
 
 > **Do not hardcode a count.** Copy the entire `system/commands/` tree. New commands are added with each Effectum release.
 
@@ -177,8 +168,8 @@ Show a configuration summary:
 Tell the user:
 
 1. **"Open Claude Code in `{target}` to use the workflow"**
-2. **Available commands:** `/plan`, `/tdd`, `/verify`, `/e2e`, `/code-review`, `/build-fix`, `/refactor-clean`, `/ralph-loop`, `/cancel-ralph`, `/checkpoint`
-3. **"To create a PRD: come back to this repo and run `/prd:new`"**
+2. **Available commands:** `effect:dev:plan`, `effect:dev:tdd`, `effect:dev:verify`, `effect:dev:e2e`, `effect:dev:review`, `effect:dev:fix`, `effect:dev:refactor`, `effect:dev:run` (`/ralph-loop`), `effect:dev:stop`, `effect:dev:save`
+3. **"To create a PRD: come back to this repo and run `effect:prd:new`"**
 4. **"Read `AUTONOMOUS-WORKFLOW.md` for the complete reference guide"**
 5. **"Customize `CLAUDE.md` to match your specific project conventions"**
 
@@ -186,9 +177,9 @@ Tell the user:
 
 After setup is complete:
 
-- → `/plan` — Create an implementation plan for your first feature
-- → `/prd:new` — Start a new PRD to define requirements before coding
-- → `/design` — Generate a DESIGN.md for frontend projects
+- → `effect:dev:plan` — Create an implementation plan for your first feature
+- → `effect:prd:new` — Start a new PRD to define requirements before coding
+- → `effect:design` — Generate a DESIGN.md for frontend projects
 
 ℹ️ Alternative: Read `AUTONOMOUS-WORKFLOW.md` for the complete reference guide on all available commands.
 

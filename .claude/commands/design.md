@@ -1,11 +1,21 @@
 ---
-name: "Design"
-description: "Generate a structured DESIGN.md visual specification for frontend projects."
+name: "design [DEPRECATED → effect:design]"
+description: "DEPRECATED: Use /effect:design instead. This alias will be removed in v0.20."
 allowed-tools: ["Read", "Write", "Bash", "Glob", "Grep"]
 effort: "medium"
 ---
 
-# /design — Generate DESIGN.md
+> ⚠️ **Deprecated as of v0.18.0**
+>
+> `/design` has been renamed to `effect:design`.
+> This alias will be **removed in v0.20.0**.
+>
+> Please update your workflow: type `/effect:design` going forward.
+> (Running `effect:design` now...)
+
+---
+
+# effect:design — Generate DESIGN.md
 
 Generate a structured `DESIGN.md` visual specification for this project.
 
@@ -15,10 +25,10 @@ Generate a structured `DESIGN.md` visual specification for this project.
 
 ## When to run
 
-Run `/design` before starting frontend implementation:
+Run `effect:design` before starting frontend implementation:
 
 ```
-/prd:new → PRD approved → /design → DESIGN.md generated → /plan → /ralph-loop
+effect:prd:new → PRD approved → effect:design → DESIGN.md generated → effect:dev:plan → effect:dev:run
 ```
 
 ---
@@ -83,7 +93,7 @@ After writing `DESIGN.md`, tell the user:
 
 - File written to `DESIGN.md`
 - Key decisions summarized in 3–5 bullet points
-- Suggest next step: `/plan` to begin implementation
+- Suggest next step: `effect:dev:plan` to begin implementation
 
 ---
 
@@ -91,10 +101,10 @@ After writing `DESIGN.md`, tell the user:
 
 After DESIGN.md is generated:
 
-- → `/plan` — Create an implementation plan for the next feature or PRD
-- → `/tdd` — Start implementing with test-driven development
+- → `effect:dev:plan` — Create an implementation plan for the next feature or PRD
+- → `effect:dev:tdd` — Start implementing with test-driven development
 
-ℹ️ Alternative: If working from a PRD, the design step feeds into `/plan` which creates the implementation roadmap.
+ℹ️ Alternative: If working from a PRD, the design step feeds into `effect:dev:plan` which creates the implementation roadmap.
 
 ## Notes
 

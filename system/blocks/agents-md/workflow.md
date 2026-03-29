@@ -2,7 +2,7 @@
 
 Follow this cycle for all non-trivial changes in **{{projectName}}**:
 
-1. **PRD** — read or create a PRD before coding (`/prd:new` or `/prd:update`)
+1. **PRD** — read or create a PRD before coding (`effect:prd:new` or `effect:prd:update`)
 2. **Plan** — outline the approach; confirm with the user if scope is large
 3. **Implement** — write code in small, reviewable increments
 4. **Test** — run tests after each meaningful change; do not skip failing tests

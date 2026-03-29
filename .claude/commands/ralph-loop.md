@@ -1,11 +1,16 @@
 ---
-name: "Ralph Loop"
-description: "Autonomous iterative implementation loop that runs until all acceptance criteria are met."
+name: "Ralph Loop (permanent alias → effect:dev:run)"
+description: "Autonomous iterative implementation loop. Permanent alias — ralph-loop is the brand name and will always work."
 allowed-tools: ["Read", "Write", "Edit", "Bash", "Glob", "Grep", "Agent"]
 effort: "high"
 ---
 
-# /ralph-loop -- Self-Referential Agentic Loop for Autonomous Implementation
+> 🏷️ **Permanent alias:** `/ralph-loop` is the brand name for `effect:dev:run`.
+> Both names will always work. `/ralph-loop` is never deprecated.
+
+---
+
+# effect:dev:run — Self-Referential Agentic Loop for Autonomous Implementation
 
 You enter an autonomous iteration loop. Each iteration: assess state, implement the next step, run quality gates, repeat -- until all criteria are met or max-iterations is reached.
 
@@ -370,11 +375,11 @@ Apply these escalation rules:
 
 After the Ralph Loop completes (or is cancelled):
 
-- → `/verify` — Run full quality gates to confirm the implementation is solid
-- → `/code-review` — Run a security and quality audit on the changes
-- → `/cancel-ralph` — If the loop needs to be stopped, cancel gracefully
+- → `effect:dev:verify` — Run full quality gates to confirm the implementation is solid
+- → `effect:dev:review` — Run a security and quality audit on the changes
+- → `effect:dev:stop` — If the loop needs to be stopped, cancel gracefully
 
-ℹ️ Alternative: If the loop completed with all criteria met, proceed directly to `/code-review` and then commit.
+ℹ️ Alternative: If the loop completed with all criteria met, proceed directly to `effect:dev:review` and then commit.
 
 ## Communication
 

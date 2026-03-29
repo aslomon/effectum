@@ -1,8 +1,18 @@
 ---
-name: "PRD Review"
-description: "Systematic quality review and readiness scoring for one or more PRDs."
+name: "prd:review [DEPRECATED → effect:prd:review]"
+description: "DEPRECATED: Use /effect:prd:review instead. This alias will be removed in v0.20."
 allowed-tools: ["Read", "Write"]
 effort: "medium"
+---
+
+> ⚠️ **Deprecated as of v0.18.0**
+>
+> `/prd:review` has been renamed to `effect:prd:review`.
+> This alias will be **removed in v0.20.0**.
+>
+> Please update your workflow: type `/effect:prd:review` going forward.
+> (Running `effect:prd:review` now...)
+
 ---
 
 # /prd:review — Quality Review and Readiness Scoring (Phase 7)
@@ -49,13 +59,13 @@ Show for each PRD:
 Based on the overall score:
 
 - **Score >= 2.0**: Update the PRD status in `PROJECT.md` to `ready`. Inform the user that the PRD is ready for handoff.
-- **Score < 2.0**: Keep the status at `review`. Clearly list what needs improvement. Suggest using `/prd:discuss` for the weak areas.
+- **Score < 2.0**: Keep the status at `review`. Clearly list what needs improvement. Suggest using `effect:prd:discuss` for the weak areas.
 
 ## Step 6: Summary
 
 Give the user a clear recommendation:
 
-- Ready for handoff? → Suggest `/prd:handoff`.
+- Ready for handoff? → Suggest `effect:prd:handoff`.
 - Rework needed? → Suggest concrete next steps.
 - For multiple PRDs: Sort by readiness, show which should be addressed first.
 
@@ -63,9 +73,9 @@ Give the user a clear recommendation:
 
 After the review:
 
-- → `/prd:handoff {slug}/{number}` — Hand off a PRD that scored >= 2.0
-- → `/prd:discuss {slug}/{number}` — Improve weak areas before handing off
-- → `/prd:update {slug}/{number}` — Apply structural changes identified in the review
+- → `effect:prd:handoff {slug}/{number}` — Hand off a PRD that scored >= 2.0
+- → `effect:prd:discuss {slug}/{number}` — Improve weak areas before handing off
+- → `effect:prd:update {slug}/{number}` — Apply structural changes identified in the review
 
 ## Communication
 

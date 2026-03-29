@@ -1,8 +1,18 @@
 ---
-name: "PRD Express"
-description: "Create a complete PRD from structured input with minimal follow-up questions."
+name: "prd:express [DEPRECATED → effect:prd:express]"
+description: "DEPRECATED: Use /effect:prd:express instead. This alias will be removed in v0.20."
 allowed-tools: ["Read", "Write", "Bash"]
 effort: "medium"
+---
+
+> ⚠️ **Deprecated as of v0.18.0**
+>
+> `/prd:express` has been renamed to `effect:prd:express`.
+> This alias will be **removed in v0.20.0**.
+>
+> Please update your workflow: type `/effect:prd:express` going forward.
+> (Running `effect:prd:express` now...)
+
 ---
 
 # /prd:express — Quick PRD from Structured/Semi-Structured Input
@@ -29,7 +39,7 @@ Parse the input for existing structure:
 Check if a matching project exists under `workshop/projects/`:
 
 - If yes: Assign the PRD there.
-- If no: Create a new project (like `/project:init` (formerly `/workshop:init`)). Derive the slug from the feature description.
+- If no: Create a new project (like `effectum:setup`). Derive the slug from the feature description.
 
 ## Step 3: Generate PRD
 
@@ -79,15 +89,15 @@ Show the user:
 1. The generated PRD (complete or summary).
 2. List of all assumptions — the user should confirm or correct these.
 3. The chosen workflow mode with justification.
-4. Next steps: recommend review (`/prd:review`) or direct handoff.
+4. Next steps: recommend review (`effect:prd:review`) or direct handoff.
 
 ## Next Steps
 
 After the Express PRD is generated:
 
-- → `/prd:review {slug}/{number}` — Review the PRD before handing off
-- → `/prd:handoff {slug}/{number}` — Export the PRD as a handoff package
-- → `/prd:discuss {slug}/{number}` — Deepen the discussion if assumptions need clarification
+- → `effect:prd:review {slug}/{number}` — Review the PRD before handing off
+- → `effect:prd:handoff {slug}/{number}` — Export the PRD as a handoff package
+- → `effect:prd:discuss {slug}/{number}` — Deepen the discussion if assumptions need clarification
 
 ## Communication
 

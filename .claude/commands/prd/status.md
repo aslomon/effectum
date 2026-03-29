@@ -1,8 +1,18 @@
 ---
-name: "PRD Status"
-description: "Display a dashboard overview of all projects and their PRD statuses."
+name: "prd:status [DEPRECATED → effect:prd:status]"
+description: "DEPRECATED: Use /effect:prd:status instead. This alias will be removed in v0.20."
 allowed-tools: ["Read", "Bash", "Glob"]
 effort: "low"
+---
+
+> ⚠️ **Deprecated as of v0.18.0**
+>
+> `/prd:status` has been renamed to `effect:prd:status`.
+> This alias will be **removed in v0.20.0**.
+>
+> Please update your workflow: type `/effect:prd:status` going forward.
+> (Running `effect:prd:status` now...)
+
 ---
 
 # /prd:status — Dashboard of All Projects and PRDs
@@ -57,19 +67,19 @@ Format: Markdown table with timestamp.
 
 For each project, provide a concrete recommendation:
 
-- `discovery` → "Start `/prd:new {slug}` to continue"
-- `drafting` → "Use `/prd:discuss {slug}/001` for the next deep-dive"
-- `review` → "Run `/prd:review {slug}`"
-- `ready` → "Ready for `/prd:handoff {slug}/001`"
-- `handed-off` → "All PRDs handed off. `/project:archive {slug}` (formerly `/workshop:archive`) is available."
+- `discovery` → "Start `effect:prd:new {slug}` to continue"
+- `drafting` → "Use `effect:prd:discuss {slug}/001` for the next deep-dive"
+- `review` → "Run `effect:prd:review {slug}`"
+- `ready` → "Ready for `effect:prd:handoff {slug}/001`"
+- `handed-off` → "All PRDs handed off. `effectum:archive {slug}` is available."
 
 ## Next Steps
 
 Based on the dashboard, continue with the appropriate action:
 
-- → `/prd:new {slug}` — Continue a project in discovery phase
-- → `/prd:handoff {slug}/{number}` — Hand off a ready PRD
-- → `/project:archive {slug}` (formerly `/workshop:archive`) — Archive a fully handed-off project
+- → `effect:prd:new {slug}` — Continue a project in discovery phase
+- → `effect:prd:handoff {slug}/{number}` — Hand off a ready PRD
+- → `effectum:archive {slug}` — Archive a fully handed-off project
 
 ## Communication
 

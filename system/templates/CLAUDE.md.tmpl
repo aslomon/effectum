@@ -49,12 +49,12 @@
 ## Development Workflow
 
 - SPEC-DRIVEN: define requirements and acceptance criteria before coding
-- TEST-FIRST: write failing tests, then implement (use /tdd)
-- DONE = compiles + tests pass + linter clean (use /verify)
-- Plan complex features before implementing (use /plan)
-- Review changes before committing (use /code-review)
-- Fix build errors incrementally (use /build-fix)
-- Clean dead code periodically (use /refactor-clean)
+- TEST-FIRST: write failing tests, then implement (use `effect:dev:tdd`)
+- DONE = compiles + tests pass + linter clean (use `effect:dev:verify`)
+- Plan complex features before implementing (use `effect:dev:plan`)
+- Review changes before committing (use `effect:dev:review`)
+- Fix build errors incrementally (use `effect:dev:fix`)
+- Clean dead code periodically (use `effect:dev:refactor`)
 - Only commit when explicitly asked. Prefer specific file staging over `git add .`
 
 ## Task Registry (MANDATORY when present)
@@ -67,20 +67,20 @@
 
 ## Available Commands
 
-| Command           | Phase          | Function                                 |
-| ----------------- | -------------- | ---------------------------------------- |
-| `/plan`           | Start          | Analysis + plan + **waits for approval** |
-| `/tdd`            | Implementation | Tests first -> code -> refactor          |
-| `/verify`         | QA             | Build + types + lint + tests             |
-| `/e2e`            | QA             | E2E tests (Playwright / XCTest UI)       |
-| `/code-review`    | Review         | Security + quality audit                 |
-| `/build-fix`      | Debugging      | Incremental error resolution             |
-| `/refactor-clean` | Cleanup        | Remove dead code                         |
-| `/checkpoint`     | Safety         | Create a restore point                   |
-| `/ralph-loop`     | Full Auto      | Iterative autonomous implementation      |
-| `/forensics`      | Diagnosis      | Post-mortem analysis of loop failures    |
-| `/effectum:init`  | Setup          | Populate project context in CLAUDE.md    |
-| `/map-codebase`   | Setup          | 4 parallel agents → 7 knowledge docs    |
+| Command                | Phase          | Function                                 |
+| ---------------------- | -------------- | ---------------------------------------- |
+| `effect:dev:plan`      | Start          | Analysis + plan + **waits for approval** |
+| `effect:dev:tdd`       | Implementation | Tests first -> code -> refactor          |
+| `effect:dev:verify`    | QA             | Build + types + lint + tests             |
+| `effect:dev:e2e`       | QA             | E2E tests (Playwright / XCTest UI)       |
+| `effect:dev:review`    | Review         | Security + quality audit                 |
+| `effect:dev:fix`       | Debugging      | Incremental error resolution             |
+| `effect:dev:refactor`  | Cleanup        | Remove dead code                         |
+| `effect:dev:save`      | Safety         | Create a restore point                   |
+| `effect:dev:run`       | Full Auto      | Iterative autonomous implementation      |
+| `effect:dev:diagnose`  | Diagnosis      | Post-mortem analysis of loop failures    |
+| `effectum:init`        | Setup          | Populate project context in CLAUDE.md    |
+| `effectum:explore`     | Setup          | 4 parallel agents → 7 knowledge docs    |
 
 
 ## Available CLI Tools

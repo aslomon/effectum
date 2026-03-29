@@ -1,8 +1,18 @@
 ---
-name: "PRD Update"
-description: "Update an existing PRD with semantic diff, impact analysis, and delta handoff generation."
+name: "prd:update [DEPRECATED → effect:prd:update]"
+description: "DEPRECATED: Use /effect:prd:update instead. This alias will be removed in v0.20."
 allowed-tools: ["Read", "Write", "Bash"]
 effort: "medium"
+---
+
+> ⚠️ **Deprecated as of v0.18.0**
+>
+> `/prd:update` has been renamed to `effect:prd:update`.
+> This alias will be **removed in v0.20.0**.
+>
+> Please update your workflow: type `/effect:prd:update` going forward.
+> (Running `effect:prd:update` now...)
+
 ---
 
 # /prd:update — Update an Existing PRD with Change Tracking
@@ -199,9 +209,9 @@ Display:
 
 After the PRD update:
 
-- → `/prd:handoff {slug}/{number}` — Generate an updated handoff with the delta prompt
-- → `/ralph-loop` — Run the delta handoff prompt to implement the changes
-- → `/prd:review {slug}/{number}` — Re-review the updated PRD before handing off
+- → `effect:prd:handoff {slug}/{number}` — Generate an updated handoff with the delta prompt
+- → `effect:dev:run` (`/ralph-loop`) — Run the delta handoff prompt to implement the changes
+- → `effect:prd:review {slug}/{number}` — Re-review the updated PRD before handing off
 
 ## Communication
 

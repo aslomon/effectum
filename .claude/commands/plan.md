@@ -1,11 +1,21 @@
 ---
-name: "Plan"
-description: "Create a detailed implementation plan from requirements, then stop for approval before coding."
+name: "plan [DEPRECATED → effect:dev:plan]"
+description: "DEPRECATED: Use /effect:dev:plan instead. This alias will be removed in v0.20."
 allowed-tools: ["Read", "Bash", "Glob", "Grep"]
 effort: "medium"
 ---
 
-# /plan -- Analyze Requirements and Create Implementation Plan
+> ⚠️ **Deprecated as of v0.18.0**
+>
+> `/plan` has been renamed to `effect:dev:plan`.
+> This alias will be **removed in v0.20.0**.
+>
+> Please update your workflow: type `/effect:dev:plan` going forward.
+> (Running `effect:dev:plan` now...)
+
+---
+
+# effect:dev:plan — Analyze Requirements and Create Implementation Plan
 
 You create a detailed implementation plan for a feature, then STOP and wait for explicit approval before writing any code.
 
@@ -104,7 +114,7 @@ Present the complete plan to the user in a clear, structured format. Include:
 
 ## Step 7: Save Plan to Disk
 
-Write the complete plan to `.claude/plan.local.md` so that other commands (e.g., `/orchestrate`, `/ralph-loop`) can reference it:
+Write the complete plan to `.claude/plan.local.md` so that other commands (e.g., `effect:dev:orchestrate`, `effect:dev:run`) can reference it:
 
 1. Include the full plan content from Step 6 (summary, phases, reusable assets, risks).
 2. Add a YAML frontmatter block:
@@ -123,7 +133,7 @@ Write the complete plan to `.claude/plan.local.md` so that other commands (e.g.,
 
 Wait for explicit approval from the user:
 
-- **"OK"** or **"Go"** or **"Start"** -> Update `status` in `.claude/plan.local.md` to `approved`, then proceed with implementation (typically via `/tdd`).
+- **"OK"** or **"Go"** or **"Start"** -> Update `status` in `.claude/plan.local.md` to `approved`, then proceed with implementation (typically via `effect:dev:tdd`).
 - **"Change X"** -> Revise the plan based on feedback, update `.claude/plan.local.md`, present again, wait again.
 - **"Start over"** -> Discard the plan and restart from Step 1.
 
@@ -131,11 +141,11 @@ Wait for explicit approval from the user:
 
 After the plan is approved:
 
-- → `/tdd` — Implement the plan using test-driven development (RED → GREEN → REFACTOR)
-- → `/ralph-loop` — Run autonomous implementation loop (if autonomy level is "full" in `.effectum.json`)
-- → `/orchestrate` — Spawn an Agent Team to implement the plan in parallel (requires Agent Teams enabled)
+- → `effect:dev:tdd` — Implement the plan using test-driven development (RED → GREEN → REFACTOR)
+- → `effect:dev:run` — Run autonomous implementation loop (if autonomy level is "full" in `.effectum.json`)
+- → `effect:dev:orchestrate` — Spawn an Agent Team to implement the plan in parallel (requires Agent Teams enabled)
 
-ℹ️ Alternative: If the plan reveals design work is needed first, run `/design` before implementation.
+ℹ️ Alternative: If the plan reveals design work is needed first, run `effect:design` before implementation.
 
 ## Communication
 

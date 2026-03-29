@@ -105,7 +105,7 @@ describe("agents-md blocks load without error", () => {
 
   test("commands block contains /prd:new command", () => {
     const content = loadBlock("agents-md", "commands", null, REPO_ROOT);
-    assert.ok(content.includes("/prd:new"), "commands block should document /prd:new");
+    assert.ok(content.includes("/prd:new") || content.includes("effect:prd:new"), "commands block should document prd:new or effect:prd:new");
   });
 
   test("guardrails block contains safety language", () => {

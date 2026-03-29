@@ -1,11 +1,21 @@
 ---
-name: "Cancel Ralph"
-description: "Gracefully cancel a running Ralph Loop, preserve progress, and report current state."
+name: "cancel-ralph [DEPRECATED → effect:dev:stop]"
+description: "DEPRECATED: Use /effect:dev:stop instead. This alias will be removed in v0.20."
 allowed-tools: ["Read", "Write", "Bash"]
 effort: "low"
 ---
 
-# /cancel-ralph -- Cancel an Active Ralph Loop
+> ⚠️ **Deprecated as of v0.18.0**
+>
+> `/cancel-ralph` has been renamed to `effect:dev:stop`.
+> This alias will be **removed in v0.20.0**.
+>
+> Please update your workflow: type `/effect:dev:stop` going forward.
+> (Running `effect:dev:stop` now...)
+
+---
+
+# effect:dev:stop — Cancel an Active Ralph Loop
 
 You gracefully cancel a running Ralph Loop, preserve progress, and report the current state.
 
@@ -93,15 +103,15 @@ Report to the user:
 2. How many iterations were completed out of the maximum.
 3. Brief summary of what was accomplished.
 4. Where to find the full status report (`.claude/ralph-status.md`).
-5. Suggested next steps: continue manually, restart with a modified prompt, or run `/verify` to assess the current state.
+5. Suggested next steps: continue manually, restart with a modified prompt, or run `effect:dev:verify` to assess the current state.
 
 ## Next Steps
 
 After cancelling the Ralph Loop:
 
-- → `/verify` — Assess the current state of the codebase after partial implementation
-- → `/build-fix` — If the build is broken, fix errors incrementally
-- → `/ralph-loop` — Restart with a modified prompt or adjusted scope
+- → `effect:dev:verify` — Assess the current state of the codebase after partial implementation
+- → `effect:dev:fix` — If the build is broken, fix errors incrementally
+- → `effect:dev:run` — Restart with a modified prompt or adjusted scope
 
 ℹ️ Alternative: Review `.claude/ralph-status.md` for detailed progress and blockers before deciding next steps.
 
