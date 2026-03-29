@@ -30,11 +30,11 @@ Agent Teams cost 3–4× more than subagents. Use them when coordination complex
    }
    ```
 
-   Without this flag, all `/orchestrate` commands will fail with:
+   Without this flag, all `/effect:dev:orchestrate` commands will fail with:
 
    > Error: Agent Teams is not enabled. Set CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 in .claude/settings.json env to activate.
 
-3. **Plan-first requirement**: An approved plan must exist before team creation. Run `/plan` first, then `/orchestrate`. You can skip this with `--plan-first=false` (not recommended).
+3. **Plan-first requirement**: An approved plan must exist before team creation. Run `/effect:dev:plan` first, then `/effect:dev:orchestrate`. You can skip this with `--plan-first=false` (not recommended).
 
 ---
 
@@ -43,7 +43,7 @@ Agent Teams cost 3–4× more than subagents. Use them when coordination complex
 **Step 1** — Create a plan:
 
 ```
-/plan Add a shopping cart feature: users can add items, view cart, and checkout.
+/effect:dev:plan Add a shopping cart feature: users can add items, view cart, and checkout.
 ```
 
 Review and approve the plan.
@@ -51,13 +51,13 @@ Review and approve the plan.
 **Step 2** — Launch a team:
 
 ```
-/orchestrate web-feature
+/effect:dev:orchestrate web-feature
 ```
 
 The command prints a cost estimate and asks for confirmation before spawning teammates.
 
 **Step 3** — Monitor and verify:
-The lead distributes tasks from the PRD, coordinates phases, and runs `/verify` when all teammates complete. Hook scripts validate task completion and test coverage automatically.
+The lead distributes tasks from the PRD, coordinates phases, and runs `/effect:dev:verify` when all teammates complete. Hook scripts validate task completion and test coverage automatically.
 
 ---
 
@@ -147,7 +147,7 @@ Pricing based on Sonnet @ $3/Mtok input, $15/Mtok output; Opus @ $15/Mtok input,
 
 ### `--max-cost` Flag
 
-Pass `--max-cost <amount>` to `/orchestrate` to cap spending. The lead warns at 80% of the budget and stops all teammates at 100%.
+Pass `--max-cost <amount>` to `/effect:dev:orchestrate` to cap spending. The lead warns at 80% of the budget and stops all teammates at 100%.
 
 **Rule of thumb:** Use Agent Teams when the feature involves ≥3 parallel workstreams across different file domains. For anything simpler, subagents or a single session will be faster and cheaper.
 
@@ -276,7 +276,7 @@ hooks:
 ### Testing a Custom Profile
 
 ```bash
-claude --print "/orchestrate my-custom-team --dry-run"
+claude --print "/effect:dev:orchestrate my-custom-team --dry-run"
 ```
 
 This prints the cost estimate and validates the profile without creating any team state.
@@ -287,15 +287,15 @@ This prints the cost estimate and validates the profile without creating any tea
 
 ### Feature flag not set
 
-**Symptom:** `/orchestrate` prints "Error: Agent Teams is not enabled."
+**Symptom:** `/effect:dev:orchestrate` prints "Error: Agent Teams is not enabled."
 
 **Fix:** Add `"CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"` to the `env` block in `.claude/settings.json`. Restart Claude Code.
 
 ### No approved plan
 
-**Symptom:** `/orchestrate` prints "Error: No approved plan found."
+**Symptom:** `/effect:dev:orchestrate` prints "Error: No approved plan found."
 
-**Fix:** Run `/plan` first and approve it. Or pass `--plan-first=false` to skip the check (not recommended for implementation work — the plan-first gate prevents wasted tokens).
+**Fix:** Run `/effect:dev:plan` first and approve it. Or pass `--plan-first=false` to skip the check (not recommended for implementation work — the plan-first gate prevents wasted tokens).
 
 ### Teammate stuck or looping
 

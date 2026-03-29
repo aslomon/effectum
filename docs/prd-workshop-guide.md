@@ -15,7 +15,7 @@ A Product Requirements Document (PRD) is a structured specification that defines
 
 ## The Two Modes
 
-### Workshop Mode (`/prd:new`)
+### Workshop Mode (`/effect:prd:new`)
 
 The full guided experience for complex features, new projects, or vague ideas.
 
@@ -37,7 +37,7 @@ The full guided experience for complex features, new projects, or vague ideas.
 
 7. **Verification** — Quality review with readiness scoring. The PRD must score >= 2.0 to be considered ready for handoff.
 
-### Express Mode (`/prd:express`)
+### Express Mode (`/effect:prd:express`)
 
 Quick mode for small, well-understood features.
 
@@ -64,7 +64,7 @@ claude
 Run the new project command:
 
 ```
-/prd:new
+/effect:prd:new
 ```
 
 Claude asks: "What do you want to build?"
@@ -101,7 +101,7 @@ Claude writes the PRD to `workshop/projects/{slug}/prds/001-{name}.md`. Review i
 ### 5. Run Quality Review
 
 ```
-/prd:review
+/effect:prd:review
 ```
 
 Claude evaluates the PRD against a quality checklist and produces a readiness score:
@@ -114,7 +114,7 @@ Claude evaluates the PRD against a quality checklist and produces a readiness sc
 ### 6. Hand Off
 
 ```
-/prd:handoff
+/effect:prd:handoff
 ```
 
 Claude generates a handoff prompt with the right workflow mode:
@@ -139,7 +139,7 @@ Claude suggests decomposition when:
 ### How Decomposition Works
 
 ```
-/prd:decompose
+/effect:prd:decompose
 ```
 
 Claude analyzes the scope and suggests splitting into multiple PRDs. Each PRD:
@@ -177,14 +177,14 @@ Every project gets a Mermaid network map (`network-map.mmd`) that visualizes how
 ### Viewing the Map
 
 ```
-/prd:network-map
+/effect:prd:network-map
 ```
 
 The map is written as `.mmd` (Mermaid source). View it in any Mermaid-compatible tool (GitHub renders Mermaid natively, or use mermaid.live).
 
 ## Quality Review and Readiness Scoring
 
-The quality review (`/prd:review`) checks three dimensions:
+The quality review (`/effect:prd:review`) checks three dimensions:
 
 ### 1. Completeness
 
@@ -220,7 +220,7 @@ The quality review (`/prd:review`) checks three dimensions:
 ### The Handoff Process
 
 1. PRD passes quality review (score >= 2.0).
-2. Run `/prd:handoff`.
+2. Run `/effect:prd:handoff`.
 3. Claude determines the workflow mode.
 4. Generates a handoff prompt with PRD, workflow, and autonomy settings.
 5. Copies the PRD and prompt to the target project's directory.
@@ -229,23 +229,23 @@ The quality review (`/prd:review`) checks three dimensions:
 
 1. Open Claude Code in the target project.
 2. Paste the handoff prompt.
-3. Claude executes the workflow: `/plan` -> `/tdd` -> `/verify` -> `/e2e` -> `/code-review`.
+3. Claude executes the workflow: `/effect:dev:plan` -> `/effect:dev:tdd` -> `/effect:dev:verify` -> `/effect:dev:e2e` -> `/effect:dev:review`.
 4. Review the results.
 
 ## All Workshop Commands
 
 | Command             | Purpose                                            |
 | ------------------- | -------------------------------------------------- |
-| `/prd:new`          | Start a new project with discovery questions       |
-| `/prd:discuss`      | Clarify gray areas in an existing PRD              |
-| `/prd:express`      | Quick PRD for small, well-understood features      |
-| `/prd:review`       | Quality checklist evaluation and readiness scoring |
-| `/prd:handoff`      | Generate implementation prompt and export          |
-| `/prd:status`       | Dashboard of all projects and PRDs                 |
-| `/prd:resume`       | Continue working on an existing project            |
-| `/prd:decompose`    | Split scope into multiple PRDs                     |
-| `/prd:network-map`  | Create or update the project network map           |
-| `/prd:prompt`       | Generate or regenerate the handoff prompt          |
+| `/effect:prd:new`          | Start a new project with discovery questions       |
+| `/effect:prd:discuss`      | Clarify gray areas in an existing PRD              |
+| `/effect:prd:express`      | Quick PRD for small, well-understood features      |
+| `/effect:prd:review`       | Quality checklist evaluation and readiness scoring |
+| `/effect:prd:handoff`      | Generate implementation prompt and export          |
+| `/effect:prd:status`       | Dashboard of all projects and PRDs                 |
+| `/effect:prd:resume`       | Continue working on an existing project            |
+| `/effect:prd:decompose`    | Split scope into multiple PRDs                     |
+| `/effect:prd:network-map`  | Create or update the project network map           |
+| `/effect:prd:handoff --prompt-only`       | Generate or regenerate the handoff prompt          |
 | `/workshop:init`    | Create project workspace structure                 |
 | `/workshop:archive` | Archive a completed project                        |
-| `/setup`            | Install the workflow in a target project           |
+| `/effectum:setup`            | Install the workflow in a target project           |

@@ -2,10 +2,10 @@
 
 ## Problem
 
-Effectum has basic Agent Teams support (team profiles in `system/teams/profiles.md`, `/orchestrate` command, TeammateIdle/TaskCompleted hooks) but it's surface-level. The actual Agent Teams feature in Claude Code (Feb 2026) is fundamentally different from Subagents — it enables peer-to-peer communication, shared task queues, and true parallel collaboration. Effectum doesn't leverage this properly.
+Effectum has basic Agent Teams support (team profiles in `system/teams/profiles.md`, `/effect:dev:orchestrate` command, TeammateIdle/TaskCompleted hooks) but it's surface-level. The actual Agent Teams feature in Claude Code (Feb 2026) is fundamentally different from Subagents — it enables peer-to-peer communication, shared task queues, and true parallel collaboration. Effectum doesn't leverage this properly.
 
 Key gaps:
-1. `/orchestrate` is too basic — doesn't create Teams, distribute Tasks, or monitor progress
+1. `/effect:dev:orchestrate` is too basic — doesn't create Teams, distribute Tasks, or monitor progress
 2. Team Profiles are markdown tables, not actionable YAML that maps to Claude Code's 7 Team-Primitives
 3. The Recommendation Engine doesn't know when to suggest Teams vs. Subagents
 4. No cost awareness — Agent Teams cost 3-4x more tokens
@@ -21,8 +21,8 @@ Make Agent Teams a first-class, opt-in workflow in Effectum. When a project is c
 - Subagents are still the standard for simple/medium tasks
 - The Decision Matrix is based on: PRD complexity, parallelizability, and cost tolerance
 - Team Profiles are YAML files that directly map to Claude Code's Team-Primitives
-- `/orchestrate` becomes the central command for Agent Teams workflows
-- Plan-First is non-negotiable — no Team without an approved `/plan`
+- `/effect:dev:orchestrate` becomes the central command for Agent Teams workflows
+- Plan-First is non-negotiable — no Team without an approved `/effect:dev:plan`
 
 ## Acceptance Criteria
 
@@ -41,19 +41,19 @@ Make Agent Teams a first-class, opt-in workflow in Effectum. When a project is c
 - [ ] AC8: Profiles are stack-aware — Next.js profiles include nextjs-developer, Python profiles include python-pro
 - [ ] AC9: Custom profiles can be added in `.effectum/teams/`
 
-### Enhanced `/orchestrate` Command
+### Enhanced `/effect:dev:orchestrate` Command
 
-- [ ] AC10: `/orchestrate [profile]` loads team profile, creates team via TeamCreate, distributes tasks
-- [ ] AC11: `/orchestrate` reads the current PRD + tasks.md to generate team tasks
-- [ ] AC12: `/orchestrate status` shows: team members, task progress, messages sent
-- [ ] AC13: `/orchestrate nudge [teammate]` sends a message to a stuck teammate
-- [ ] AC14: `/orchestrate shutdown` gracefully terminates all teammates
-- [ ] AC15: `--plan-first` flag (default: true) — refuses to start without an approved /plan
+- [ ] AC10: `/effect:dev:orchestrate [profile]` loads team profile, creates team via TeamCreate, distributes tasks
+- [ ] AC11: `/effect:dev:orchestrate` reads the current PRD + tasks.md to generate team tasks
+- [ ] AC12: `/effect:dev:orchestrate status` shows: team members, task progress, messages sent
+- [ ] AC13: `/effect:dev:orchestrate nudge [teammate]` sends a message to a stuck teammate
+- [ ] AC14: `/effect:dev:orchestrate shutdown` gracefully terminates all teammates
+- [ ] AC15: `--plan-first` flag (default: true) — refuses to start without an approved /effect:dev:plan
 - [ ] AC16: `--max-cost` flag — sets token budget, warns when 80% consumed
 
 ### PRD → Team Task Distribution
 
-- [ ] AC17: When Agent Teams are active, `/prd:handoff` generates team-aware handoff including task distribution per teammate
+- [ ] AC17: When Agent Teams are active, `/effect:prd:handoff` generates team-aware handoff including task distribution per teammate
 - [ ] AC18: Each AC in the PRD maps to a task assigned to a specific teammate based on file ownership
 - [ ] AC19: Task dependencies from PRD phases map to Claude Code task dependencies
 
@@ -65,20 +65,20 @@ Make Agent Teams a first-class, opt-in workflow in Effectum. When a project is c
 
 ### Cost Awareness
 
-- [ ] AC23: `/orchestrate` estimates token cost before starting based on team size × expected iterations
+- [ ] AC23: `/effect:dev:orchestrate` estimates token cost before starting based on team size × expected iterations
 - [ ] AC24: User confirms cost estimate before team spawns
 - [ ] AC25: Recommendation: Opus for Team Lead, Sonnet for Teammates (cost optimization)
 
 ### Documentation
 
-- [ ] AC26: AUTONOMOUS-WORKFLOW.md Section 9.5 updated with new /orchestrate capabilities
+- [ ] AC26: AUTONOMOUS-WORKFLOW.md Section 9.5 updated with new /effect:dev:orchestrate capabilities
 - [ ] AC27: docs/teams.md updated with YAML profile format and workflow
 
 ## Scope
 
 ### In Scope
 - Team Profile YAML format + 5 built-in profiles
-- Enhanced `/orchestrate` command (create, status, nudge, shutdown, cost)
+- Enhanced `/effect:dev:orchestrate` command (create, status, nudge, shutdown, cost)
 - Recommendation Engine: suggestTeams logic
 - PRD → Team Task distribution
 - TeammateIdle + TaskCompleted hook optimization
@@ -147,14 +147,14 @@ cost_estimate:
   estimated_tokens: "150k-400k"
 ```
 
-### Enhanced /orchestrate Flow
+### Enhanced /effect:dev:orchestrate Flow
 
 ```
-/orchestrate web-feature
+/effect:dev:orchestrate web-feature
 
 Step 1: Load Profile
   → Read system/teams/web-feature.yaml
-  → Validate: PRD exists? /plan approved?
+  → Validate: PRD exists? /effect:dev:plan approved?
 
 Step 2: Estimate Cost
   → "Estimated cost: 150k-400k tokens (~$1.50-4.00)"
@@ -171,20 +171,20 @@ Step 5: Spawn Teammates
   → Each teammate gets: their role + assigned tasks + file ownership rules
 
 Step 6: Monitor
-  → /orchestrate status shows progress
+  → /effect:dev:orchestrate status shows progress
   → TeammateIdle hook checks quality
   → TaskCompleted hook validates ACs
 
 Step 7: Completion
-  → All tasks done → Lead synthesizes → /verify → /code-review
+  → All tasks done → Lead synthesizes → /effect:dev:verify → /effect:dev:review
   → TeamDelete
 ```
 
 ## Quality Gates
 
 - Team Profile YAML parses correctly
-- `/orchestrate web-feature` creates team and distributes tasks from a PRD
-- `/orchestrate status` shows accurate progress
+- `/effect:dev:orchestrate web-feature` creates team and distributes tasks from a PRD
+- `/effect:dev:orchestrate status` shows accurate progress
 - TeammateIdle hook correctly blocks teammate that hasn't finished tasks
 - Cost estimate is within 2x of actual cost
 - Subagents still work normally when Agent Teams are disabled
@@ -192,4 +192,4 @@ Step 7: Completion
 
 ## Completion Promise
 
-"Agent Teams are a first-class opt-in workflow in Effectum with YAML profiles, enhanced /orchestrate command, PRD-based task distribution, cost awareness, and quality gate hooks"
+"Agent Teams are a first-class opt-in workflow in Effectum with YAML profiles, enhanced /effect:dev:orchestrate command, PRD-based task distribution, cost awareness, and quality gate hooks"

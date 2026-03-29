@@ -52,7 +52,7 @@ I've been building with Claude Code since early 2024 and kept hitting the same w
 
 So I spent two months building **Effectum** — an open-source Claude Code framework that:
 
-1. **PRD Workshop**: guides you through writing specs via slash commands (`/prd:new`, `/prd:update`). Spec quality → output quality. No shortcut.
+1. **PRD Workshop**: guides you through writing specs via slash commands (`/effect:prd:new`, `/effect:prd:update`). Spec quality → output quality. No shortcut.
 2. **Ralph Loop**: define a "completion promise" → Claude iterates with 8 quality gates until provably satisfied
 3. **7 stack presets**: Next.js+Supabase, FastAPI, Django+Postgres, Go+Echo, Rust+Actix, Swift/SwiftUI, generic
 4. **Agent Teams**: experimental parallel builds across multiple Claude instances (v0.12.0)

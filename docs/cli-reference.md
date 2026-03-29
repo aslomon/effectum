@@ -123,7 +123,7 @@ Example output:
 
 ```
 ✔ Checking for updates...
-ℹ 3 new command(s) available: /forensics, /effectum:init, /map-codebase
+ℹ 3 new command(s) available: /effect:dev:diagnose, /effectum:init, /effectum:explore
 ℹ 5 command(s) with updates
 ✔ Updated: 3 new command(s) added, 5 command(s) updated, CLAUDE.md refreshed
 ```

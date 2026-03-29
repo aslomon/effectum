@@ -32,7 +32,7 @@ PH requires:
 2. **Gallery images** (3–5 recommended, 1270×760px each):
    - Image 1: Hero — "Spec it. Sleep. Ship it." with terminal mockup
    - Image 2: Quality gates diagram (8 checks, visual)
-   - Image 3: PRD Workshop flow (/prd:new → /plan → /ralph-loop)
+   - Image 3: PRD Workshop flow (/effect:prd:new → /effect:dev:plan → /ralph-loop)
    - Image 4: Stack presets overview (7 logos)
    - Image 5: AGENTS.md support + multi-tool compatibility
 
@@ -50,9 +50,9 @@ I built this because I couldn't find a tool that handled the full Claude Code wo
 
 The core is the **Ralph Loop**: you define a completion promise ("all tests pass, build succeeds, 0 lint errors") and Claude iterates — writing code, running 8 quality gates, recovering from errors — until that promise is provably true.
 
-Paired with a PRD Workshop (`/prd:new`) that guides you through writing specs good enough for autonomous implementation. Spec quality is the primary variable in output quality.
+Paired with a PRD Workshop (`/effect:prd:new`) that guides you through writing specs good enough for autonomous implementation. Spec quality is the primary variable in output quality.
 
-v0.13.0 adds `/design` for generating DESIGN.md specs for frontend work, and AGENTS.md support for multi-tool compatibility.
+v0.13.0 adds `/effect:design` for generating DESIGN.md specs for frontend work, and AGENTS.md support for multi-tool compatibility.
 
 Would love feedback on the Ralph Loop concept and where you'd want to take it. What does your current Claude Code workflow look like?
 

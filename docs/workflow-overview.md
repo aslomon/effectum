@@ -16,7 +16,7 @@ Three principles drive every decision in this workflow:
 
 Every feature moves through six ordered phases. Each phase has a dedicated command and clear entry/exit criteria.
 
-### Phase 1: Analysis and Planning (`/plan`)
+### Phase 1: Analysis and Planning (`/effect:dev:plan`)
 
 **Input**: PRD or feature description.
 **Process**: Claude reads the PRD, explores the codebase, identifies reusable patterns, creates a step-by-step plan with phases, dependencies, and risks.
@@ -34,28 +34,28 @@ This is the only phase where Claude stops and waits for explicit approval. All s
 
 A smoke test runs immediately after scaffolding to validate that the integration points (routing, middleware, database) work before building features on top.
 
-### Phase 3: Backend TDD (`/tdd`)
+### Phase 3: Backend TDD (`/effect:dev:tdd`)
 
 **Input**: Types and schemas from Phase 2.
 **Process**: Write failing tests (RED), implement API routes and services (GREEN), refactor.
 **Output**: Working backend with tests.
-**Exit**: All backend tests pass, `/verify` green.
+**Exit**: All backend tests pass, `/effect:dev:verify` green.
 
-### Phase 4: Frontend TDD (`/tdd`)
+### Phase 4: Frontend TDD (`/effect:dev:tdd`)
 
 **Input**: Working API from Phase 3.
 **Process**: Write failing component tests (RED), implement UI components (GREEN), refactor.
 **Output**: Working frontend with tests.
-**Exit**: All frontend tests pass, `/verify` green.
+**Exit**: All frontend tests pass, `/effect:dev:verify` green.
 
-### Phase 5: E2E Tests (`/e2e`)
+### Phase 5: E2E Tests (`/effect:dev:e2e`)
 
 **Input**: Working frontend and backend.
 **Process**: Write end-to-end tests that exercise critical user journeys through the browser.
 **Output**: E2E test suite.
 **Exit**: All E2E tests pass.
 
-### Phase 6: Verification and Review (`/verify` + `/code-review`)
+### Phase 6: Verification and Review (`/effect:dev:verify` + `/effect:dev:review`)
 
 **Input**: Complete implementation.
 **Process**: Run all quality gates (build, types, lint, tests, E2E), then perform security and quality audit.
@@ -67,25 +67,25 @@ A smoke test runs immediately after scaffolding to validate that the integration
 ### New Feature (Standard)
 
 ```
-/plan -> [approval] -> /tdd -> /verify -> /e2e -> /verify -> /code-review
+/effect:dev:plan -> [approval] -> /effect:dev:tdd -> /effect:dev:verify -> /effect:dev:e2e -> /effect:dev:verify -> /effect:dev:review
 ```
 
 ### Small Feature or Bugfix
 
 ```
-/tdd -> /verify -> /code-review
+/effect:dev:tdd -> /effect:dev:verify -> /effect:dev:review
 ```
 
 ### Large Feature (Multi-Domain)
 
 ```
-/plan -> [approval] -> /tdd (DB+API) -> /verify -> /tdd (Frontend) -> /verify -> /e2e -> /code-review
+/effect:dev:plan -> [approval] -> /effect:dev:tdd (DB+API) -> /effect:dev:verify -> /effect:dev:tdd (Frontend) -> /effect:dev:verify -> /effect:dev:e2e -> /effect:dev:review
 ```
 
 ### Refactoring
 
 ```
-/plan -> [approval] -> /refactor-clean -> /verify -> /code-review
+/effect:dev:plan -> [approval] -> /effect:dev:refactor -> /effect:dev:verify -> /effect:dev:review
 ```
 
 ### Full Autonomy (Overnight)
@@ -124,7 +124,7 @@ Ralph Loop is the highest level of automation. You give Claude a single prompt c
 - `--completion-promise` forces honest self-verification.
 - Iteration plans give Claude a roadmap.
 - Error recovery writes status reports at 80% of iterations consumed.
-- `/cancel-ralph` stops a running loop.
+- `/effect:dev:stop` stops a running loop.
 
 ## Quality Gates
 
@@ -137,9 +137,9 @@ Every feature must pass ALL applicable gates before it is considered done.
 | 3   | Linting       | Linter              | 0 errors, 0 warnings             |
 | 4   | Unit tests    | Test runner         | All passing, 80%+ coverage       |
 | 5   | E2E tests     | Playwright/XCUITest | All journeys passing             |
-| 6   | Security      | `/code-review`      | No OWASP vulnerabilities         |
+| 6   | Security      | `/effect:dev:review`      | No OWASP vulnerabilities         |
 | 7   | RLS check     | Supabase Advisor    | All tables have RLS policies     |
-| 8   | Debug logs    | `/verify`           | 0 debug statements in production |
+| 8   | Debug logs    | `/effect:dev:verify`           | 0 debug statements in production |
 | 9   | Type safety   | Review              | No escape hatches (any, as)      |
 | 10  | File size     | Review              | No file exceeds 300 lines        |
 
@@ -177,7 +177,7 @@ These are the moments when Claude stops and asks for input.
 
 | Point                 | Why                          | What you do                         |
 | --------------------- | ---------------------------- | ----------------------------------- |
-| After `/plan`         | Plan approval required       | "OK", "Change X", or "Start over"   |
+| After `/effect:dev:plan`         | Plan approval required       | "OK", "Change X", or "Start over"   |
 | Ambiguous scope       | PRD has gaps                 | Answer the question                 |
 | Breaking change       | Existing API/DB modification | Confirm or choose alternative       |
 | Architecture decision | Multiple valid approaches    | Pick one                            |

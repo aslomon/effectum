@@ -8,10 +8,10 @@ Zusätzlich: Selbst wenn ein User die PRDs manuell schreiben würde, kann er die
 
 ## Goal
 
-Ein `/onboard` Command der:
+Ein `/effectum:onboard` Command der:
 1. Ein bestehendes Projekt tiefgehend analysiert (6 parallele Agenten)
 2. Sich selbst testet bis alles konsistent ist (Self-Test Loop)
-3. Eine Konsistenz-Review durchführt (`/onboard:review`)
+3. Eine Konsistenz-Review durchführt (`/effectum:onboard:review`)
 4. Erst dann dem User ein verifiziertes, sauberes Ergebnis präsentiert
 5. PRDs pro Feature-Bereich generiert (nicht eine Riesen-PRD)
 6. Nahtlos in den bestehenden PRD Workshop + Lifecycle übergeht
@@ -28,7 +28,7 @@ Ein `/onboard` Command der:
 
 ### Phase 1: Parallele Analyse (6 Agenten)
 
-- [ ] AC1: `/onboard` startet 6 spezialisierte Analyse-Subagenten parallel
+- [ ] AC1: `/effectum:onboard` startet 6 spezialisierte Analyse-Subagenten parallel
 - [ ] AC2: Stack-Analyst erkennt Framework, DB, Auth, Deploy aus Config-Dateien
 - [ ] AC3: Architektur-Analyst erkennt Projektstruktur, Module, Patterns (MVC, Clean Architecture, Feature-Based)
 - [ ] AC4: API-Analyst scannt alle Route-Dateien und erstellt Endpoint-Map mit HTTP-Methoden, Paths, Auth-Status
@@ -65,7 +65,7 @@ Ein `/onboard` Command der:
 - [ ] AC26: Task Registry (tasks.md) mit allen Tasks als ✅ DONE
 - [ ] AC27: Network Map (network-map.mmd) mit allen Features und Verbindungen
 
-### Phase 5: Onboarding Review (`/onboard:review`)
+### Phase 5: Onboarding Review (`/effectum:onboard:review`)
 
 - [ ] AC28: Separater Review-Schritt NACH Self-Tests, VOR User-Präsentation
 - [ ] AC29: Konsistenz-Check: Sind PRDs untereinander konsistent? (gleiche Entitäten, gleiche Namenskonventionen)
@@ -97,16 +97,16 @@ Ein `/onboard` Command der:
 
 ### Integration
 
-- [ ] AC49: Nach Onboarding kann `/prd:new` für neue Features genutzt werden
-- [ ] AC50: Nach Onboarding kann `/prd:update` für Änderungen genutzt werden
+- [ ] AC49: Nach Onboarding kann `/effect:prd:new` für neue Features genutzt werden
+- [ ] AC50: Nach Onboarding kann `/effect:prd:update` für Änderungen genutzt werden
 - [ ] AC51: Bestehende Features haben Protection Rules — neue Entwicklung darf sie nicht brechen
-- [ ] AC52: `/onboard:review` kann auch nachträglich aufgerufen werden (nicht nur beim Onboarding)
+- [ ] AC52: `/effectum:onboard:review` kann auch nachträglich aufgerufen werden (nicht nur beim Onboarding)
 
 ## Scope
 
 ### In Scope
-- `/onboard` Command (system/commands/onboard.md)
-- `/onboard:review` Command (system/commands/onboard/review.md)
+- `/effectum:onboard` Command (system/commands/effectum:onboard.md)
+- `/effectum:onboard:review` Command (system/commands/effectum:onboard/review.md)
 - 6 Analyse-Agent Definitionen
 - Self-Test Suite für Onboarding-Verifikation
 - PRD-Generierung pro Feature-Bereich
@@ -126,7 +126,7 @@ Ein `/onboard` Command der:
 ### Command Flow
 
 ```
-/onboard [project-path]
+/effectum:onboard [project-path]
     ↓
 Phase 1: 6 Agenten parallel (Subagents via Task Tool)
     ├── Stack-Analyst
@@ -151,7 +151,7 @@ Phase 4: PRD-Generierung
     → tasks.md (alle DONE)
     → network-map.mmd
     ↓
-Phase 5: /onboard:review
+Phase 5: /effectum:onboard:review
     → Konsistenz
     → Doppelungen
     → Vereinfachung
@@ -257,15 +257,15 @@ const ONBOARD_REVIEW_CHECKS = [
 
 ## Quality Gates
 
-- `/onboard` on a Next.js + Supabase project produces correct PRDs
+- `/effectum:onboard` on a Next.js + Supabase project produces correct PRDs
 - Self-Tests catch a deliberately missing table and fix it
 - Self-Tests catch a phantom feature and remove it
-- `/onboard:review` detects duplicate features across PRDs
-- `/onboard:review` suggests merging small PRDs
+- `/effectum:onboard:review` detects duplicate features across PRDs
+- `/effectum:onboard:review` suggests merging small PRDs
 - All generated PRDs have valid frontmatter
 - Network Map is consistent with PRDs
 - tasks.md has all features as DONE
-- After onboarding, `/prd:new` works for adding new features
+- After onboarding, `/effect:prd:new` works for adding new features
 
 ## Completion Promise
 

@@ -67,7 +67,7 @@ Effectum is Claude Code-native. It doesn't lock you into an IDE or a cloud dashb
 
 ### AC-4: npm Downloads Tracking
 - `scripts/npm-stats.mjs` — fetches daily/weekly/monthly downloads from `https://api.npmjs.org/downloads/point/last-week/@aslomon/effectum`
-- GitHub Stars: fetches from `https://api.github.com/repos/aslomon/effectum` (no auth needed for public repos, rate-limit-safe at 1 req/run)
+- GitHub Stars: fetches from `https://api.github.com/repos/aslomon/effectum` (no auth needed for public repos, rate-limit-safe at 1 req/effect:dev:run)
 - Output: Markdown summary `reports/npm-stats-YYYY-MM-DD.md`
 - Cron-safe: single run, exits cleanly
 

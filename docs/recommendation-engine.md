@@ -108,15 +108,15 @@ All nine core commands carry `always: true` and are therefore **always** recomme
 
 | Command | Key |
 |---|---|
-| `/plan` | `plan` |
-| `/tdd` | `tdd` |
-| `/verify` | `verify` |
-| `/code-review` | `code-review` |
-| `/build-fix` | `build-fix` |
-| `/refactor-clean` | `refactor-clean` |
-| `/e2e` | `e2e` |
+| `/effect:dev:plan` | `plan` |
+| `/effect:dev:tdd` | `tdd` |
+| `/effect:dev:verify` | `verify` |
+| `/effect:dev:review` | `code-review` |
+| `/effect:dev:fix` | `build-fix` |
+| `/effect:dev:refactor` | `refactor-clean` |
+| `/effect:dev:e2e` | `e2e` |
 | `/ralph-loop` | `ralph-loop` |
-| `/checkpoint` | `checkpoint` |
+| `/effect:dev:save` | `checkpoint` |
 
 Tag-conditional commands:
 

@@ -6,14 +6,14 @@ Common issues and solutions for the autonomous development workflow.
 
 ### Commands not found after setup
 
-**Symptom**: Running `/plan`, `/tdd`, or other workflow commands shows "unknown command" or no response.
+**Symptom**: Running `/effect:dev:plan`, `/effect:dev:tdd`, or other workflow commands shows "unknown command" or no response.
 
 **Causes and fixes**:
 
 1. **Files in wrong location**: Commands must be in `.claude/commands/` at the project root (not in a subdirectory). Verify:
 
    ```bash
-   ls .claude/commands/plan.md
+   ls .claude/commands/effect:dev:plan.md
    ```
 
 2. **File extension wrong**: Command files must end in `.md`. If they have a different extension, rename them.
@@ -42,7 +42,7 @@ Common JSON errors:
 
 **Symptom**: You see literal `{{PLACEHOLDER}}` text in CLAUDE.md or settings.json.
 
-**Fix**: Re-run `/setup` from the autonomous-dev repo. If the issue persists, manually replace the placeholders. Check `system/stacks/{your-stack}.md` for the correct values.
+**Fix**: Re-run `/effectum:setup` from the autonomous-dev repo. If the issue persists, manually replace the placeholders. Check `system/stacks/{your-stack}.md` for the correct values.
 
 ## Hook Issues
 
@@ -106,7 +106,7 @@ If you are on Linux, replace the `osascript` commands with `notify-send` or remo
 **Emergency stop**:
 
 ```
-/cancel-ralph
+/effect:dev:stop
 ```
 
 ### Ralph Loop consuming too many iterations
@@ -124,7 +124,7 @@ If you are on Linux, replace the `osascript` commands with `notify-send` or remo
 
 **Symptom**: The same error appears iteration after iteration. Claude tries to fix it but the fix does not work.
 
-**Fix**: Stop the loop (`/cancel-ralph`) and investigate manually:
+**Fix**: Stop the loop (`/effect:dev:stop`) and investigate manually:
 
 1. Read `.claude/ralph-blockers.md` if it exists.
 2. Check the actual error message (not just Claude's interpretation of it).
@@ -135,7 +135,7 @@ If you are on Linux, replace the `osascript` commands with `notify-send` or remo
 
 ### Quality gates failing unexpectedly
 
-**Symptom**: `/verify` reports failures that you do not expect.
+**Symptom**: `/effect:dev:verify` reports failures that you do not expect.
 
 **Common causes**:
 
@@ -159,7 +159,7 @@ If you are on Linux, replace the `osascript` commands with `notify-send` or remo
 
 ### Security review flags false positives
 
-**Symptom**: `/code-review` flags issues that are not actual vulnerabilities.
+**Symptom**: `/effect:dev:review` flags issues that are not actual vulnerabilities.
 
 **Fix**: Document the false positive in the code review output. If the same false positive recurs, add it to guardrails.md:
 
@@ -203,17 +203,17 @@ If it says `"allowEdits"`, Claude will ask before edits. Change to `"bypassPermi
 To completely reinstall the workflow:
 
 1. Open Claude Code in the autonomous-dev repo.
-2. Run `/setup ~/path/to/your/project`.
+2. Run `/effectum:setup ~/path/to/your/project`.
 3. Choose "Overwrite" when prompted about the existing `.claude/` directory.
 
 ### Partial reset
 
 To reset specific components:
 
-- **Reset commands**: Delete `.claude/commands/` and re-run `/setup`.
-- **Reset settings**: Delete `.claude/settings.json` and re-run `/setup`.
-- **Reset guardrails**: Delete `.claude/guardrails.md` and re-run `/setup`.
-- **Keep customizations**: Choose "Merge" during `/setup` to keep existing files and only add missing ones.
+- **Reset commands**: Delete `.claude/commands/` and re-run `/effectum:setup`.
+- **Reset settings**: Delete `.claude/settings.json` and re-run `/effectum:setup`.
+- **Reset guardrails**: Delete `.claude/guardrails.md` and re-run `/effectum:setup`.
+- **Keep customizations**: Choose "Merge" during `/effectum:setup` to keep existing files and only add missing ones.
 
 ### Factory reset
 
@@ -224,4 +224,4 @@ rm -f CLAUDE.md AUTONOMOUS-WORKFLOW.md
 rm -rf .claude/commands/ .claude/settings.json .claude/guardrails.md
 ```
 
-Then reinstall with `/setup`.
+Then reinstall with `/effectum:setup`.

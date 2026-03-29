@@ -200,14 +200,14 @@ Reference scripts from `SKILL.md` instructions:
 ```markdown
 3. **Run setup**:
    ```bash
-   bash .claude/skills/my-skill/scripts/setup.sh
+   bash .claude/skills/my-skill/scripts/effectum:setup.sh
    ```
 ```
 
 Make scripts executable:
 
 ```bash
-chmod +x system/skills/my-skill/scripts/setup.sh
+chmod +x system/skills/my-skill/scripts/effectum:setup.sh
 ```
 
 ---

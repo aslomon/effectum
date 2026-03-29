@@ -4,13 +4,13 @@
 
 Effectum's setup is currently split into two disconnected steps:
 1. `npx @aslomon/effectum` — copies files (commands, templates, stacks)
-2. `/setup .` in Claude Code — configures the project (substitutes placeholders)
+2. `/effectum:setup .` in Claude Code — configures the project (substitutes placeholders)
 
 This causes multiple issues:
 - **Placeholder residue**: `{{FORMATTER}}`, `{{PACKAGE_MANAGER}}`, `{{AUTONOMY_PERMISSIONS}}` are never substituted, leaving broken config files
 - **Permission mode never set**: `defaultMode` stays `"default"` regardless of chosen autonomy level
 - **Formatter hook broken**: PostToolUse hook has `echo formatter-not-configured` that's never replaced
-- **guardrails.md stays generic**: Stack-specific and tool-specific sections say "Run /setup to configure"
+- **guardrails.md stays generic**: Stack-specific and tool-specific sections say "Run /effectum:setup to configure"
 - **No config persistence**: Settings are lost; re-running `npx` overwrites everything
 - **No upgrade path**: New versions can't update commands without destroying user config
 - **Poor UX**: readline-based prompts, no arrow key navigation, no multi-select
@@ -18,11 +18,11 @@ This causes multiple issues:
 
 ## Goal
 
-Merge the installer and `/setup` into a single interactive CLI experience that produces fully configured, ready-to-use Claude Code project files — no manual editing required. Non-technical users should be able to set up their entire dev environment by answering guided questions.
+Merge the installer and `/effectum:setup` into a single interactive CLI experience that produces fully configured, ready-to-use Claude Code project files — no manual editing required. Non-technical users should be able to set up their entire dev environment by answering guided questions.
 
 ## User Stories
 
-- As a developer, I want to run `npx @aslomon/effectum` in my project and have everything configured in one step, so I can immediately start using `/plan` and `/prd:new`
+- As a developer, I want to run `npx @aslomon/effectum` in my project and have everything configured in one step, so I can immediately start using `/effect:dev:plan` and `/effect:prd:new`
 - As a non-technical user, I want arrow-key navigation and clear descriptions for each option, so I understand what I'm choosing
 - As a developer, I want my configuration saved in `.effectum.json`, so updates don't destroy my settings
 - As a developer, I want to run `npx @aslomon/effectum reconfigure` to re-apply or change settings without reinstalling
@@ -77,7 +77,7 @@ Merge the installer and `/setup` into a single interactive CLI experience that p
 - Playwright browser installation changes (keep existing logic)
 - New stack presets (only use existing 4: nextjs-supabase, python-fastapi, swift-ios, generic)
 - Agent Teams configuration (keep existing opt-in flag)
-- `/setup` slash command removal (keep as legacy/advanced override, but mark as optional)
+- `/effectum:setup` slash command removal (keep as legacy/advanced override, but mark as optional)
 
 ## Data Model
 

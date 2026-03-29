@@ -132,7 +132,7 @@ ls .claude/commands/
 Open Claude Code in your project and run:
 
 ```bash
-/verify
+/effect:dev:verify
 ```
 
 This runs the quality gates and confirms that the build tools, linter, and test runner are configured correctly.
@@ -167,7 +167,7 @@ The update command:
 
 ### Commands not appearing
 
-**Symptom**: Running `/plan` or other commands shows "command not found."
+**Symptom**: Running `/effect:dev:plan` or other commands shows "command not found."
 
 **Fix**: Ensure the files are in `.claude/commands/` (not `.claude/commands/subfolder/`). Claude Code looks for commands at the top level of `.claude/commands/`.
 
@@ -195,7 +195,7 @@ The update command:
 
 ### Quality gates failing on clean project
 
-**Symptom**: `/verify` fails because build tools are not installed.
+**Symptom**: `/effect:dev:verify` fails because build tools are not installed.
 
 **Fix**: The workflow commands call your project's build tools. You need these installed first:
 

@@ -9,27 +9,27 @@
 
 ## Title
 
-**I built a framework for Claude Code so I can type /next and just start coding**
+**I built a framework for Claude Code so I can type /effect:next and just start coding**
 
 ---
 
 ## Article
 
-When I started using Claude Code seriously, I had a problem: I knew the tools were powerful, but I didn't know *which* tool to reach for, *when*. Type `/plan`? `/tdd`? `/ralph-loop`? Read the docs again?
+When I started using Claude Code seriously, I had a problem: I knew the tools were powerful, but I didn't know *which* tool to reach for, *when*. Type `/effect:dev:plan`? `/effect:dev:tdd`? `/ralph-loop`? Read the docs again?
 
-I built Effectum to solve this. And in v0.17.0, I finally added the thing that makes it click: `/next`.
+I built Effectum to solve this. And in v0.17.0, I finally added the thing that makes it click: `/effect:next`.
 
 ---
 
-### What `/next` does
+### What `/effect:next` does
 
-`/next` reads your project state — open PRDs, tasks.md, uncommitted changes, test failures — and tells you exactly one thing to do next. No ambiguity.
+`/effect:next` reads your project state — open PRDs, tasks.md, uncommitted changes, test failures — and tells you exactly one thing to do next. No ambiguity.
 
 ```
-/next
+/effect:next
 → You have 3 uncommitted test files and an open PRD. 
-  Recommended: /tdd to implement the next task.
-  Run: /tdd
+  Recommended: /effect:dev:tdd to implement the next task.
+  Run: /effect:dev:tdd
 ```
 
 It's not magic. It's a smart router that maps your current state to the right command. But it eliminates the "where do I start?" paralysis that I kept running into.
@@ -57,17 +57,17 @@ Three safety mechanisms for long runs:
 
 ### What's new in v0.17.0
 
-**Entry point.** `npx @aslomon/effectum` now installs a `/effectum` command with `/help` and `/next` aliases. One place to start, regardless of where you are in a project.
+**Entry point.** `npx @aslomon/effectum` now installs a `/effectum` command with `/help` and `/effect:next` aliases. One place to start, regardless of where you are in a project.
 
-**Cleaner names.** `/run` works like `/tdd`. `/stop` like `/cancel-ralph`. `/save` like `/checkpoint`. The commands you reach for constantly are now one word.
+**Cleaner names.** `/effect:dev:run` works like `/effect:dev:tdd`. `/effect:dev:stop` like `/effect:dev:stop`. `/effect:dev:save` like `/effect:dev:save`. The commands you reach for constantly are now one word.
 
-**Context init.** `/context:init` is a 7-question interview that populates your `CLAUDE.md` with project-specific context — domain terminology, architecture decisions, critical areas, tech debt. Everything Claude needs to avoid generic responses. Takes 5 minutes, saves hours.
+**Context init.** `/effectum:init` is a 7-question interview that populates your `CLAUDE.md` with project-specific context — domain terminology, architecture decisions, critical areas, tech debt. Everything Claude needs to avoid generic responses. Takes 5 minutes, saves hours.
 
-**PRD improvements.** `/prd:new` now detects overlap with existing PRDs in Step 2, reads CLAUDE.md sentinel for domain context, and recommends `/ralph-loop` as primary next step for agentic workflows.
+**PRD improvements.** `/effect:prd:new` now detects overlap with existing PRDs in Step 2, reads CLAUDE.md sentinel for domain context, and recommends `/ralph-loop` as primary next step for agentic workflows.
 
-**`/map-codebase`.** Spawns 4 parallel analysis agents that produce 7 knowledge documents in `knowledge/codebase/`: architecture, stack, conventions, testing strategy, concerns, integrations. Use it on any unfamiliar codebase before you start building.
+**`/effectum:explore`.** Spawns 4 parallel analysis agents that produce 7 knowledge documents in `knowledge/codebase/`: architecture, stack, conventions, testing strategy, concerns, integrations. Use it on any unfamiliar codebase before you start building.
 
-**`/forensics`.** When a loop fails, `/forensics` reads HANDOFF.md, STUCK.md, loop-state, metrics, and git log. Classifies the failure mode, analyzes root cause, writes `FORENSICS-{date}.md` with recommended next steps.
+**`/effect:dev:diagnose`.** When a loop fails, `/effect:dev:diagnose` reads HANDOFF.md, STUCK.md, loop-state, metrics, and git log. Classifies the failure mode, analyzes root cause, writes `FORENSICS-{date}.md` with recommended next steps.
 
 ---
 
@@ -89,7 +89,7 @@ npx @aslomon/effectum
 
 Run it in your project directory. It detects your stack, configures Claude Code with quality gates and hooks, and sets up the full command system. Takes about 30 seconds.
 
-Then open Claude Code and type `/next`.
+Then open Claude Code and type `/effect:next`.
 
 ---
 

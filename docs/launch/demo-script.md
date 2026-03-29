@@ -27,11 +27,11 @@ $ npx @aslomon/effectum
 
   ✓ Effectum configured in 12 seconds.
 
-  → Next: /setup . then /prd:new
+  → Next: /effectum:setup . then /effect:prd:new
 
 # 2. Write a spec
 $ claude code
-> /prd:new
+> /effect:prd:new
 
   Starting PRD Workshop...
   ◆ What are you building?
@@ -60,7 +60,7 @@ $ claude code
   ✓ Completion promise satisfied in 2 iterations.
   ✓ All 8 quality gates passed.
   
-  Done. Ready for review: /code-review
+  Done. Ready for review: /effect:dev:review
 ```
 
 ---
@@ -101,6 +101,6 @@ Sleep 1s
 │  ◆ Stack detected: Next.js + Supabase ✓                    │
 │  ◆ Autonomy level: Standard                                 │
 │                                                             │
-│  ✓ Configured in 12s. Run /prd:new to start.               │
+│  ✓ Configured in 12s. Run /effect:prd:new to start.               │
 ╰─────────────────────────────────────────────────────────────╯
 ```

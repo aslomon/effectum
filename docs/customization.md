@@ -123,7 +123,7 @@ Set the environment variable:
 }
 ```
 
-This enables `/orchestrate` for parallel multi-agent implementation.
+This enables `/effect:dev:orchestrate` for parallel multi-agent implementation.
 
 ## Creating Custom Guardrails
 

@@ -15,9 +15,9 @@
 `Show HN: Effectum – I wanted Claude Code to build things while I sleep, so I wrote a framework`
 
 **Option C (v0.17 hook):**  
-`Show HN: Effectum – I type /next and Claude tells me what to do next on my codebase`
+`Show HN: Effectum – I type /effect:next and Claude tells me what to do next on my codebase`
 
-**Recommendation:** Option B — most click-worthy for HN without being misleading. Option C works well if the /next router is the angle.
+**Recommendation:** Option B — most click-worthy for HN without being misleading. Option C works well if the /effect:next router is the angle.
 
 ---
 
@@ -31,12 +31,12 @@ You define a "completion promise" — a concrete, checkable statement like "all 
 Quality gates run every iteration: build, TypeScript types, lint, tests, no debug logs, no `any` casts. Not optional. Context Budget Monitor stops the loop cleanly at 80% context usage with a structured HANDOFF.md. Stuck Detection catches repeated errors after 2 iterations and writes a STUCK.md with diagnosis.
 
 **v0.17: "Apple-like clarity."**  
-The command system got a UX pass. New `/effectum` entry point with a `/next` smart router — it reads your project state (open PRDs, task registry, git status) and recommends exactly one next action. No more reading docs to figure out which of 42 commands applies. Also: `/run` → `/tdd`, `/stop` → `/cancel-ralph`, `/save` → `/checkpoint`. The things you actually reach for should be short.
+The command system got a UX pass. New `/effectum` entry point with a `/effect:next` smart router — it reads your project state (open PRDs, task registry, git status) and recommends exactly one next action. No more reading docs to figure out which of 42 commands applies. Also: `/effect:dev:run` → `/effect:dev:tdd`, `/effect:dev:stop` → `/effect:dev:stop`, `/effect:dev:save` → `/effect:dev:save`. The things you actually reach for should be short.
 
 **The other half: PRD Workshop.**  
-`/prd:new` guides you through spec writing: requirements → acceptance criteria → data model → completion promise → overlap detection against existing PRDs. Spec quality is the primary variable in output quality — there's no shortcut around it.
+`/effect:prd:new` guides you through spec writing: requirements → acceptance criteria → data model → completion promise → overlap detection against existing PRDs. Spec quality is the primary variable in output quality — there's no shortcut around it.
 
-**New in v0.17:** `/context:init` (7-question interview to populate CLAUDE.md with project-specific context), `/map-codebase` (4 parallel agents produce 7 knowledge documents in `knowledge/codebase/`), `/forensics` (post-mortem when loops fail).
+**New in v0.17:** `/effectum:init` (7-question interview to populate CLAUDE.md with project-specific context), `/effectum:explore` (4 parallel agents produce 7 knowledge documents in `knowledge/codebase/`), `/effect:dev:diagnose` (post-mortem when loops fail).
 
 I tried BMAD, GSD, Taskmaster, SpecKit. Each taught me something. Effectum combines what worked: context engineering (GSD), structured specs (SpecKit), autonomous execution with real quality gates, and now progressive disclosure so a first-time user can build something in 10 minutes without reading the docs.
 
@@ -67,8 +67,8 @@ github.com/aslomon/effectum
 **"GitHub has 0 stars — is this production-ready?"**  
 > v0.17.0 is stable with 446 passing tests across 42 commands. I've been using it daily on my own projects. Stars are a lagging indicator — hopefully less so after this post.
 
-**"What's the /next command exactly?"**  
-> It reads your current project state: open PRDs, tasks.md status, uncommitted changes, test results. Then recommends exactly one action. First commit? `/setup`. PRD exists but no tasks? `/prd:task-breakdown`. Tests failing? `/build-fix`. No ambiguity.
+**"What's the /effect:next command exactly?"**  
+> It reads your current project state: open PRDs, tasks.md status, uncommitted changes, test results. Then recommends exactly one action. First commit? `/effectum:setup`. PRD exists but no tasks? `/prd:task-breakdown`. Tests failing? `/effect:dev:fix`. No ambiguity.
 
 ---
 

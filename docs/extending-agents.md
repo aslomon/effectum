@@ -233,7 +233,7 @@ cat .claude/settings.json | grep go-expert
 # 5. Open Claude Code and test invocation
 claude
 # Then inside Claude Code:
-# /plan "Build a REST endpoint in Go"
+# /effect:dev:plan "Build a REST endpoint in Go"
 # Verify that go-expert is available and invocable
 ```
 

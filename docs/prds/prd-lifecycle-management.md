@@ -26,7 +26,7 @@ Implement a complete PRD lifecycle: create → build → **update → delta-buil
 2. **Bugs are separate** — Bug fixes don't modify PRDs. They use direct Ralph Loop with bug reports.
 3. **Hard Remove** — Removed features are deleted from code, not feature-flagged (default).
 4. **Main-first branching** — PRD updates happen on main with Git tag checkpoints. Branch-per-update is configurable but not default.
-5. **Automatic Task Registry** — `/prd:update` and Ralph Loop auto-manage `tasks.md`.
+5. **Automatic Task Registry** — `/effect:prd:update` and Ralph Loop auto-manage `tasks.md`.
 6. **Auto Network Map** — Map updates automatically after PRD changes and implementation progress.
 7. **PRD Frontmatter** — Structured YAML header with features, dependencies, version, status.
 
@@ -35,21 +35,21 @@ Implement a complete PRD lifecycle: create → build → **update → delta-buil
 ### PRD Frontmatter
 
 - [ ] AC1: The PRD template (`workshop/templates/prd.md`) includes a YAML frontmatter block with: `id`, `version`, `status`, `last_updated`, `depends_on`, `features[]` (each with id, label, status), `connections[]`
-- [ ] AC2: `/prd:new` generates frontmatter automatically when creating a new PRD
+- [ ] AC2: `/effect:prd:new` generates frontmatter automatically when creating a new PRD
 - [ ] AC3: Each feature in frontmatter has a unique ID used by the Task Registry and Network Map
-- [ ] AC4: PRD version is a semver-like number (1.0, 1.1, 1.2) incremented by `/prd:update`
+- [ ] AC4: PRD version is a semver-like number (1.0, 1.1, 1.2) incremented by `/effect:prd:update`
 
 ### PRD Changelog
 
 - [ ] AC5: Each PRD contains a `## Changelog` section directly after frontmatter
-- [ ] AC6: `/prd:update` automatically adds a changelog entry with: version, date, summary of changes
+- [ ] AC6: `/effect:prd:update` automatically adds a changelog entry with: version, date, summary of changes
 - [ ] AC7: Removed ACs are marked as `~~REMOVED in vX.Y~~` with reason, not deleted from the file
 
-### `/prd:update` Command
+### `/effect:prd:update` Command
 
 - [ ] AC8: New command file: `system/commands/prd/update.md`
-- [ ] AC9: Accepts project-slug/prd-number as argument (e.g., `/prd:update auth/001`)
-- [ ] AC10: Also accepts freetext change description: `/prd:update auth/001 "Add Google OAuth and rate-limit password reset"`
+- [ ] AC9: Accepts project-slug/prd-number as argument (e.g., `/effect:prd:update auth/001`)
+- [ ] AC10: Also accepts freetext change description: `/effect:prd:update auth/001 "Add Google OAuth and rate-limit password reset"`
 - [ ] AC11: Loads current PRD from file AND last committed version from `git show HEAD:path`
 - [ ] AC12: Performs Semantic Section Diff: compares ACs, User Stories, Scope, Data Model, API Design section by section
 - [ ] AC13: Classifies each change as: ADDITIVE (new AC/feature), MODIFIED (changed AC), REMOVED (deleted AC), DESIGN (UI-only), STRUCTURAL (data model/API change)
@@ -64,20 +64,20 @@ Implement a complete PRD lifecycle: create → build → **update → delta-buil
 
 ### Task Registry
 
-- [ ] AC22: File: `workshop/projects/{slug}/tasks.md` — created automatically by `/prd:handoff` or `/prd:update`
+- [ ] AC22: File: `workshop/projects/{slug}/tasks.md` — created automatically by `/effect:prd:handoff` or `/effect:prd:update`
 - [ ] AC23: Each task has: ID, AC reference, description, status (TODO/IN_PROGRESS/DONE/STALE/CANCELLED), PRD version
-- [ ] AC24: `/prd:update` marks affected tasks as STALE when their AC changes
-- [ ] AC25: `/prd:update` adds new tasks for new ACs as TODO
-- [ ] AC26: `/prd:update` marks tasks as CANCELLED for removed ACs
+- [ ] AC24: `/effect:prd:update` marks affected tasks as STALE when their AC changes
+- [ ] AC25: `/effect:prd:update` adds new tasks for new ACs as TODO
+- [ ] AC26: `/effect:prd:update` marks tasks as CANCELLED for removed ACs
 - [ ] AC27: Ralph Loop reads `tasks.md` to understand what's done and what's pending
 - [ ] AC28: Ralph Loop updates task status during execution (TODO → IN_PROGRESS → DONE)
 
 ### Network Map Auto-Sync
 
-- [ ] AC29: `/prd:new` automatically generates a Stage 1 Feature Map after scope is defined
-- [ ] AC30: `/prd:update` automatically updates `network-map.mmd` with new/changed/removed features
+- [ ] AC29: `/effect:prd:new` automatically generates a Stage 1 Feature Map after scope is defined
+- [ ] AC30: `/effect:prd:update` automatically updates `network-map.mmd` with new/changed/removed features
 - [ ] AC31: Ralph Loop updates node status in Network Map (planned → inProgress → done)
-- [ ] AC32: `/prd:network-map --validate` checks for circular dependencies, isolated nodes, missing PRD assignments
+- [ ] AC32: `/effect:prd:network-map --validate` checks for circular dependencies, isolated nodes, missing PRD assignments
 
 ### PRD-Hash Change Detection
 
@@ -102,15 +102,15 @@ Implement a complete PRD lifecycle: create → build → **update → delta-buil
 
 ### In Scope
 
-- PRD frontmatter (YAML header) in template and `/prd:new`
+- PRD frontmatter (YAML header) in template and `/effect:prd:new`
 - PRD changelog convention
-- `/prd:update` command (semantic diff + impact analysis + delta handoff)
+- `/effect:prd:update` command (semantic diff + impact analysis + delta handoff)
 - Task Registry (`tasks.md`) — auto-created and auto-updated
 - Network Map auto-sync (after PRD changes and during Ralph Loop)
 - PRD-hash change detection in Ralph Loop
 - Delta Handoff Prompt template
 - Configurable branching strategy
-- Updates to existing commands: `/prd:new`, `/prd:handoff`, `/prd:network-map`
+- Updates to existing commands: `/effect:prd:new`, `/effect:prd:handoff`, `/effect:prd:network-map`
 
 ### Out of Scope
 
@@ -126,7 +126,7 @@ Implement a complete PRD lifecycle: create → build → **update → delta-buil
 ### New Files
 
 ```
-system/commands/prd/update.md       — The /prd:update command
+system/commands/prd/update.md       — The /effect:prd:update command
 workshop/templates/prd.md           — Updated with frontmatter + changelog
 workshop/templates/delta-handoff.md — Template for delta handoff prompts
 workshop/templates/tasks.md         — Template for task registry
@@ -227,15 +227,15 @@ Add to Step 3e (Update State):
 
 ## Quality Gates
 
-- `/prd:update` correctly identifies added, modified, and removed ACs
+- `/effect:prd:update` correctly identifies added, modified, and removed ACs
 - Delta handoff contains protection rules for completed work
 - Task Registry reflects accurate status after Ralph Loop
 - Network Map nodes change status during implementation
 - PRD-hash detection pauses Ralph Loop when PRD changes
 - Git checkpoints are created before every update
 - `--validate` on network-map detects circular dependencies
-- All existing commands (`/prd:new`, `/prd:handoff`, `/plan`, `/ralph-loop`) still work
+- All existing commands (`/effect:prd:new`, `/effect:prd:handoff`, `/effect:dev:plan`, `/ralph-loop`) still work
 
 ## Completion Promise
 
-"PRD frontmatter, changelog, /prd:update with semantic diff, task registry, network map auto-sync, PRD-hash detection in Ralph Loop, and delta handoff generation are all implemented and integrated into the existing Effectum workflow"
+"PRD frontmatter, changelog, /effect:prd:update with semantic diff, task registry, network map auto-sync, PRD-hash detection in Ralph Loop, and delta handoff generation are all implemented and integrated into the existing Effectum workflow"

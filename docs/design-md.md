@@ -33,17 +33,17 @@ Use `DESIGN.md` for projects with a meaningful frontend:
 Generate it **before** implementation begins:
 
 ```
-/prd:new → PRD approved → /design → DESIGN.md generated → /plan → /ralph-loop
+/effect:prd:new → PRD approved → /effect:design → DESIGN.md generated → /effect:dev:plan → /ralph-loop
 ```
 
 ---
 
-## How to run `/design`
+## How to run `/effect:design`
 
 In Claude Code, run:
 
 ```
-/design
+/effect:design
 ```
 
 The command will:
@@ -80,7 +80,7 @@ Animation philosophy, transition timings, hover state patterns, and loading conv
 ⚠️ **The most important section for agents.** Hard rules that must never be broken, style prohibitions, library prohibitions, and tone guidance. Be specific and opinionated here.
 
 ### Appendix: Codebase Signals
-Auto-populated by `/design`. Lists what was detected in the project (Tailwind, shadcn config, CSS variables) so you can see what was observed vs. proposed.
+Auto-populated by `/effect:design`. Lists what was detected in the project (Tailwind, shadcn config, CSS variables) so you can see what was observed vs. proposed.
 
 ---
 
@@ -142,13 +142,13 @@ Below is a realistic excerpt showing the Constraints and Color System sections f
 **Can I edit DESIGN.md manually?**  
 Yes. It's a plain Markdown file. Edit it any time. Agents will use whatever is in the file.
 
-**What if I skip questions in `/design`?**  
+**What if I skip questions in `/effect:design`?**  
 The command will generate reasonable defaults marked with `<!-- ASSUMED -->`. You can replace them later.
 
 **Should I commit DESIGN.md?**  
 Yes — commit it alongside PRDs and CLAUDE.md. It's part of your project's spec layer.
 
-**Can I have DESIGN.md without running `/design`?**  
+**Can I have DESIGN.md without running `/effect:design`?**  
 Yes. Copy `system/templates/DESIGN.md.tmpl` and fill it in manually if you prefer.
 
 **Does DESIGN.md affect non-UI agents?**  

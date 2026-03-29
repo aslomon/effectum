@@ -112,4 +112,4 @@ When Claude Code receives a task and must decide which agent to invoke, it reads
 - The `description` should name both the **trigger condition** ("Use when designing new APIs…") and **key capabilities** ("REST/GraphQL, OpenAPI, authentication patterns, versioning").
 - Descriptions that begin with "Use this agent when…" or "Use when…" are idiomatic and perform best with the engine.
 
-**Team-level routing** (when Agent Teams mode is active): the orchestrator reads all descriptions at the start of each `/orchestrate` call and assigns teammates based on file-ownership rules defined in `system/teams/profiles.md`. See `docs/teams.md` for details.
+**Team-level routing** (when Agent Teams mode is active): the orchestrator reads all descriptions at the start of each `/effect:dev:orchestrate` call and assigns teammates based on file-ownership rules defined in `system/teams/profiles.md`. See `docs/teams.md` for details.

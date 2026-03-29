@@ -3,15 +3,15 @@
 flowchart TB
     subgraph PRD_WORKSHOP["PRD Workshop (This Repo)"]
         IDEA["Idea / Feature Request"]
-        WORKSHOP["/prd:new<br/>Discovery + Scoping"]
+        WORKSHOP["/effect:prd:new<br/>Discovery + Scoping"]
         PRD["Agent-Ready PRD<br/>+ Quality Gates<br/>+ Completion Promise"]
-        REVIEW["/prd:review<br/>Readiness Scoring"]
-        HANDOFF["/prd:handoff<br/>Generate Prompt"]
+        REVIEW["/effect:prd:review<br/>Readiness Scoring"]
+        HANDOFF["/effect:prd:handoff<br/>Generate Prompt"]
     end
 
     subgraph TARGET_PROJECT["Target Project"]
         subgraph PHASE1["Phase 1: Planning"]
-            PLAN["/plan<br/>Analyze + Plan"]
+            PLAN["/effect:dev:plan<br/>Analyze + Plan"]
             APPROVAL{{"User Approval"}}
         end
 
@@ -34,12 +34,12 @@ flowchart TB
         end
 
         subgraph PHASE5["Phase 5: E2E"]
-            E2E["/e2e<br/>End-to-End Tests"]
+            E2E["/effect:dev:e2e<br/>End-to-End Tests"]
         end
 
         subgraph PHASE6["Phase 6: Verification"]
-            VERIFY["/verify<br/>Build + Types + Lint + Tests"]
-            CODE_REVIEW["/code-review<br/>Security + Quality"]
+            VERIFY["/effect:dev:verify<br/>Build + Types + Lint + Tests"]
+            CODE_REVIEW["/effect:dev:review<br/>Security + Quality"]
         end
 
         DONE["Production-Ready Code"]

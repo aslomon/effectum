@@ -62,7 +62,7 @@ Effectum is an open-source Claude Code framework. Write a PRD, run /ralph-loop, 
 - Dark background
 
 **Slide 2: The Ralph Loop**
-- Diagram: PRD → /plan → /ralph-loop → Quality Gates → Done
+- Diagram: PRD → /effect:dev:plan → /ralph-loop → Quality Gates → Done
 - Zeigt den autonomen Zyklus
 
 **Slide 3: Quality Gates**

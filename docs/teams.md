@@ -186,63 +186,63 @@ When at least 2 of these criteria are met, the setup configurator asks "Enable A
 
 ---
 
-## The `/orchestrate` Command
+## The `/effect:dev:orchestrate` Command
 
-`/orchestrate` is the central command for Agent Teams lifecycle management.
+`/effect:dev:orchestrate` is the central command for Agent Teams lifecycle management.
 
 ### Creating a Team
 
 ```bash
 # Use a predefined profile
-/orchestrate web-feature
+/effect:dev:orchestrate web-feature
 
 # Use the fullstack profile
-/orchestrate fullstack
+/effect:dev:orchestrate fullstack
 
 # Dry run — see cost estimate without creating
-/orchestrate fullstack --dry-run
+/effect:dev:orchestrate fullstack --dry-run
 
 # Set a token budget
-/orchestrate web-feature --max-cost 300000
+/effect:dev:orchestrate web-feature --max-cost 300000
 
 # Skip plan check (not recommended)
-/orchestrate web-feature --plan-first=false
+/effect:dev:orchestrate web-feature --plan-first=false
 ```
 
 ### Monitoring
 
 ```bash
 # Show team status, task progress, token usage
-/orchestrate status
+/effect:dev:orchestrate status
 
 # Prod a stuck teammate
-/orchestrate nudge frontend
+/effect:dev:orchestrate nudge frontend
 
 # Gracefully shut down all teammates
-/orchestrate shutdown
+/effect:dev:orchestrate shutdown
 ```
 
-### What `/orchestrate` Does
+### What `/effect:dev:orchestrate` Does
 
 1. **Loads the YAML profile** from `system/teams/{profile}.yaml`
-2. **Validates prerequisites** — checks for approved /plan, existing PRD/tasks
+2. **Validates prerequisites** — checks for approved /effect:dev:plan, existing PRD/tasks
 3. **Estimates cost** — shows token budget, asks for confirmation
 4. **Creates the team** via Claude Code's TeamCreate primitive
 5. **Distributes tasks** from the PRD — maps ACs to teammates based on file ownership
 6. **Monitors progress** via TeammateIdle and TaskCompleted hooks
 7. **Enforces phase ordering** — quality gates between phases
-8. **Completes** with /verify + /code-review when all tasks are done
+8. **Completes** with /effect:dev:verify + /effect:dev:review when all tasks are done
 
 ### Workflow
 
 ```
-/plan → [approval] → /tasks → /orchestrate [profile] → [parallel work] → /verify → /code-review
+/effect:dev:plan → [approval] → /tasks → /effect:dev:orchestrate [profile] → [parallel work] → /effect:dev:verify → /effect:dev:review
 ```
 
 Compare to the classic sequential workflow:
 
 ```
-/plan → [approval] → /tasks → /tdd (sequential per task) → /verify → /code-review
+/effect:dev:plan → [approval] → /tasks → /effect:dev:tdd (sequential per task) → /effect:dev:verify → /effect:dev:review
 ```
 
 ---
@@ -273,7 +273,7 @@ In `.claude/settings.json` (project) or `~/.claude/settings.json` (global):
 }
 ```
 
-The Effectum template ships with `"0"` (disabled) because Agent Teams is experimental. Enable it per project when you want to use `/orchestrate`.
+The Effectum template ships with `"0"` (disabled) because Agent Teams is experimental. Enable it per project when you want to use `/effect:dev:orchestrate`.
 
 ---
 
@@ -311,7 +311,7 @@ Agent Teams cost 3-4x more tokens than Subagents because each teammate is a sepa
 
 ### Cost Estimation
 
-`/orchestrate` always shows a cost estimate before creating a team:
+`/effect:dev:orchestrate` always shows a cost estimate before creating a team:
 
 ```
 Teammates: 3
@@ -328,7 +328,7 @@ Proceed? (Y/n)
 Use `--max-cost` to set a token budget:
 
 ```bash
-/orchestrate web-feature --max-cost 200000
+/effect:dev:orchestrate web-feature --max-cost 200000
 ```
 
 - At **80% consumed**: warns the lead and all teammates to prioritize
@@ -349,5 +349,5 @@ Use `--max-cost` to set a token budget:
 4. **Database first** — if schema changes are needed, the database teammate must complete before others start (they depend on generated types).
 5. **Reviewer last** — the reviewer teammate should start after all implementation teammates finish.
 6. **Use `blocked by:`** in task definitions to declare dependencies explicitly.
-7. **Always run /plan first** — never skip planning for Agent Teams workflows.
+7. **Always run /effect:dev:plan first** — never skip planning for Agent Teams workflows.
 8. **Use `--dry-run`** to preview cost before committing to a team.
