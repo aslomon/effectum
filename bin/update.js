@@ -354,15 +354,33 @@ async function main() {
         } catch (_) {}
       }
       // Detect autonomy level from existing settings.json
+      // Claude Code defaultMode: default | plan | acceptEdits | auto | dontAsk | bypassPermissions
+      // Effectum autonomy: conservative (read-only) | standard (Bash+Write) | full (bypassPermissions)
       let autonomyLevel = "standard";
       const settingsPath = path.join(targetDir, ".claude", "settings.json");
       if (fs.existsSync(settingsPath)) {
         try {
           const settings = JSON.parse(fs.readFileSync(settingsPath, "utf8"));
           const mode = settings.permissions?.defaultMode;
-          if (mode === "bypassPermissions") autonomyLevel = "full";
-          else if (mode === "plan") autonomyLevel = "conservative";
-          else autonomyLevel = "standard";
+          const allow = settings.permissions?.allow || [];
+          const allowStr = allow.join(",");
+
+          if (mode === "bypassPermissions") {
+            autonomyLevel = "full";
+          } else if (mode === "plan" || mode === "dontAsk") {
+            autonomyLevel = "conservative";
+          } else if (mode === "auto" || mode === "acceptEdits") {
+            autonomyLevel = allowStr.includes("Bash(*)") ? "standard" : "conservative";
+          } else {
+            // defaultMode: "default" or unset — check allow list
+            if (allowStr.includes("Bash(*)") && allowStr.includes("Write(*)")) {
+              autonomyLevel = "standard";
+            } else if (allowStr.includes("Bash(*)") || allowStr.includes("Write(*)")) {
+              autonomyLevel = "standard";
+            } else {
+              autonomyLevel = "conservative";
+            }
+          }
         } catch (_) {}
       }
 
