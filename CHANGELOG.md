@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.18.3] - 2026-03-29
+
+### Fixed
+
+- **Internal Namespace Consistency** — All internal cross-references within `effect:/effectum:` command files updated to use new canonical namespace names. No more old command names referenced internally.
+
+## [0.18.2] - 2026-03-29
+
+### Fixed
+
+- **Deprecated Aliases Execute Full Command** — Deprecated aliases now include complete command content (not just a redirect banner), so old command names work identically to new ones. Deprecation notice shown, but full functionality preserved.
+
 ## [0.18.1] - 2026-03-29
 
 ### Fixed
