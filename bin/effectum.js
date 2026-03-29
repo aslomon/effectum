@@ -73,7 +73,10 @@ switch (subcommand) {
       }
       console.log("  → Running update instead of install.");
       console.log("  (Use --force-install to run the full installer instead.)\n");
-      require("./update.js");
+      require("./update.js").main().catch((err) => {
+        console.error(`Fatal error: ${err.message}`);
+        process.exit(1);
+      });
     } else {
       // Fresh install
       require("./install.js");
