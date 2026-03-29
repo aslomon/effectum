@@ -107,7 +107,7 @@
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "Evaluate if Claude should stop. Context: $ARGUMENTS\n\nCheck:\n1. Were ALL user-requested tasks completed (not just attempted)?\n2. Any unresolved errors or failed operations?\n3. If code was changed, was it verified (no obvious type errors, no broken imports)?\n4. Any TODO/FIXME comments added but not resolved?\n\nIMPORTANT: If stop_hook_active is true in the input, this is a second pass — be lenient and only block for critical unfinished work. Never block twice in a row for the same reason.\n\nRespond {\"ok\": true} to allow stopping, or {\"ok\": false, \"reason\": \"what remains\"} to continue.",
+            "prompt": "Evaluate if Claude should stop. Context: $ARGUMENTS\n\nIMPORTANT RALPH LOOP CHECK:\nIf the context contains a <promise>...</promise> tag, this is a Ralph Loop completion. Respond {\"ok\": true} immediately — the loop has satisfied its completion promise.\n\nIf the context contains \"ralph\" or \"iteration\" in a loop context and all work is done, respond {\"ok\": true}.\n\nOtherwise, check:\n1. Were ALL user-requested tasks completed (not just attempted)?\n2. Any unresolved errors or failed operations?\n3. If code was changed, was it verified (no obvious type errors, no broken imports)?\n4. Any TODO/FIXME comments added but not resolved?\n\nIMPORTANT: If stop_hook_active is true in the input, this is a second pass — be lenient and only block for critical unfinished work. Never block twice in a row for the same reason.\n\nRespond {\"ok\": true} to allow stopping, or {\"ok\": false, \"reason\": \"what remains\"} to continue.",
             "timeout": 30,
             "statusMessage": "Verifying work completion..."
           },
