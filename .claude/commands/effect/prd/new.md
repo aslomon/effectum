@@ -16,7 +16,7 @@ If `$ARGUMENTS` is empty, ask: **[in configured language] "What do you want to b
 If `$ARGUMENTS` is provided, analyze the input:
 
 - **Workshop Mode** (vague description, idea, problem): Start the full workshop process with Phase 1.
-- **Express Mode** (specific feature with clear scope): Redirect to `/prd:express`.
+- **Express Mode** (specific feature with clear scope): Redirect to `effect:prd:express`.
 
 ## Step 2: Create New Project or Use Existing One
 
@@ -96,7 +96,7 @@ When the scope is clear:
    - Acceptance Criteria, Scope/Non-Goals
    - Data Model (if data persistence is involved), API Contracts
 5. **Agent-Ready Extension** (ask only when the user indicates autonomous/full-auto mode):
-   - **Quality Gates**: Which gates to run — `/verify`, `/tdd`, `/e2e`, `/code-review`? Which are mandatory vs. advisory?
+   - **Quality Gates**: Which gates to run — `effect:dev:verify`, `effect:dev:tdd`, `effect:dev:e2e`, `effect:dev:review`? Which are mandatory vs. advisory?
    - **Completion Promise**: A testable one-liner that is TRUE when the feature is DONE (e.g., "All CRUD endpoints return correct status codes and tests pass").
    - **Autonomy Rules**: What may the agent decide alone (file structure, naming, minor refactors) vs. what must it ask about (schema changes, new dependencies, public API changes)?
    - Add these fields to the PRD under an `## Agent-Ready Extension` section.

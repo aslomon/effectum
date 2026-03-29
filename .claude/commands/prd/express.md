@@ -8,7 +8,7 @@ effort: "medium"
 > ⚠️ **`/prd:express` is deprecated → use `/effect:prd:express`** (removed in v0.20)
 
 
-# /prd:express — Quick PRD from Structured/Semi-Structured Input
+# effect:prd:express — Quick PRD from Structured/Semi-Structured Input
 
 You create a complete PRD from an already relatively clear feature input. Minimal follow-up questions, maximum inference.
 

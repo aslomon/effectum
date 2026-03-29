@@ -162,6 +162,6 @@ The HTML viewer includes:
 - SVG export button
 - Legend (Planned / In Progress / Done)
 
-## Note: Also runs on /onboard
+## Note: Also runs on effectum:onboard
 
-When called as part of `/onboard`, the HTML viewer is generated automatically after the Network Map is written. The user can immediately see the visual map in their browser.
+When called as part of `effectum:onboard`, the HTML viewer is generated automatically after the Network Map is written. The user can immediately see the visual map in their browser.

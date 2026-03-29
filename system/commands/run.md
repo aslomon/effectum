@@ -235,7 +235,7 @@ If `prd_path` is set (lifecycle mode):
    - Show a summary of what changed (diff the sections).
    - Ask the user: **"Continue with current plan, or restart with a delta handoff?"**
    - If "continue": Update `prd_hash` in state file, re-read ACs, resume.
-   - If "restart": Output instructions to run `/prd:update` and start a new loop with the delta handoff.
+   - If "restart": Output instructions to run `effect:prd:update` and start a new loop with the delta handoff.
    - **Do NOT silently continue with stale requirements.**
 
 #### Task Registry Read (MANDATORY)

@@ -8,7 +8,7 @@ effort: "medium"
 > ⚠️ **`/prd:update` is deprecated → use `/effect:prd:update`** (removed in v0.20)
 
 
-# /prd:update — Update an Existing PRD with Change Tracking
+# effect:prd:update — Update an Existing PRD with Change Tracking
 
 You update an existing PRD, performing semantic diff, impact analysis, and delta handoff generation.
 

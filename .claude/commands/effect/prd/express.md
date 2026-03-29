@@ -5,7 +5,7 @@ allowed-tools: ["Read", "Write", "Bash"]
 effort: "medium"
 ---
 
-# /prd:express — Quick PRD from Structured/Semi-Structured Input
+# effect:prd:express — Quick PRD from Structured/Semi-Structured Input
 
 You create a complete PRD from an already relatively clear feature input. Minimal follow-up questions, maximum inference.
 
