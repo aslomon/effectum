@@ -21,7 +21,7 @@ _Effectum (Latin): the result, the accomplishment — that which has been brough
 
 <br>
 
-[Quick Start](#-quick-start) · [Configurator](#-configurator) · [The Workflow](#-the-workflow) · [Design](#-design-system-generation) · [Update Command](#-update-command) · [PRD Lifecycle](#-prd-lifecycle) · [Project Onboarding](#-project-onboarding) · [Foundation](#-foundation) · [How is this different?](#-how-is-this-different) · [Website](https://aslomon.github.io/effectum/)
+[Quick Start](#-quick-start) · [Command Spheres](#-command-spheres) · [The Workflow](#-the-workflow) · [Design](#-design-system-generation) · [Update Command](#-update-command) · [PRD Lifecycle](#-prd-lifecycle) · [Project Onboarding](#-project-onboarding) · [Foundation](#-foundation) · [How is this different?](#-how-is-this-different) · [Website](https://aslomon.github.io/effectum/)
 
 </div>
 
@@ -35,9 +35,11 @@ I'm a solo developer who builds everything with Claude Code. I tried BMAD, SpecK
 
 So I built Effectum. It combines what I learned from all of them: structured specifications (like SpecKit), autonomous execution (like GSD's approach), and quality gates that actually enforce standards.
 
-**v0.16.0 is the trust + brownfield release.** The autonomous loop now knows when it's stuck (2 repeated errors → stop + diagnosis), when it's running out of context (80% budget → clean handoff), and it persists state to disk so crashed sessions can resume. There's `/effect:dev:diagnose` for post-mortem analysis, `/effectum:init` to teach Claude about your domain, and `/effectum:explore` that drops 4 parallel agents to produce 7 structured knowledge docs. Plus sentinel-based CLAUDE.md splitting so your project context survives updates.
+**v0.16.0 is the trust + brownfield release.** The autonomous loop now knows when it's stuck (2 repeated errors → stop + diagnosis), when it's running out of context (80% budget → clean handoff), and it persists state to disk so crashed sessions can resume. That release introduced what is now `effect:dev:diagnose` for post-mortem analysis, `effectum:init` for domain context, and `effectum:explore` for parallel brownfield mapping. Plus sentinel-based CLAUDE.md splitting so your project context survives updates.
 
-**v0.18 is the Namespace Clarity release.** Commands are now organized into two clear spheres: `effectum:` for system/setup commands, and `effect:` for your daily workflow (`effect:prd:` for specs, `effect:dev:` for implementation). All old names work as deprecated aliases until v0.20. `/ralph-loop` remains a permanent alias.
+**v0.17.0 is the Apple-like clarity release.** New users got `/effectum` as a starting point and what is now `effect:next` as a smart router that reads project state and tells you exactly what to do. Human-language aliases for run, stop, save, diagnose, and explore made the daily vocabulary more intuitive. It also cleaned up earlier namespace transitions and fixed 12 journey bugs found by 6 parallel code analysis agents.
+
+**v0.18 is Namespace Clarity.** Effectum now separates commands into two clear spheres: `effectum:*` for system, setup, and meta work; `effect:*` for the actual software pipeline. `effectum:status` gives you a project-health dashboard, `effect:prd:*` owns the PRD lifecycle, and `effect:dev:*` owns implementation. `/effectum` stays the front door. `/ralph-loop` stays forever as the brand alias for `effect:dev:run`.
 
 The result: from zero to autonomous development, for any stack, any language, with the self-awareness and crash recovery that make overnight builds actually trustworthy.
 
@@ -57,16 +59,22 @@ The interactive configurator detects your stack, asks what you're building, and 
 # Open Claude Code in your project
 cd ~/my-project && claude
 
+# Check project health and installation
+effectum:status
+
 # Onboard an existing codebase
-/effectum:onboard
+effectum:onboard
 
 # Or write a specification and build from scratch
-/effect:prd:new
-/effect:dev:plan docs/prds/001-my-feature.md
+effect:prd:new
+effect:dev:plan docs/prds/001-my-feature.md
 ```
 
 > [!TIP]
-> New project? `/effect:prd:new` → `/effect:dev:plan` → `/ralph-loop`. Existing codebase? Start with `/effectum:onboard` — it gives Claude a complete picture of what you already have.
+> New project? `effect:prd:new` → `effect:dev:plan` → `effect:dev:run` (or `/ralph-loop`). Existing codebase? Start with `effectum:onboard` — it gives Claude a complete picture of what you already have.
+
+> [!NOTE]
+> **Upgrading from v0.17?** All old names work as deprecated aliases until **v0.20**.
 
 ### Install options
 
@@ -95,22 +103,57 @@ claude
 
 One command. Everything you need for autonomous Claude Code development.
 
-| What                          | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Intelligent Configurator**  | Stack auto-detection, package manager config, 8 quick presets, 16 languages                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| **31 workflow commands**      | `effect:dev:plan`, `effect:design`, `effect:dev:tdd`, `effect:dev:verify`, `effect:dev:e2e`, `effect:dev:review`, `effect:dev:fix`, `effect:dev:refactor`, `/ralph-loop`, `effect:dev:stop`, `effect:dev:save`, `effect:dev:orchestrate`, `effect:prd:new`, `effect:prd:express`, `effect:prd:discuss`, `effect:prd:decompose`, `effect:prd:update`, `effect:prd:review`, `effect:prd:handoff`, `effect:prd:resume`, `effect:prd:status`, `effect:prd:network-map`, `effectum:onboard`, `effectum:onboard:review`, `effectum:setup`, `effectum:init`, `effectum:explore`, `effectum:status`, `effectum:archive`, `effect:dev:run`, `effect:dev:diagnose` |
-| **Update Command**            | `npx @aslomon/effectum update` — add new commands, refresh templates, preserve config                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| **PRD Lifecycle**             | Frontmatter, changelog, semantic diff, delta handoffs, task registry, network map auto-sync                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| **Project Onboarding**        | 6 parallel analysis agents, 7-point self-test loop, per-area PRDs, interactive HTML network map                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| **Design System Generation**  | `/effect:design` generates DESIGN.md — color tokens, typography, component specs, constraints                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| **25 Agent Specializations**  | Pre-configured agent roles with distinct behaviors for planning, TDD, review, security, and more                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| **43+ Skills**                | Reusable capability blocks attached to agent roles                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| **7 Stack Presets + 8 Quick** | Next.js+Supabase, Python+FastAPI, Swift/SwiftUI, Go+Echo, Django+PostgreSQL, Rust+Actix, Generic + Firebase, Prisma, Flutter…                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| **YAML Frontmatter**          | All 42 commands have machine-readable metadata (`name`, `description`, `allowed-tools`)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| **Quality gates**             | 8 automated checks (build, types, lint, tests, security, etc.)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| **Foundation Hooks**          | Always-on: secret detection, TDD enforcement, guardrails                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| **Extensible**                | JSON-based tool definitions + detection rules, community presets + blocks                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| **446 tests**                 | Comprehensive test suite covering configurator, templates, commands, frontmatter, and more                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| What                          | Details |
+| ----------------------------- | ------- |
+| **Intelligent Configurator**  | Stack auto-detection, package manager config, 8 quick presets, 16 languages |
+| **32 primary commands**       | `/effectum`, `effectum:setup`, `effectum:init`, `effectum:status`, `effectum:archive`, `effectum:onboard`, `effectum:onboard:review`, `effectum:explore`, `effect:next`, `effect:design`, `effect:prd:new`, `effect:prd:express`, `effect:prd:review`, `effect:prd:handoff`, `effect:prd:update`, `effect:prd:discuss`, `effect:prd:decompose`, `effect:prd:resume`, `effect:prd:status`, `effect:prd:network-map`, `effect:dev:run`, `effect:dev:stop`, `effect:dev:save`, `effect:dev:diagnose`, `effect:dev:plan`, `effect:dev:tdd`, `effect:dev:verify`, `effect:dev:review`, `effect:dev:e2e`, `effect:dev:fix`, `effect:dev:refactor`, `effect:dev:orchestrate` |
+| **Permanent aliases**         | `/ralph-loop` → `effect:dev:run`, `/help` → `/effectum` |
+| **Update Command**            | `npx @aslomon/effectum update` — add new commands, refresh templates, preserve config |
+| **PRD Lifecycle**             | Frontmatter, changelog, semantic diff, delta handoffs, task registry, network map auto-sync |
+| **Project Onboarding**        | 6 parallel analysis agents, 7-point self-test loop, per-area PRDs, interactive HTML network map |
+| **Design System Generation**  | `effect:design` generates DESIGN.md — color tokens, typography, component specs, constraints |
+| **25 Agent Specializations**  | Pre-configured agent roles with distinct behaviors for planning, TDD, review, security, and more |
+| **43+ Skills**                | Reusable capability blocks attached to agent roles |
+| **7 Stack Presets + 8 Quick** | Next.js+Supabase, Python+FastAPI, Swift/SwiftUI, Go+Echo, Django+PostgreSQL, Rust+Actix, Generic + Firebase, Prisma, Flutter… |
+| **YAML Frontmatter**          | All command files have machine-readable metadata (`name`, `description`, `allowed-tools`) |
+| **Quality gates**             | 8 automated checks (build, types, lint, tests, security, etc.) |
+| **Foundation Hooks**          | Always-on: secret detection, TDD enforcement, guardrails |
+| **Extensible**                | JSON-based tool definitions + detection rules, community presets + blocks |
+| **446 tests**                 | Comprehensive test suite covering configurator, templates, commands, frontmatter, and more |
+
+---
+
+## ✨ Command Spheres
+
+Effectum now has a cleaner mental model.
+
+### `effectum:*` — System Sphere
+
+Use these before or around development. They set up the environment, understand the codebase, and tell you the current state.
+
+| Command | What it does |
+| ------- | ------------ |
+| `effectum:setup` | Install Effectum workflow into a project |
+| `effectum:init` | Teach Claude about your domain and project conventions |
+| `effectum:status` | Project-health dashboard: version, stack, PRDs, loop status |
+| `effectum:archive` | Archive a completed project |
+| `effectum:onboard` | Full codebase analysis with 6 parallel agents + self-test loop |
+| `effectum:onboard:review` | Re-run onboarding review after significant changes |
+| `effectum:explore` | Fast brownfield analysis with 4 parallel agents and structured docs |
+
+### `effect:*` — Pipeline Sphere
+
+Use these while building. They move a feature from idea to spec to production-ready code.
+
+| Area | Commands |
+| ---- | -------- |
+| **Navigation** | `effect:next` |
+| **PRD pipeline** | `effect:prd:new`, `effect:prd:express`, `effect:prd:review`, `effect:prd:handoff`, `effect:prd:update`, `effect:prd:discuss`, `effect:prd:decompose`, `effect:prd:resume`, `effect:prd:status`, `effect:prd:network-map` |
+| **Dev pipeline** | `effect:dev:run`, `effect:dev:stop`, `effect:dev:save`, `effect:dev:diagnose`, `effect:dev:plan`, `effect:dev:tdd`, `effect:dev:verify`, `effect:dev:review`, `effect:dev:e2e`, `effect:dev:fix`, `effect:dev:refactor`, `effect:dev:orchestrate` |
+| **Standalone** | `effect:design`, `effect:next` |
+
+> [!TIP]
+> Old names still work until v0.20, but the documentation now uses the canonical v0.18 namespace everywhere.
 
 ---
 
@@ -144,9 +187,9 @@ Write, evolve, and track specifications across the life of a project:
 - Changelog + frontmatter
 - Task registry (tasks.md)
 - Network Map auto-sync
-- PRD-hash detection in Ralph Loop
+- PRD-hash detection in the autonomous loop
 
-**One command: `/effect:prd:new`**
+**One command: `effect:prd:new`**
 
 </td>
 <td width="33%" valign="top">
@@ -160,7 +203,7 @@ Drop into any unfamiliar codebase and understand it completely:
 - PRDs per feature area
 - Interactive HTML network map
 
-**One command: `/effectum:onboard`**
+**One command: `effectum:onboard`**
 
 </td>
 </tr>
@@ -260,81 +303,75 @@ One click. Instantly configured.
 
 ## 🔧 The Workflow
 
-42 commands. Each does exactly one thing, and does it well. Every command includes [YAML frontmatter](#-yaml-frontmatter) with machine-readable metadata and shows contextual next steps after completion.
+The namespace is now simple: **System** with `effectum:*`, **Pipeline** with `effect:*`, and `/effectum` as the entry point.
 
-### Planning & Design
+### System Commands (`effectum:*`)
 
-| Command            | What it does                                                        |
-| ------------------ | ------------------------------------------------------------------- |
-| `/effect:dev:plan` | Read spec, explore codebase, produce a plan — **waits for your OK** |
-| `/effect:design`   | Generate DESIGN.md — color tokens, typography, component specs      |
+| Command | What it does |
+| ------- | ------------ |
+| `effectum:setup` | Install Effectum workflow into a project |
+| `effectum:init` | Interactive interview to populate project context in `CLAUDE.md` |
+| `effectum:status` | Project dashboard: installed version, stack, autonomy level, PRDs, health |
+| `effectum:onboard` | Full codebase analysis with 6 parallel agents + self-test loop |
+| `effectum:onboard:review` | Re-run onboarding review after significant changes |
+| `effectum:explore` | 4 parallel agents → 7 structured knowledge docs for brownfield codebases |
+| `effectum:archive` | Archive a completed project |
 
-### Core Build Cycle
+### Pipeline Commands (`effect:*`)
 
-| Command                | What it does                                            |
-| ---------------------- | ------------------------------------------------------- |
-| `/effect:dev:tdd`      | Failing test → passing code → refactor → repeat         |
-| `/effect:dev:verify`   | Run all 8 quality gates                                 |
-| `/effect:dev:review`   | Security audit, architecture review, rating by severity |
-| `/effect:dev:fix`      | Targeted fix loop for a specific failing build or test  |
-| `/effect:dev:refactor` | Clean up code without changing behavior                 |
-| `/effect:dev:e2e`      | End-to-end test run with Playwright                     |
+#### PRD Pipeline (`effect:prd:*`)
 
-### Autonomy & Control
+| Command | What it does |
+| ------- | ------------ |
+| `effect:prd:new` | Start a new specification (guided workshop) |
+| `effect:prd:express` | Quick PRD from structured input |
+| `effect:prd:discuss` | Deep-dive discussion for a specific PRD |
+| `effect:prd:decompose` | Split large scope into multiple PRDs |
+| `effect:prd:update` | Evolve an existing spec — tracks changes semantically |
+| `effect:prd:review` | Quality check — is this spec ready for implementation? |
+| `effect:prd:handoff` | Delta handoff export for implementation (`--prompt-only` supported) |
+| `effect:prd:resume` | Resume work on an existing project/PRD |
+| `effect:prd:status` | Dashboard of all projects and PRDs |
+| `effect:prd:network-map` | Render PRD dependencies as interactive HTML map |
 
-| Command                   | What it does                                                      |
-| ------------------------- | ----------------------------------------------------------------- |
-| `/ralph-loop`             | Autonomous build loop — writes, tests, fixes, iterates until done |
-| `/effect:dev:stop`        | Stop the loop cleanly, preserve state                             |
-| `/effect:dev:save`        | Snapshot current state (git + test results + notes)               |
-| `/effect:dev:orchestrate` | Parallel agent teams (opt-in)                                     |
+#### Dev Pipeline (`effect:dev:*`)
 
-### PRD Commands
+| Command | What it does |
+| ------- | ------------ |
+| `effect:dev:plan` | Read spec, explore codebase, produce a plan — **waits for your OK** |
+| `effect:dev:tdd` | Failing test → passing code → refactor → repeat |
+| `effect:dev:verify` | Run all 8 quality gates |
+| `effect:dev:review` | Security audit, architecture review, rating by severity |
+| `effect:dev:e2e` | End-to-end test run with Playwright |
+| `effect:dev:fix` | Targeted fix loop for a specific failing build or test |
+| `effect:dev:refactor` | Clean up code without changing behavior |
+| `effect:dev:run` | Autonomous build loop — writes, tests, fixes, iterates until done |
+| `effect:dev:stop` | Stop the loop cleanly, preserve state |
+| `effect:dev:save` | Snapshot current state (git + test results + notes) |
+| `effect:dev:diagnose` | Post-mortem diagnosis — reads loop artifacts and produces failure report |
+| `effect:dev:orchestrate` | Parallel agent teams (opt-in) |
 
-| Command                   | What it does                                              |
-| ------------------------- | --------------------------------------------------------- |
-| `/effect:prd:new`         | Start a new specification (guided workshop)               |
-| `/effect:prd:express`     | Quick PRD from structured input                           |
-| `/effect:prd:discuss`     | Deep-dive discussion for a specific PRD                   |
-| `/effect:prd:decompose`   | Split large scope into multiple PRDs                      |
-| `/effect:prd:update`      | Evolve an existing spec — tracks changes semantically     |
-| `/effect:prd:review`      | Quality check — is this spec ready for implementation?    |
-| `/effect:prd:handoff`     | Delta handoff: what changed since last implementation run |
-| `/effect:prd:resume`      | Resume work on an existing project/PRD                    |
-| `/effect:prd:status`      | Dashboard of all projects and PRDs                        |
-| `/effect:prd:network-map` | Render PRD dependencies as interactive HTML map           |
+#### Standalone Pipeline Commands
 
-### Setup & Onboarding
-
-| Command                    | What it does                                                   |
-| -------------------------- | -------------------------------------------------------------- |
-| `/effectum:setup`          | Install Effectum workflow into a project                       |
-| `/effectum:onboard`        | Full codebase analysis with 6 parallel agents + self-test loop |
-| `/effectum:onboard:review` | Re-run onboarding review after significant changes             |
-| `/effectum:init`           | Initialize a new project workspace                             |
-| `/effectum:archive`        | Archive a completed project                                    |
-| `/effectum:status`         | Project dashboard: version, stack, health check                |
-
-### Diagnosis & Context
-
-| Command                | What it does                                                             |
-| ---------------------- | ------------------------------------------------------------------------ |
-| `/effect:dev:diagnose` | Post-mortem diagnosis — reads loop artifacts and produces failure report |
-| `/effectum:init`       | Interactive interview to populate project-context in CLAUDE.md           |
-| `/effectum:explore`    | 4 parallel agents → 7 structured knowledge docs for brownfield codebases |
+| Command | What it does |
+| ------- | ------------ |
+| `effect:design` | Generate `DESIGN.md` — color tokens, typography, component specs |
+| `effect:next` | Read project state and recommend the single best next action |
 
 > [!TIP]
-> See the full [Command Index](system/commands/README.md) for all 42 commands organized by workflow category with decision trees.
+> See the full [Command Index](system/commands/README.md) for all commands organized by sphere and namespace.
 
 ---
 
-### `/ralph-loop` — Build while you sleep
+### `effect:dev:run` — Build while you sleep
 
 > [!IMPORTANT]
 > This is the most powerful feature.
 
+`effect:dev:run` is the canonical command. `/ralph-loop` remains a **permanent alias** and will never be removed.
+
 ```bash
-/ralph-loop "Build the auth system"
+effect:dev:run "Build the auth system"
   --max-iterations 30
   --completion-promise "All tests pass, build succeeds, 0 lint errors"
 ```
@@ -343,10 +380,10 @@ Claude works autonomously — writing code, running tests, fixing errors, iterat
 
 **You go to sleep. You wake up to a working feature.**
 
-Ralph Loop also detects PRD changes mid-run via PRD-hash comparison. If your spec was updated while the loop was running, it pauses and reconciles before continuing.
+The loop also detects PRD changes mid-run via PRD-hash comparison. If your spec was updated while the loop was running, it pauses and reconciles before continuing.
 
 <details>
-<summary><strong>🔄 How Ralph Loop works internally</strong></summary>
+<summary><strong>🔄 How the loop works internally</strong></summary>
 
 <br>
 
@@ -385,35 +422,35 @@ graph TD
 
 ---
 
-### `/effect:dev:diagnose` — Post-mortem diagnosis
+### `effect:dev:diagnose` — Post-mortem diagnosis
 
-When a Ralph Loop stops unexpectedly — due to stuck detection, a context budget stop, or an incomplete run — `/effect:dev:diagnose` gives you a clear picture of what happened.
+When the autonomous loop stops unexpectedly — due to stuck detection, a context budget stop, or an incomplete run — `effect:dev:diagnose` gives you a clear picture of what happened.
 
 ```bash
-/effect:dev:diagnose
+effect:dev:diagnose
 ```
 
 It reads all available loop artifacts and produces a structured diagnosis report:
 
-| Artifact                      | What it reveals                                           |
-| ----------------------------- | --------------------------------------------------------- |
-| `HANDOFF.md`                  | Context budget stop — what was done, what's left          |
-| `STUCK.md`                    | Stuck detection report — the repeated error and diagnosis |
-| `.effectum/loop-state.json`   | Last persisted iteration state                            |
-| `effectum-metrics.json`       | Historical session ledger                                 |
-| `.claude/ralph-loop.local.md` | Internal loop state                                       |
-| `.claude/ralph-blockers.md`   | Documented blockers                                       |
+| Artifact                    | What it reveals |
+| --------------------------- | --------------- |
+| `HANDOFF.md`                | Context budget stop — what was done, what's left |
+| `STUCK.md`                  | Stuck detection report — the repeated error and diagnosis |
+| `.effectum/loop-state.json` | Last persisted iteration state |
+| `effectum-metrics.json`     | Historical session ledger |
+| `.claude/ralph-loop.local.md` | Internal loop state |
+| `.claude/ralph-blockers.md` | Documented blockers |
 
 The output is a root-cause diagnosis with a recommended next action — whether that's fixing the blocker, resuming from checkpoint, or rewriting a failing test.
 
 ---
 
-### `/effectum:init` — Project context bootstrap
+### `effectum:init` — Project context bootstrap
 
-Teach Claude about your domain before it writes a single line of code. `/effectum:init` runs an interactive interview and writes the results into a sentinel block in `CLAUDE.md`:
+Teach Claude about your domain before it writes a single line of code. `effectum:init` runs an interactive interview and writes the results into a sentinel block in `CLAUDE.md`:
 
 ```bash
-/effectum:init
+effectum:init
 ```
 
 It asks about your domain model, key business rules, naming conventions, and any constraints the code must respect. The result is persisted between Effectum updates — the sentinel block is preserved when `npx @aslomon/effectum update` refreshes the rest of CLAUDE.md.
@@ -427,35 +464,55 @@ It asks about your domain model, key business rules, naming conventions, and any
 <!-- effectum:project-context:end -->
 ```
 
-This is the right command to run before `/ralph-loop` on a new project, or before onboarding a Claude Code session to an existing domain.
+This is the right command to run before `effect:dev:run` on a new project, or before onboarding a Claude Code session to an existing domain.
 
 ---
 
-### `/effectum:explore` — Parallel brownfield analysis
+### `effectum:explore` — Parallel brownfield analysis
 
-`/effectum:explore` is purpose-built for understanding codebases you didn't write. It spawns **4 parallel analysis agents** and produces **7 structured knowledge documents** in `knowledge/codebase/`:
+`effectum:explore` is purpose-built for understanding codebases you didn't write. It spawns **4 parallel analysis agents** and produces **7 structured knowledge documents** in `knowledge/codebase/`:
 
 ```bash
-/effectum:explore
+effectum:explore
 ```
 
-| Agent                  | Output document                                    |
-| ---------------------- | -------------------------------------------------- |
+| Agent | Output document |
+| ----- | --------------- |
 | **ArchitectureMapper** | `ARCHITECTURE.md` — structure, modules, boundaries |
-| **DataFlowMapper**     | `DATA-FLOW.md` — how data moves through the system |
-| **APIMapper**          | `API-SURFACE.md` — all endpoints, contracts, auth  |
-| **DependencyMapper**   | `DEPENDENCIES.md` — packages, versions, risk flags |
+| **DataFlowMapper** | `DATA-FLOW.md` — how data moves through the system |
+| **APIMapper** | `API-SURFACE.md` — all endpoints, contracts, auth |
+| **DependencyMapper** | `DEPENDENCIES.md` — packages, versions, risk flags |
 
 Plus three synthesis documents: `ENTRY-POINTS.md`, `RISK-MAP.md`, and `KNOWLEDGE-INDEX.md`.
 
 > [!TIP]
-> Use `/effectum:explore` for fast brownfield orientation. Use `/effectum:onboard` when you want the full analysis including self-test loop and per-area PRDs.
+> Use `effectum:explore` for fast brownfield orientation. Use `effectum:onboard` when you want the full analysis including self-test loop and per-area PRDs.
+
+---
+
+### `effectum:status` — Project dashboard
+
+Open a project and want instant orientation? `effectum:status` gives you a read-only dashboard of the current state.
+
+```bash
+effectum:status
+```
+
+It summarizes:
+
+- installed Effectum version
+- detected stack and autonomy level
+- CLAUDE.md project context
+- PRD inventory and status
+- last loop run and health signals
+
+If something is wrong — a recent `STUCK.md`, an incomplete handoff, missing installation — it tells you immediately and points to the next action.
 
 ---
 
 ### Autonomous Loop — Self-Awareness Features (v0.16.0)
 
-Three new mechanisms make Ralph Loop trustworthy enough for overnight builds:
+Three mechanisms make the loop trustworthy enough for overnight builds:
 
 #### Context Budget Monitor
 
@@ -465,7 +522,7 @@ The loop monitors its own context usage. At **80% of the context budget**, it au
 2. Commits current state to git
 3. Stops cleanly
 
-The next Claude Code session can pick up exactly where it left off. Use `/effect:dev:diagnose` to analyze the handoff, then `/effect:prd:resume` to continue.
+The next Claude Code session can pick up exactly where it left off. Use `effect:dev:diagnose` to analyze the handoff, then `effect:prd:resume` to continue.
 
 #### Stuck Detection
 
@@ -475,7 +532,7 @@ If the loop encounters the **same error twice in a row**, it:
 2. Stops the loop
 3. Returns control to you
 
-This prevents the loop from burning 20 iterations on the same problem. Use `/effect:dev:diagnose` to get a full diagnosis and recommended fix.
+This prevents the loop from burning iterations on the same problem. Use `effect:dev:diagnose` to get a full diagnosis and recommended fix.
 
 #### Per-Iteration Loop State
 
@@ -492,7 +549,7 @@ Every iteration, the loop persists its state to `.effectum/loop-state.json`:
 }
 ```
 
-This enables `/effect:dev:diagnose` to reconstruct exactly what the loop was doing when it stopped — even if it crashed mid-iteration.
+This enables `effect:dev:diagnose` to reconstruct exactly what the loop was doing when it stopped — even if it crashed mid-iteration.
 
 ---
 
@@ -505,7 +562,7 @@ Starting in v0.16.0, CLAUDE.md uses sentinel markers to separate system-managed 
 ...
 
 <!-- effectum:project-context:start -->
-[Your project context — written by /effectum:init]
+[Your project context — written by effectum:init]
 <!-- effectum:project-context:end -->
 ```
 
@@ -517,37 +574,37 @@ When you run `npx @aslomon/effectum update`, the system-managed section is refre
 
 Foundation hooks now support richer configuration:
 
-| Feature               | Example                                                                 |
-| --------------------- | ----------------------------------------------------------------------- |
-| **Conditional `if:`** | Run a hook only when specific files are staged                          |
-| **Multi-glob**        | Match multiple file patterns in a single hook rule                      |
-| **`effort:` level**   | Tag commands as `low`, `medium`, or `high` effort for context budgeting |
+| Feature | Example |
+| ------- | ------- |
+| **Conditional `if:`** | Run a hook only when specific files are staged |
+| **Multi-glob** | Match multiple file patterns in a single hook rule |
+| **`effort:` level** | Tag commands as `low`, `medium`, or `high` effort for context budgeting |
 
 Hooks remain always-active for the three core guardrails (secret detection, TDD enforcement, destructive command blocking). The new features apply to custom hooks you add in `system/hooks/`.
 
 ---
 
-### `/effect:dev:verify` — Every quality gate, every time
+### `effect:dev:verify` — Every quality gate, every time
 
-| Gate           | What it checks              | Standard                |
-| -------------- | --------------------------- | ----------------------- |
-| 🔨 Build       | Compiles without errors     | 0 errors                |
-| 📐 Types       | Type safety                 | 0 errors                |
-| 🧹 Lint        | Clean code style            | 0 warnings              |
-| 🧪 Tests       | Test suite                  | All pass, 80%+ coverage |
-| 🔒 Security    | OWASP vulnerabilities       | None found              |
-| 🚫 Debug logs  | `console.log` in production | 0 occurrences           |
-| 🛡️ Type safety | `any` or unsafe casts       | None                    |
-| 📏 File size   | Oversized files             | Max 300 lines           |
+| Gate | What it checks | Standard |
+| ---- | -------------- | -------- |
+| 🔨 Build | Compiles without errors | 0 errors |
+| 📐 Types | Type safety | 0 errors |
+| 🧹 Lint | Clean code style | 0 warnings |
+| 🧪 Tests | Test suite | All pass, 80%+ coverage |
+| 🔒 Security | OWASP vulnerabilities | None found |
+| 🚫 Debug logs | `console.log` in production | 0 occurrences |
+| 🛡️ Type safety | `any` or unsafe casts | None |
+| 📏 File size | Oversized files | Max 300 lines |
 
 ---
 
 ## 🎨 Design System Generation
 
-`/effect:design` generates a structured `DESIGN.md` before you write a line of frontend code. It bridges the gap between "what to build" (PRD) and "how it should look" (implementation).
+`effect:design` generates a structured `DESIGN.md` before you write a line of frontend code. It bridges the gap between "what to build" (PRD) and "how it should look" (implementation).
 
 ```
-/effect:prd:new → PRD approved → /effect:design → DESIGN.md generated → /effect:dev:plan → /ralph-loop
+effect:prd:new → PRD approved → effect:design → DESIGN.md generated → effect:dev:plan → effect:dev:run
 ```
 
 ### How It Works
@@ -556,7 +613,7 @@ Hooks remain always-active for the three core guardrails (secret detection, TDD 
 2. **Scans for design signals** — detects Tailwind, shadcn/ui, CSS custom properties, UI libraries
 3. **Asks 3–5 lightweight questions** — color palette, typography feel, UI complexity, references
 4. **Generates DESIGN.md** — 7 sections: Overview, Color System, Typography, Component Patterns, Layout & Spacing, Interaction Design, Constraints
-5. **Confirms** — summarizes key decisions, suggests `/effect:dev:plan` as next step
+5. **Confirms** — summarizes key decisions, suggests `effect:dev:plan` as next step
 
 > [!TIP]
 > `DESIGN.md` is optional for CLI tools, API backends, and libraries. Only suggested for web apps, mobile apps, and fullstack projects.
@@ -581,15 +638,10 @@ The update command:
 ```
 $ npx @aslomon/effectum update
 ℹ Project: "my-app" (nextjs-supabase)
-ℹ 3 new command(s) available:
-    + /effect:design
-    + /effect:prd:express
-    + /effect:prd:discuss
-ℹ 5 command(s) with updates:
-    ~ /ralph-loop
-    ~ /effectum:onboard
-    ...
-✔ Updated: 3 new command(s) added, 5 command(s) updated, CLAUDE.md refreshed
+ℹ Namespace migration already applied
+ℹ 1 command update available:
+    ~ effectum:status
+✔ Updated: commands refreshed, CLAUDE.md preserved, aliases kept for compatibility
 ```
 
 ---
@@ -598,14 +650,14 @@ $ npx @aslomon/effectum update
 
 The configurator now auto-detects your package manager from lock files and recommends the best option for your ecosystem.
 
-| Lock file detected | Package manager    |
-| ------------------ | ------------------ |
+| Lock file detected | Package manager |
+| ------------------ | --------------- |
 | `pnpm-lock.yaml`   | pnpm (recommended) |
-| `yarn.lock`        | yarn               |
-| `bun.lockb`        | bun                |
-| `uv.lock`          | uv                 |
-| `Cargo.lock`       | cargo              |
-| `go.sum`           | go                 |
+| `yarn.lock`        | yarn |
+| `bun.lockb`        | bun |
+| `uv.lock`          | uv |
+| `Cargo.lock`       | cargo |
+| `go.sum`           | go |
 
 - **Apple-like flow**: detected package manager → confirm or change
 - **Ecosystem-aware defaults**: pnpm for JS, uv for Python, cargo for Rust, go for Go
@@ -654,7 +706,7 @@ And an auto-maintained changelog at the bottom:
 
 ### Semantic Diff
 
-`/effect:prd:update` doesn't just append changes — it understands what changed and why:
+`effect:prd:update` doesn't just append changes — it understands what changed and why:
 
 ```
 Semantic diff v1.2.0 → v1.3.0:
@@ -669,7 +721,7 @@ This diff is what powers delta handoffs.
 
 ### Delta Handoff
 
-`/effect:prd:handoff` produces a focused summary of what changed since the last implementation run. Instead of handing Claude the full PRD every time, it gets a precise delta:
+`effect:prd:handoff` produces a focused summary of what changed since the last implementation run. Instead of handing Claude the full PRD every time, it gets a precise delta:
 
 ```
 Handoff delta (v1.2.0 → v1.3.0):
@@ -685,7 +737,7 @@ Handoff delta (v1.2.0 → v1.3.0):
   - Data model, user stories, error codes
 ```
 
-This is what makes Ralph Loop so much more reliable on evolving projects.
+This is what makes the autonomous loop so much more reliable on evolving projects.
 
 ### Task Registry
 
@@ -707,7 +759,7 @@ Last synced: 2026-03-20T14:32:00Z
 
 ### Network Map Auto-Sync
 
-`/effect:prd:network-map` renders your PRD dependency graph as an interactive HTML file. With auto-sync enabled, it regenerates whenever a PRD changes.
+`effect:prd:network-map` renders your PRD dependency graph as an interactive HTML file. With auto-sync enabled, it regenerates whenever a PRD changes.
 
 ```
 docs/network-map.html  ← open in browser, zoom, click nodes
@@ -717,20 +769,20 @@ docs/network-map.html  ← open in browser, zoom, click nodes
 
 ## 🔍 Project Onboarding
 
-`/effectum:onboard` solves a real problem: dropping into an unfamiliar codebase (or coming back to your own after months away) and needing to get up to speed fast. In v0.15.0, the onboard command was refactored from 578 to 202 lines — 6 agent specs now live in dedicated files under `system/agents/`.
+`effectum:onboard` solves a real problem: dropping into an unfamiliar codebase (or coming back to your own after months away) and needing to get up to speed fast.
 
 ### How It Works
 
-Run `/effectum:onboard` in any project directory. Effectum spawns **6 parallel analysis agents**, each with a specific lens:
+Run `effectum:onboard` in any project directory. Effectum spawns **6 parallel analysis agents**, each with a specific lens:
 
-| Agent                | Focus                                                     |
-| -------------------- | --------------------------------------------------------- |
-| 🏗️ **Architecture**  | Directory structure, module boundaries, dependency graph  |
-| 🗄️ **Data Model**    | Schemas, migrations, RLS policies, relationships          |
-| 🔌 **API Surface**   | Endpoints, contracts, authentication patterns             |
-| 🧪 **Test Coverage** | What's tested, what's not, test quality assessment        |
-| 🔒 **Security**      | Auth flows, secret handling, known vulnerability patterns |
-| 📦 **Dependencies**  | Packages, versions, outdated or risky dependencies        |
+| Agent | Focus |
+| ----- | ----- |
+| 🏗️ **Architecture** | Directory structure, module boundaries, dependency graph |
+| 🗄️ **Data Model** | Schemas, migrations, RLS policies, relationships |
+| 🔌 **API Surface** | Endpoints, contracts, authentication patterns |
+| 🧪 **Test Coverage** | What's tested, what's not, test quality assessment |
+| 🔒 **Security** | Auth flows, secret handling, known vulnerability patterns |
+| 📦 **Dependencies** | Packages, versions, outdated or risky dependencies |
 
 ### Self-Test Loop (7 Tests)
 
@@ -764,21 +816,10 @@ docs/
 └── network-map.html         ← Interactive dependency visualization
 ```
 
-`/effectum:onboard:review` re-runs a lightweight version after significant changes.
+`effectum:onboard:review` re-runs a lightweight version after significant changes.
 
 > [!TIP]
-> Use `/effectum:onboard` before starting a Ralph Loop on an unfamiliar codebase. It gives Claude the context it needs to make good decisions autonomously.
-
----
-
-## 🔀 Migrating from v0.17?
-
-All old command names (`/plan`, `/tdd`, `/verify`, `/code-review`, `/prd:new`, `/setup`, `/onboard`, `/forensics`, `/map-codebase`, etc.) continue to work as deprecated aliases. They will show a deprecation warning and will be removed in v0.20.
-
-Two aliases are permanent and will never be removed:
-
-- `/ralph-loop` — the autonomous build loop
-- `/help` — getting started guide and command reference
+> Use `effectum:onboard` before starting `effect:dev:run` on an unfamiliar codebase. It gives Claude the context it needs to make good decisions autonomously.
 
 ---
 
@@ -788,15 +829,15 @@ Two aliases are permanent and will never be removed:
 
 Effectum ships with pre-configured agent roles. Each has a distinct behavior profile, toolset, and communication style appropriate to its function:
 
-| Category          | Agents                                                                                             |
-| ----------------- | -------------------------------------------------------------------------------------------------- |
-| **Planning**      | Architect, Decomposer, Risk Analyst                                                                |
-| **Build**         | Engineer, TDD Driver, Refactor Specialist, Fullstack Developer, Next.js Developer                  |
-| **Quality**       | QA Reviewer, Security Auditor, Performance Analyst, Code Reviewer                                  |
-| **Documentation** | Spec Writer, API Documenter, Onboarding Analyst                                                    |
-| **Orchestration** | Ralph (autonomous loop), Checkpoint Manager, Delta Tracker                                         |
-| **Analysis**      | Architecture Analyst, DB Analyst, API Analyst, Frontend Analyst, Stack Analyst, Test Analyst       |
-| **Specialist**    | Mobile Developer, Docker Expert, MCP Developer, Postgres Pro, Data Engineer, Debugger, UI Designer |
+| Category | Agents |
+| -------- | ------ |
+| **Planning** | Architect, Decomposer, Risk Analyst |
+| **Build** | Engineer, TDD Driver, Refactor Specialist, Fullstack Developer, Next.js Developer |
+| **Quality** | QA Reviewer, Security Auditor, Performance Analyst, Code Reviewer |
+| **Documentation** | Spec Writer, API Documenter, Onboarding Analyst |
+| **Orchestration** | Ralph (autonomous loop), Checkpoint Manager, Delta Tracker |
+| **Analysis** | Architecture Analyst, DB Analyst, API Analyst, Frontend Analyst, Stack Analyst, Test Analyst |
+| **Specialist** | Mobile Developer, Docker Expert, MCP Developer, Postgres Pro, Data Engineer, Debugger, UI Designer |
 
 Each specialization is defined in `system/agents/` and composed from shared skills.
 
@@ -804,33 +845,33 @@ Each specialization is defined in `system/agents/` and composed from shared skil
 
 Skills are reusable capability blocks that agent specializations are composed from:
 
-| Domain             | Examples                                         |
-| ------------------ | ------------------------------------------------ |
-| **Code**           | TypeScript, Python, Go, Swift, Rust, SQL         |
-| **Testing**        | TDD, E2E, snapshot, load testing                 |
-| **Security**       | Secret detection, OWASP scanning, RLS validation |
-| **Documentation**  | PRD authoring, markdown, Mermaid diagrams        |
-| **Infrastructure** | Vercel, Railway, Fly.io, Docker, GitHub Actions  |
+| Domain | Examples |
+| ------ | -------- |
+| **Code** | TypeScript, Python, Go, Swift, Rust, SQL |
+| **Testing** | TDD, E2E, snapshot, load testing |
+| **Security** | Secret detection, OWASP scanning, RLS validation |
+| **Documentation** | PRD authoring, markdown, Mermaid diagrams |
+| **Infrastructure** | Vercel, Railway, Fly.io, Docker, GitHub Actions |
 
 ### Foundation Hooks (Always Active)
 
 Three hooks run on every Claude Code session, regardless of configuration:
 
-| Hook                 | What it does                                                     |
-| -------------------- | ---------------------------------------------------------------- |
+| Hook | What it does |
+| ---- | ------------ |
 | **Secret Detection** | Blocks writes containing API keys, tokens, passwords to any file |
-| **TDD Enforcement**  | Warns when code is written before a failing test exists          |
-| **Guardrails**       | Prevents `rm -rf`, `DROP TABLE`, direct writes to `.env`         |
+| **TDD Enforcement** | Warns when code is written before a failing test exists |
+| **Guardrails** | Prevents `rm -rf`, `DROP TABLE`, direct writes to `.env` |
 
 These can't be disabled by mistake. They're the safety net.
 
 ### 📑 YAML Frontmatter
 
-All 42 command files now include YAML frontmatter with machine-readable metadata:
+All command files include YAML frontmatter with machine-readable metadata:
 
 ```yaml
 ---
-name: "Design"
+name: "Effect Design"
 description: "Generate a structured DESIGN.md visual specification for frontend projects."
 allowed-tools: ["Read", "Write", "Bash", "Glob", "Grep"]
 ---
@@ -897,12 +938,12 @@ Pull requests for new stacks, presets, and detection rules are especially welcom
 
 ## 🆚 How is this different?
 
-| Tool           | What it does                              | What Effectum adds / differs                                                            |
-| -------------- | ----------------------------------------- | --------------------------------------------------------------------------------------- |
-| **GSD**        | Context engineering, prevents context rot | PRD Lifecycle (spec versioning + delta handoffs), Ralph Loop, Project Onboarding        |
-| **BMAD**       | Full enterprise methodology               | Same ideas, 90% less ceremony. Configurator auto-selects what's relevant.               |
-| **SpecKit**    | Living specifications                     | + Autonomous execution + Quality gates + Task registry + Network map                    |
-| **Taskmaster** | Task breakdown from PRDs                  | + TDD workflow + Code review + E2E testing + Semantic diff + Onboarding agents          |
+| Tool | What it does | What Effectum adds / differs |
+| ---- | ------------ | ---------------------------- |
+| **GSD** | Context engineering, prevents context rot | PRD Lifecycle (spec versioning + delta handoffs), autonomous loop, Project Onboarding |
+| **BMAD** | Full enterprise methodology | Same ideas, 90% less ceremony. Configurator auto-selects what's relevant. |
+| **SpecKit** | Living specifications | + Autonomous execution + Quality gates + Task registry + Network map |
+| **Taskmaster** | Task breakdown from PRDs | + TDD workflow + Code review + E2E testing + Semantic diff + Onboarding agents |
 | **Kiro (AWS)** | IDE-native spec-driven dev (VS Code fork) | CLI-native. No IDE required. No opaque request pricing. Works with your existing setup. |
 
 The short version: Effectum doesn't invent new concepts. It combines what already works, removes what doesn't, and packages it so it actually runs.
@@ -990,16 +1031,16 @@ Customize everything<br>
 
 ### Quick Presets (Add-Ons)
 
-| Quick Preset    | Adds to your stack                                       |
-| --------------- | -------------------------------------------------------- |
-| **+ Firebase**  | Firebase SDK, Firestore rules, Auth integration patterns |
-| **+ Prisma**    | Prisma schema, migration workflow, typed client          |
-| **+ Flutter**   | Dart/Flutter project config, widget test setup           |
-| **+ Stripe**    | Webhook handling patterns, price/subscription management |
-| **+ tRPC**      | End-to-end typesafe API layer                            |
-| **+ Turborepo** | Monorepo workspace configuration                         |
-| **+ Docker**    | Dockerfile, docker-compose, health check patterns        |
-| **+ GitHub CI** | GitHub Actions workflow for test + deploy                |
+| Quick Preset | Adds to your stack |
+| ------------ | ------------------ |
+| **+ Firebase** | Firebase SDK, Firestore rules, Auth integration patterns |
+| **+ Prisma** | Prisma schema, migration workflow, typed client |
+| **+ Flutter** | Dart/Flutter project config, widget test setup |
+| **+ Stripe** | Webhook handling patterns, price/subscription management |
+| **+ tRPC** | End-to-end typesafe API layer |
+| **+ Turborepo** | Monorepo workspace configuration |
+| **+ Docker** | Dockerfile, docker-compose, health check patterns |
+| **+ GitHub CI** | GitHub Actions workflow for test + deploy |
 
 Each preset configures build commands, test frameworks, linters, formatters, and architecture rules for your stack.
 
@@ -1009,13 +1050,13 @@ Each preset configures build commands, test frameworks, linters, formatters, and
 
 Choose how much Claude decides on its own:
 
-|                           |  Conservative   |    Standard     |  Full Autonomy   |
-| ------------------------- | :-------------: | :-------------: | :--------------: |
-| **Claude asks before...** |  Most changes   | Ambiguous specs |  Almost nothing  |
-| **Git operations**        |   Always asks   |  Asks for push  |    Autonomous    |
-| **File changes**          |  Confirms each  |  Works freely   |   Works freely   |
-| **Best for**              | Teams, learning |    Daily dev    | Overnight builds |
-| **Ralph Loop**            |       ❌        |       ✅        |  ✅ Recommended  |
+|                           | Conservative | Standard | Full Autonomy |
+| ------------------------- | :----------: | :------: | :-----------: |
+| **Claude asks before...** | Most changes | Ambiguous specs | Almost nothing |
+| **Git operations**        | Always asks | Asks for push | Autonomous |
+| **File changes**          | Confirms each | Works freely | Works freely |
+| **Best for**              | Teams, learning | Daily dev | Overnight builds |
+| **Autonomous loop**       | ❌ | ✅ | ✅ Recommended |
 
 Choose during setup. Change anytime in `.claude/settings.json`.
 
@@ -1027,7 +1068,7 @@ Effectum is useful, but it's honest about what it can't do yet:
 
 - **Only works with Claude Code** — workflow commands are Claude Code specific. Other runtimes (Codex, Gemini CLI) are on the roadmap.
 - **Onboarding quality depends on codebase legibility** — heavily minified, obfuscated, or machine-generated code produces lower-quality analysis.
-- **Ralph Loop effectiveness depends on PRD quality** — garbage in, garbage out. A vague spec produces vague code, even autonomously.
+- **Autonomous loop effectiveness depends on PRD quality** — garbage in, garbage out. A vague spec produces vague code, even autonomously.
 - **MCP servers need npm/Node.js** — if you're in a restricted environment without npm access, MCP setup will fail.
 - **Delta handoffs accumulate** — on very long-lived projects with many spec revisions, the changelog can grow large. Periodic archival is on the roadmap.
 
@@ -1041,8 +1082,8 @@ effectum/
 ├── system/                          The installable workflow
 │   ├── configurator/                Stack detection + setup recommender
 │   ├── templates/                   CLAUDE.md, settings, guardrails (parameterized)
-│   ├── commands/                    31 workflow commands (with YAML frontmatter)
-│   │   └── README.md               Command index by category
+│   ├── commands/                    Command system with namespaces
+│   │   └── README.md                Command index by sphere
 │   ├── agents/                      25 agent specializations
 │   ├── skills/                      43+ reusable skill blocks
 │   ├── tools/                       JSON-based tool definitions
@@ -1074,14 +1115,14 @@ effectum/
 
 ## 📚 Documentation
 
-| Guide                                               | What you'll learn                              |
-| --------------------------------------------------- | ---------------------------------------------- |
-| 📖 [Workflow Overview](docs/workflow-overview.md)   | The complete autonomous workflow explained     |
-| ⚙️ [Configurator Guide](docs/configurator-guide.md) | Stack detection, presets, language setup       |
-| 📋 [PRD Lifecycle](docs/prd-lifecycle.md)           | Frontmatter, diffs, delta handoffs, tasks.md   |
-| 🔍 [Onboarding Guide](docs/onboarding-guide.md)     | Getting up to speed on any codebase fast       |
-| 🔧 [Customization](docs/customization.md)           | JSON tools, detection rules, community presets |
-| 🔍 [Troubleshooting](docs/troubleshooting.md)       | Common issues and solutions                    |
+| Guide | What you'll learn |
+| ----- | ----------------- |
+| 📖 [Workflow Overview](docs/workflow-overview.md) | The complete autonomous workflow explained |
+| ⚙️ [Configurator Guide](docs/configurator-guide.md) | Stack detection, presets, language setup |
+| 📋 [PRD Lifecycle](docs/prd-lifecycle.md) | Frontmatter, diffs, delta handoffs, tasks.md |
+| 🔍 [Onboarding Guide](docs/onboarding-guide.md) | Getting up to speed on any codebase fast |
+| 🔧 [Customization](docs/customization.md) | JSON tools, detection rules, community presets |
+| 🔍 [Troubleshooting](docs/troubleshooting.md) | Common issues and solutions |
 
 ---
 
@@ -1090,14 +1131,14 @@ effectum/
 <details>
 <summary><strong>Do I need to write a specification for every feature?</strong></summary>
 
-No. Use `/effect:dev:plan` directly with a description for small things. Specifications shine for anything complex — they eliminate back-and-forth and produce dramatically better results. For existing projects you're onboarding to, `/effectum:onboard` generates a baseline PRD per feature area automatically.
+No. Use `effect:dev:plan` directly with a description for small things. Specifications shine for anything complex — they eliminate back-and-forth and produce dramatically better results. For existing projects you're onboarding to, `effectum:onboard` generates a baseline PRD per feature area automatically.
 
 </details>
 
 <details>
 <summary><strong>Does this work with other AI coding tools?</strong></summary>
 
-Effectum is built for Claude Code. The specifications and PRDs it produces are useful for any AI tool, but the workflow commands (`/effect:dev:plan`, `/effect:dev:tdd`, etc.) are Claude Code specific. See [Limitations](#️-limitations).
+Effectum is built for Claude Code. The specifications and PRDs it produces are useful for any AI tool, but the workflow commands are Claude Code specific. See [Limitations](#️-limitations).
 
 </details>
 
@@ -1109,9 +1150,9 @@ Yes. Everything is plain text or JSON — edit `CLAUDE.md` for rules, `.claude/s
 </details>
 
 <details>
-<summary><strong>What if Ralph Loop gets stuck?</strong></summary>
+<summary><strong>What if the autonomous loop gets stuck?</strong></summary>
 
-**Stuck detection** kicks in automatically: if the same error appears twice in a row, the loop writes `STUCK.md` with a preliminary diagnosis and stops. Run `/effect:dev:diagnose` for a full post-mortem. At **80% context budget**, the loop writes `HANDOFF.md` and stops cleanly so the next session can resume. Use `/effect:dev:stop` to stop it manually anytime. If the spec changed mid-run, PRD-hash detection will cause it to pause and reconcile before continuing. Loop state is persisted to `.effectum/loop-state.json` every iteration.
+**Stuck detection** kicks in automatically: if the same error appears twice in a row, the loop writes `STUCK.md` with a preliminary diagnosis and stops. Run `effect:dev:diagnose` for a full post-mortem. At **80% context budget**, the loop writes `HANDOFF.md` and stops cleanly so the next session can resume. Use `effect:dev:stop` to stop it manually anytime. If the spec changed mid-run, PRD-hash detection will cause it to pause and reconcile before continuing. Loop state is persisted to `.effectum/loop-state.json` every iteration.
 
 </details>
 
@@ -1123,16 +1164,16 @@ Yes. Foundation hooks are always active: secret detection blocks writes to `.env
 </details>
 
 <details>
-<summary><strong>When should I use /effectum:onboard vs /effect:prd:new?</strong></summary>
+<summary><strong>When should I use effectum:onboard vs effect:prd:new?</strong></summary>
 
-`/effectum:onboard` is for existing codebases — it reads what's there. `/effect:prd:new` is for new features — it helps you design what doesn't exist yet. For a new project, start with `/effect:prd:new`. For an inherited or unfamiliar codebase, start with `/effectum:onboard`, then use `/effect:prd:new` for new features on top of it.
+`effectum:onboard` is for existing codebases — it reads what's there. `effect:prd:new` is for new features — it helps you design what doesn't exist yet. For a new project, start with `effect:prd:new`. For an inherited or unfamiliar codebase, start with `effectum:onboard`, then use `effect:prd:new` for new features on top of it.
 
 </details>
 
 <details>
-<summary><strong>How do the 25 agent specializations work?</strong></summary>
+<summary><strong>Do I need to learn the new names immediately?</strong></summary>
 
-Each specialization is a pre-configured behavior profile that Claude adopts when running a particular command. When you run `/effect:dev:tdd`, Claude behaves as the TDD Driver agent — test-first mindset, specific communication style, specific toolset. You don't configure this; Effectum sets it up automatically based on which command you're running.
+No. If you're coming from v0.17, all old command names still work as deprecated aliases until v0.20. The only special case is `/ralph-loop`, which is a permanent alias for `effect:dev:run` and will keep working indefinitely.
 
 </details>
 
