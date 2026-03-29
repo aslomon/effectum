@@ -52,8 +52,18 @@ switch (subcommand) {
     require("./update.js");
     break;
 
-  default:
-    // Default: run the installer (handles --help, --global, --local, etc.)
-    require("./install.js");
+  default: {
+    // If .effectum.json exists in CWD, auto-route to update instead of install
+    const fs = require("fs");
+    const configPath = path.join(process.cwd(), ".effectum.json");
+    if (!args.includes("--help") && !args.includes("-h") && fs.existsSync(configPath)) {
+      console.log("  effectum project detected (.effectum.json found)");
+      console.log("  → Running update instead of install.\n");
+      require("./update.js");
+    } else {
+      // Fresh install
+      require("./install.js");
+    }
     break;
+  }
 }

@@ -212,3 +212,77 @@
 
 ---
 
+
+---
+
+### 2026-03-29 — Batch 3 (aus 07:30 Cron, Claude Code v2.1.85–v2.1.86)
+
+---
+
+#### #010 — MCP Multi-Server headersHelper Env Vars
+
+| Feld | Inhalt |
+| ---- | ------ |
+| **Datum** | 2026-03-29 |
+| **Signal** | v2.1.85: Neue Env-Vars `CLAUDE_CODE_MCP_SERVER_NAME` + `CLAUDE_CODE_MCP_SERVER_URL` in MCP-`headersHelper`-Scripts — ein Helper kann jetzt mehrere MCP-Server bedienen |
+| **Quelle** | Claude Code Changelog v2.1.85 |
+| **Bereich** | MCP, Setup-Templates |
+| **Entscheidung** | `spec` |
+| **Priorität** | P2 |
+| **Aktion** | MCP-Setup-Templates in `system/stacks/` auf Multi-Server-Auth-Pattern prüfen; Env-Vars dokumentieren und als Best-Practice in `/setup`-Doku aufnehmen |
+| **Roadmap** | `v0.17` |
+| **Confidence** | mittel |
+| **Status** | ⏳ offen |
+
+---
+
+#### #011 — File-Access-Fix außerhalb Project Root (v2.1.86)
+
+| Feld | Inhalt |
+| ---- | ------ |
+| **Datum** | 2026-03-29 |
+| **Signal** | v2.1.86 Bugfix: Write/Edit/Read funktioniert jetzt auf Dateien außerhalb des Project Root (z.B. `~/.claude/CLAUDE.md`) wenn conditional Skills/Rules konfiguriert sind — betrifft Effectum-Workflows die CLAUDE.md global beschreiben |
+| **Quelle** | Claude Code Changelog v2.1.86 |
+| **Bereich** | Setup, Hooks |
+| **Entscheidung** | `docs-only` |
+| **Priorität** | skip |
+| **Aktion** | Minimum-Version-Hinweis in Effectum-README (`v2.1.86+` empfohlen) |
+| **Roadmap** | `none` |
+| **Confidence** | hoch |
+| **Status** | ⏳ offen |
+
+---
+
+#### #012 — PreToolUse kann AskUserQuestion headless beantworten (v2.1.85)
+
+| Feld | Inhalt |
+| ---- | ------ |
+| **Datum** | 2026-03-29 |
+| **Signal** | v2.1.85: `PreToolUse`-Hook kann `AskUserQuestion` durch Rückgabe von `updatedInput` + `permissionDecision: "allow"` headless beantworten — ermöglicht GUI-/CI-Integrationen ohne interaktive User-Approval-Prompts |
+| **Quelle** | Claude Code Changelog v2.1.85 |
+| **Bereich** | Hooks, Headless-Flows, `/ralph-loop`, CI-Integration |
+| **Entscheidung** | `spec` |
+| **Priorität** | P1 |
+| **Aktion** | Spec: `/ralph-loop`-Headless-Mode mit PreToolUse-Pattern für vollautomatische CI-Runs ohne User-Approve-Unterbrechung; Hook-Template-Beispiel erstellen |
+| **Roadmap** | `v0.17` |
+| **Confidence** | mittel-hoch |
+| **Status** | ⏳ offen |
+
+---
+
+#### #013 — Prompt-Cache-Hit-Rate für Proxy-Anbieter verbessert (v2.1.86)
+
+| Feld | Inhalt |
+| ---- | ------ |
+| **Datum** | 2026-03-29 |
+| **Signal** | v2.1.86: Dynamischer Content aus Tool-Descriptions entfernt → bessere Cache-Hit-Rate für Bedrock/Vertex/Foundry-User |
+| **Quelle** | Claude Code Changelog v2.1.86 |
+| **Bereich** | keine direkte Effectum-Aktion |
+| **Entscheidung** | `watchlist` |
+| **Priorität** | P2 |
+| **Aktion** | Im Enterprise-/Proxy-Kontext beachten: Effectum-Tool-Descriptions statisch halten, keine dynamischen Werte einbauen |
+| **Roadmap** | `later` |
+| **Confidence** | mittel |
+| **Status** | ⏳ offen |
+
+---
