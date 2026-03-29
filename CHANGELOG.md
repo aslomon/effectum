@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.18.0] - 2026-03-29
+
+### Added
+
+- **Namespace Clarity** — New dual-namespace command structure: `effect/` (short, daily use) and `effectum/` (explicit, scripting). All commands available under both namespaces.
+- **`effect/dev/run`** — Primary entry point for autonomous loop. Replaces `/ralph-loop` as the recommended daily driver.
+- **`effect/dev/plan`, `effect/dev/review`, `effect/dev/fix`, `effect/dev/refactor`, `effect/dev/e2e`, `effect/dev/save`, `effect/dev/stop`, `effect/dev/diagnose`, `effect/dev/orchestrate`** — Full `effect/dev/*` namespace covering the core workflow.
+- **`effect/design`** — Design specification command under new namespace.
+- **`effectum:status` Dashboard** — New status dashboard command showing project health, open tasks, and effectum configuration.
+- **Ralph Loop as Permanent Command** — `/ralph-loop` is now a permanent alias (no deprecation planned), reinforced as the canonical autonomous loop.
+- **~38 Deprecated Aliases** — Legacy short-form aliases marked deprecated with removal notices; new namespaced forms are canonical.
+
+### Changed
+
+- **README Command Index** — Restructured with new namespace hierarchy, updated all command references.
+- **Command Files Updated** — All `.claude/commands/` files updated for namespace consistency.
+- **`.effectum/` Templates Synced** — Templates updated to reflect v0.18 namespace structure.
+
 ## [0.17.8] - 2026-03-29
 
 ### Fixed
