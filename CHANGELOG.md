@@ -7,9 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.17.5] - 2026-03-29
+
+### Fixed
+
+- **Autonomy Level Detection** — `effectum update` now correctly infers `autonomyLevel` from existing `settings.json` `defaultMode` when creating `.effectum.json` for legacy projects.
+
+## [0.17.4] - 2026-03-29
+
+### Fixed
+
+- **Update Routing** — `bin/effectum.js` now correctly calls `update.js` `main()` when routing detected projects to the update flow.
+
+## [0.17.3] - 2026-03-29
+
+### Fixed
+
+- **Effectum Detection** — Projects are now detected by unique Effectum-specific commands (`ralph-loop`, `prd/`) rather than generic `CLAUDE.md` presence, avoiding false positives.
+
+## [0.17.2] - 2026-03-29
+
+### Fixed
+
+- **Legacy Project Support** — Projects with Effectum commands but no `.effectum.json` are now correctly detected and upgraded; config is inferred from existing setup during update.
+
+## [0.17.1] - 2026-03-29
+
+### Fixed
+
+- **Auto-detect Update** — `npx @aslomon/effectum` in an existing Effectum project now automatically routes to `update` instead of the full installer.
+
+## [0.17.0] - 2026-03-28
+
 ### Added
 
-- **Command Entry Point & Smart Router (2026-03-28)** — New `/effectum` entry point with `/help` alias; smart `/next` router that reads project state and recommends the single best next action.
+- **Command Entry Point & Smart Router** — New `/effectum` entry point with `/help` alias; smart `/next` router that reads project state and recommends the single best next action.
 - **Namespace Reorganization (2026-03-28)** — Commands renamed for clarity: `/workshop:init` → `/project:init`, `/workshop:archive` → `/project:archive`, `/effectum:init` → `/context:init`. Deprecated old names still work with v0.19 removal notice.
 - **Command Aliases (2026-03-28)** — New convenience aliases: `/run` (→ `/tdd`), `/stop` (→ `/cancel-ralph`), `/save` (→ `/checkpoint`), `/diagnose` (→ `/forensics`), `/explore` (→ `/map-codebase`).
 - **Restructured Command README (2026-03-28)** — Updated `.claude/commands/README.md` with new hierarchical navigation: entry point (`/effectum`, `/help`, `/next`), core workflow, quality gates, git operations, loop control, orchestration, and setup categories.
