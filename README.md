@@ -624,6 +624,8 @@ effect:prd:new → PRD approved → effect:design → DESIGN.md generated → ef
 
 Already have Effectum installed? Update without re-running the full setup:
 
+> **Upgrading from v0.16 or earlier?** See [MIGRATION.md](./MIGRATION.md) for the full command rename table (38 deprecated aliases, removed in v0.20).
+
 ```bash
 npx @aslomon/effectum update
 ```
