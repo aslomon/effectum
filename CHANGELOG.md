@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Headless CI Mode (2026-03-31)** — New `autonomy.headless: true` config flag with `EFFECTUM_HEADLESS=1` env var to enable automatic tool approval during CI/overnight runs. PreToolUse hook auto-approves Read, Glob, Grep, and safe Bash patterns (npm/pnpm/yarn test/build/install, git status/diff/log/add/commit, linters); denies everything else with clear messages.
 - **Command Entry Point & Smart Router (2026-03-28)** — New `/effectum` entry point with `/help` alias; smart `/next` router that reads project state and recommends the single best next action.
 - **Namespace Reorganization (2026-03-28)** — Commands renamed for clarity: `/workshop:init` → `/project:init`, `/workshop:archive` → `/project:archive`, `/effectum:init` → `/context:init`. Deprecated old names still work with v0.20 removal notice.
 - **Command Aliases (2026-03-28)** — New convenience aliases: `/run` (→ `/tdd`), `/stop` (→ `/cancel-ralph`), `/save` (→ `/checkpoint`), `/diagnose` (→ `/forensics`), `/explore` (→ `/map-codebase`).

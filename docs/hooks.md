@@ -20,9 +20,11 @@ Hooks are the primary mechanism for enforcing guardrails, automating quality gat
 Claude Code supports the following hook events:
 
 ### `SessionStart`
+
 Fires when a Claude Code session begins or resumes. Supports a `matcher` field to target specific session types.
 
 **Matchers:**
+
 - `startup|resume` — fires on new sessions and resumed sessions
 - `compact` — fires after context compaction
 
@@ -31,6 +33,7 @@ Fires when a Claude Code session begins or resumes. Supports a `matcher` field t
 ---
 
 ### `PreToolUse`
+
 Fires before any tool executes. The hook receives the tool name and input as JSON on stdin. Returning exit code `2` blocks the tool call.
 
 **Matcher:** Tool name or pattern (e.g., `Edit|Write`, `Bash`, `*` for all tools).
@@ -40,6 +43,7 @@ Fires before any tool executes. The hook receives the tool name and input as JSO
 ---
 
 ### `PostToolUse`
+
 Fires after a tool completes successfully. Receives tool name, input, and output on stdin.
 
 **Matcher:** Tool name or pattern (e.g., `Edit|Write`, `Bash`).
@@ -49,6 +53,7 @@ Fires after a tool completes successfully. Receives tool name, input, and output
 ---
 
 ### `PostToolUseFailure`
+
 Fires when a tool call fails. Receives tool name, input, and error information on stdin.
 
 **Matcher:** None (fires for all tool failures).
@@ -58,6 +63,7 @@ Fires when a tool call fails. Receives tool name, input, and error information o
 ---
 
 ### `PreCompact`
+
 Fires before Claude Code compacts the session context. Receives the transcript path on stdin.
 
 **Typical uses:** Back up the transcript before it is summarized/truncated.
@@ -65,6 +71,7 @@ Fires before Claude Code compacts the session context. Receives the transcript p
 ---
 
 ### `Stop`
+
 Fires when Claude Code is about to stop responding. Can block stopping by returning `{"ok": false, "reason": "…"}`. Supports three hook types: `command`, `prompt`, and `agent`.
 
 **Typical uses:** Verify all tasks are complete, check that tests were written, update the CHANGELOG.
@@ -74,6 +81,7 @@ Fires when Claude Code is about to stop responding. Can block stopping by return
 ---
 
 ### `SubagentStop`
+
 Fires when a subagent finishes its work. The orchestrator uses this to verify subagent output quality before accepting results.
 
 **Typical uses:** Check that the subagent actually wrote files (not just described findings), detect placeholder code or unresolved TODOs.
@@ -81,6 +89,7 @@ Fires when a subagent finishes its work. The orchestrator uses this to verify su
 ---
 
 ### `TeammateIdle`
+
 Fires in Agent Teams mode when a teammate becomes idle (all assigned tasks completed). Can assign additional tasks by returning `{"ok": false, "reason": "…"}`.
 
 **Typical uses:** Load-balance work across teammates, prevent early idling when other tasks remain unclaimed.
@@ -88,6 +97,7 @@ Fires in Agent Teams mode when a teammate becomes idle (all assigned tasks compl
 ---
 
 ### `TaskCompleted`
+
 Fires in Agent Teams mode when a teammate marks a task as completed. Receives `task_id` and `agent_name` on stdin.
 
 **Typical uses:** Log task completion to a team activity log, trigger dependent tasks.
@@ -95,9 +105,11 @@ Fires in Agent Teams mode when a teammate marks a task as completed. Receives `t
 ---
 
 ### `Notification`
+
 Fires on system-level events. Supports a `matcher` field for event subtypes.
 
 **Matchers:**
+
 - `permission_prompt` — Claude needs user approval for a tool call
 - `idle_prompt` — Claude finished and is waiting for input
 
@@ -114,6 +126,7 @@ These hooks are configured in the base `settings.json.tmpl` and are active in ev
 **Event:** `SessionStart` (matcher: `startup|resume`)
 
 **What it does:**
+
 1. Prints git branch, number of uncommitted files, and the last 3 commits.
 2. Reads `~/.claude/guardrails.md` (global) and `.claude/guardrails.md` (project) if they exist, and injects their full content into Claude's context.
 
@@ -127,6 +140,7 @@ These hooks are configured in the base `settings.json.tmpl` and are active in ev
 
 **What it does:**
 After context compaction, re-injects:
+
 - Current git branch, modified/staged files, and last 5 commits
 - General rules (e.g., "use npm, not others")
 - Contents of `DESIGN.md` if present
@@ -143,6 +157,7 @@ After context compaction, re-injects:
 
 **What it does:**
 Blocks writes to protected file patterns:
+
 - `.env`, `.env.local`, `.env.production`
 - `secrets/`
 - `.git/`
@@ -158,6 +173,7 @@ Returns exit code `2` with a descriptive error message if a protected pattern is
 
 **What it does:**
 Scans the command string for destructive patterns and blocks if matched:
+
 - `rm -rf /`, `rm -rf ~` (filesystem destruction)
 - `drop table`, `DROP TABLE`, `truncate table`, `TRUNCATE TABLE` (database destruction)
 - `push.*--force`, `--force.*push` (force pushes)
@@ -180,6 +196,7 @@ When the command is a `git commit`, extracts the `-m` message and blocks if it i
 
 **What it does:**
 Before `git commit` or `git push`, diffs the staged changes and scans for patterns that indicate leaked secrets:
+
 - OpenAI API keys (`sk-...`)
 - Stripe keys (`sk_live_`, `sk_test_`)
 - AWS access key IDs (`AKIA...`)
@@ -236,6 +253,7 @@ Copies the current session transcript to `.claude/backups/transcript_YYYYMMDD_HH
 
 **What it does:**
 Asks Claude to evaluate whether all user-requested tasks were actually completed (not just attempted). Checks for:
+
 - Unresolved errors or failed operations
 - Obvious type errors or broken imports in changed code
 - Unresolved TODO/FIXME comments
@@ -268,6 +286,7 @@ Checks `git diff --stat HEAD` for meaningful source code changes. If found, read
 
 **What it does:**
 Reviews the subagent's last assistant message and checks:
+
 1. Did the subagent actually complete its task (not just describe findings)?
 2. Did it leave placeholder code or TODO comments?
 3. If it was supposed to write/edit files, did it do so?
@@ -282,6 +301,7 @@ Blocks acceptance if incomplete.
 
 **What it does:**
 When a teammate becomes idle, checks:
+
 1. Are all assigned tasks complete?
 2. Are there unclaimed tasks the teammate could pick up?
 3. Should they assist a blocked teammate?
@@ -304,6 +324,7 @@ Appends a line to `.claude/logs/team-activity.log` with the timestamp, task ID, 
 **Event:** `Notification`
 
 **What it does:**
+
 - On `permission_prompt`: Shows a macOS notification "Claude needs your attention" with sound "Ping".
 - On `idle_prompt`: Shows "Task completed" with sound "Glass".
 
@@ -312,6 +333,33 @@ Appends a line to `.claude/logs/team-activity.log` with the timestamp, task ID, 
 ## Optional Hooks
 
 The following hooks are available as opt-in extensions (defined in the skills or templates but not enabled by default in every project):
+
+### Headless CI Mode — Auto-approver (`headless-approver.sh`)
+
+**Location:** `system/hooks/headless-approver.sh` (installed to `.effectum/hooks/`)
+
+**Event:** `PreToolUse` (matcher: `AskUserQuestion`)
+
+**What it does:**
+When `EFFECTUM_HEADLESS=1` is set, this hook intercepts `AskUserQuestion` tool-approval prompts and auto-approves known-safe patterns:
+
+- **Always allowed:** `Read`, `Glob`, `Grep`
+- **Bash allowlist:** `npm test/run/install/build/ci`, `pnpm test/run/install/build`, `yarn test/run/install/build`, `npx`, `jest`, `vitest`, `tsc`, `eslint`, `prettier`, `ruff`, `cargo test/build/check/clippy`, `go test/build/vet`, `swift test/build`, `git status/diff/log/add/commit/branch/show/rev-parse/stash`, `make`, `python -m pytest/unittest/mypy/ruff/black`, `node`
+- **Everything else:** Denied with message `"Headless mode: tool '<name>' not in allowlist"`
+
+**Activation:**
+
+1. Set `autonomy.headless: true` in `.effectum.json`
+2. Run `effectum update` — this injects the `PreToolUse` hook into `settings.json` and copies the script to `.effectum/hooks/`
+3. Launch with `EFFECTUM_HEADLESS=1 claude --print /ralph-loop`
+
+Or for one-shot CI runs, just set the env var without persisting to config.
+
+**Hook injection logic:** `bin/lib/headless.js` handles adding/removing the hook in `settings.json`. The hook only fires when `EFFECTUM_HEADLESS=1` — no impact on interactive use.
+
+**Customization:** Edit `.effectum/hooks/headless-approver.sh` to add patterns to the allowlist. The script uses `jq` to parse stdin JSON.
+
+---
 
 ### Continuous Learning — Tool observation (`observe.sh`)
 
@@ -357,14 +405,14 @@ Hooks are defined under the `hooks` key in `~/.claude/settings.json` (global) or
 
 ### Hook entry fields
 
-| Field | Type | Description |
-|---|---|---|
-| `type` | enum | `command` — runs a shell command; `prompt` — runs an LLM evaluation; `agent` — spawns a subagent. |
-| `command` | string | Shell command to execute (for `type: command`). |
-| `prompt` | string | Prompt text for LLM evaluation (for `type: prompt`). Use `$ARGUMENTS` to reference the hook input. |
-| `statusMessage` | string | Text shown in the Claude Code UI while the hook runs. |
-| `timeout` | number | Seconds before the hook is killed. Default: no timeout. |
-| `async` | boolean | If `true`, the hook runs in the background; Claude does not wait for it. Default: `false`. |
+| Field           | Type    | Description                                                                                        |
+| --------------- | ------- | -------------------------------------------------------------------------------------------------- |
+| `type`          | enum    | `command` — runs a shell command; `prompt` — runs an LLM evaluation; `agent` — spawns a subagent.  |
+| `command`       | string  | Shell command to execute (for `type: command`).                                                    |
+| `prompt`        | string  | Prompt text for LLM evaluation (for `type: prompt`). Use `$ARGUMENTS` to reference the hook input. |
+| `statusMessage` | string  | Text shown in the Claude Code UI while the hook runs.                                              |
+| `timeout`       | number  | Seconds before the hook is killed. Default: no timeout.                                            |
+| `async`         | boolean | If `true`, the hook runs in the background; Claude does not wait for it. Default: `false`.         |
 
 ### Matcher field
 
@@ -386,15 +434,15 @@ Return `{"ok": false, "reason": "…"}` from a `prompt` or `agent` Stop hook to 
 
 ### 1. Decide the event and hook type
 
-| Goal | Event | Type |
-|---|---|---|
-| Block a dangerous command | `PreToolUse` (Bash) | `command` |
-| Validate a file before writing | `PreToolUse` (Edit\|Write) | `command` |
-| Run a linter after editing | `PostToolUse` (Edit\|Write) | `command` |
-| Log activity | `PostToolUse` or `TaskCompleted` | `command` (async) |
-| Verify work quality before stopping | `Stop` | `prompt` |
-| Verify subagent output | `SubagentStop` | `prompt` |
-| Balance team workload | `TeammateIdle` | `prompt` |
+| Goal                                | Event                            | Type              |
+| ----------------------------------- | -------------------------------- | ----------------- |
+| Block a dangerous command           | `PreToolUse` (Bash)              | `command`         |
+| Validate a file before writing      | `PreToolUse` (Edit\|Write)       | `command`         |
+| Run a linter after editing          | `PostToolUse` (Edit\|Write)      | `command`         |
+| Log activity                        | `PostToolUse` or `TaskCompleted` | `command` (async) |
+| Verify work quality before stopping | `Stop`                           | `prompt`          |
+| Verify subagent output              | `SubagentStop`                   | `prompt`          |
+| Balance team workload               | `TeammateIdle`                   | `prompt`          |
 
 ### 2. Write the hook command
 
