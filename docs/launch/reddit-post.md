@@ -2,7 +2,7 @@
 
 > **Status:** Draft — needs Jason review before posting  
 > **Target subreddits:** r/ClaudeAI, r/SideProject, r/programming  
-> **Updated:** 2026-03-25
+> **Updated:** 2026-03-30 (v0.18.3, 539 tests)
 
 ---
 
@@ -44,7 +44,7 @@ Curious what your Claude Code workflow looks like — especially around quality 
 ## Post 2: r/SideProject
 
 **Title:**  
-Show r/SideProject: I built an autonomous dev framework for Claude Code (2 months in, 296 downloads/day)
+Show r/SideProject: I built an autonomous dev framework for Claude Code (2 months in, ~235 downloads/day)
 
 **Body:**
 
@@ -57,7 +57,7 @@ So I spent two months building **Effectum** — an open-source Claude Code frame
 3. **7 stack presets**: Next.js+Supabase, FastAPI, Django+Postgres, Go+Echo, Rust+Actix, Swift/SwiftUI, generic
 4. **Agent Teams**: experimental parallel builds across multiple Claude instances (v0.12.0)
 
-What surprised me: 296 downloads/day before any community launch. People are apparently searching for this.
+What surprised me: ~235 downloads/day (1,650+ last week) before any community launch. People are apparently searching for this.
 
 `npx @aslomon/effectum` — open source, MIT
 
@@ -84,7 +84,7 @@ What I learned building this:
 - **Quality gates need to be non-negotiable.** The moment you make them optional, they stop working as feedback signals.
 - **AGENTS.md is becoming the ecosystem standard.** Added `--output-format agents-md` in v0.12.0 for compatibility with multi-agent setups (GSD convention).
 
-Stack: Node.js, CommonJS, zero runtime dependencies for the core. 202 tests.
+Stack: Node.js, CommonJS, zero runtime dependencies for the core. 539 tests.
 
 `npx @aslomon/effectum` | [github.com/aslomon/effectum](https://github.com/aslomon/effectum) | MIT
 
