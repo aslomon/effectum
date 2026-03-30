@@ -140,6 +140,64 @@
 
 ---
 
+### 2026-03-30 — Batch 4 (aus 07:30 Cron)
+
+> **Externe Signale:** Keine neuen Claude Code Releases seit v2.1.86 (2026-03-27) — vollständig in Batch 2+3 abgedeckt.  
+> **Interne Signale:** Effectum [Unreleased] (2026-03-28) enthält Namespace-Reorganisation mit 35+ umbenannten Commands. Drei Findings:
+
+---
+
+#### #014 — Migrations-Guide fehlt für v0.16 Namespace-Reorganisation
+
+| Feld | Inhalt |
+| ---- | ------ |
+| **Datum** | 2026-03-30 |
+| **Signal** | v0.16 + Unreleased: 35+ Commands umbenannt (`/setup` → `effectum:setup`, `/tdd` → `effect:dev:tdd` etc.). Deprecated-Aliases bis v0.20 aktiv — aber kein `MIGRATION.md` oder Upgrade-Guide für bestehende Nutzer |
+| **Quelle** | Repo (CHANGELOG.md Unreleased + system/commands/README.md Deprecation Table) |
+| **Bereich** | Docs, Setup |
+| **Entscheidung** | `spec` |
+| **Priorität** | P1 |
+| **Aktion** | `MIGRATION.md` in Repo-Root erstellen: Alte → neue Command-Namen, wann Aliases weg sind, warum der Wechsel passiert ist. Ggf. auch in README.md prominent verlinken |
+| **Roadmap** | `v0.17` |
+| **Confidence** | hoch |
+| **Status** | ⏳ offen |
+
+---
+
+#### #015 — Deprecation-Timeline Inkonsistenz: v0.19 vs. v0.20
+
+| Feld | Inhalt |
+| ---- | ------ |
+| **Datum** | 2026-03-30 |
+| **Signal** | CHANGELOG Unreleased erwähnt Removal-Notice für v0.19, README Deprecation-Table sagt v0.20 — Widerspruch in derselben Release |
+| **Quelle** | Repo (CHANGELOG.md Unreleased vs. system/commands/README.md) |
+| **Bereich** | Docs |
+| **Entscheidung** | `docs-only` |
+| **Priorität** | P2 |
+| **Aktion** | Beide Dateien angleichen — CHANGELOG-Unreleased-Text auf v0.20 korrigieren (oder README auf v0.19 falls das die echte Entscheidung ist) |
+| **Roadmap** | `none` |
+| **Confidence** | hoch |
+| **Status** | ⏳ offen |
+
+---
+
+#### #016 — `effort`-Feld in Command-Frontmatter nicht in Frontmatter-Tests abgedeckt
+
+| Feld | Inhalt |
+| ---- | ------ |
+| **Datum** | 2026-03-30 |
+| **Signal** | Unreleased: `effort: "high"` als optionales Feld zu `/ralph-loop` und `/orchestrate` hinzugefügt — `test/frontmatter.test.js` (389 Tests) validiert nur `name`, `description`, `allowed-tools`. Unbekannte Felder könnten Warnings oder false positives erzeugen |
+| **Quelle** | Repo (CHANGELOG.md Unreleased + test/frontmatter.test.js implied) |
+| **Bereich** | Config, Docs |
+| **Entscheidung** | `docs-only` |
+| **Priorität** | P2 |
+| **Aktion** | Frontmatter-Schema-Spec um optionale Felder (`effort`, ggf. `tags`) ergänzen; Frontmatter-Tests auf "erlaubte optionale Felder"-Whitelist prüfen |
+| **Roadmap** | `none` |
+| **Confidence** | mittel |
+| **Status** | ⏳ offen |
+
+---
+
 ### 2026-03-28 — Batch 2 (aus 07:30 Cron, Claude Code v2.1.86)
 
 ---
@@ -264,9 +322,9 @@
 | **Entscheidung** | `spec` |
 | **Priorität** | P1 |
 | **Aktion** | Spec: `/ralph-loop`-Headless-Mode mit PreToolUse-Pattern für vollautomatische CI-Runs ohne User-Approve-Unterbrechung; Hook-Template-Beispiel erstellen |
-| **Roadmap** | `v0.17` |
+| **Roadmap** | `v0.19` |
 | **Confidence** | mittel-hoch |
-| **Status** | ⏳ offen |
+| **Status** | 🔄 Spec erstellt: `docs/prds/intake-012-headless-ci-mode.md` (2026-03-30) |
 
 ---
 
