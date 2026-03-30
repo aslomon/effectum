@@ -1,7 +1,7 @@
-# Dev.to Article Draft — Effectum v0.17.0
+# Dev.to Article Draft — Effectum v0.18.3
 
 > **Status:** Draft — needs Jason review before publishing  
-> **Updated:** 2026-03-29 (v0.17.0, 446 tests, 42 commands)  
+> **Updated:** 2026-03-30 (v0.18.3, 539 tests, effect: / effectum: namespaces)  
 > **Target:** dev.to/@aslomon  
 > **Tags:** claudecode, ai, productivity, tooling
 
@@ -17,7 +17,7 @@
 
 When I started using Claude Code seriously, I had a problem: I knew the tools were powerful, but I didn't know *which* tool to reach for, *when*. Type `/effect:dev:plan`? `/effect:dev:tdd`? `/ralph-loop`? Read the docs again?
 
-I built Effectum to solve this. And in v0.17.0, I finally added the thing that makes it click: `/effect:next`.
+I built Effectum to solve this. And it now has the thing that makes it click: `/effect:next`.
 
 ---
 
@@ -55,29 +55,29 @@ Three safety mechanisms for long runs:
 
 ---
 
-### What's new in v0.17.0
+### What Effectum gives you
 
-**Entry point.** `npx @aslomon/effectum` now installs a `/effectum` command with `/help` and `/effect:next` aliases. One place to start, regardless of where you are in a project.
+**Entry point.** `npx @aslomon/effectum` installs a full command system. In an existing project it auto-detects your setup and updates. In a new project it asks 7 questions and configures everything in 30 seconds.
 
-**Cleaner names.** `/effect:dev:run` works like `/effect:dev:tdd`. `/effect:dev:stop` like `/effect:dev:stop`. `/effect:dev:save` like `/effect:dev:save`. The commands you reach for constantly are now one word.
+**Two namespaces, one workflow.** v0.18 introduced `effect:` (short, daily use) and `effectum:` (explicit, scripting). `/effect:dev:run` replaces `/ralph-loop` as the daily driver. `/effect:next` tells you what to do next. `/effectum:status` shows a project dashboard.
 
-**Context init.** `/effectum:init` is a 7-question interview that populates your `CLAUDE.md` with project-specific context — domain terminology, architecture decisions, critical areas, tech debt. Everything Claude needs to avoid generic responses. Takes 5 minutes, saves hours.
+**Context init.** `/effectum:context:init` is a 7-question interview that populates your `CLAUDE.md` with project-specific context — domain terminology, architecture decisions, critical areas, tech debt. Everything Claude needs to avoid generic responses.
 
-**PRD improvements.** `/effect:prd:new` now detects overlap with existing PRDs in Step 2, reads CLAUDE.md sentinel for domain context, and recommends `/ralph-loop` as primary next step for agentic workflows.
+**PRD improvements.** `/effect:prd:new` detects overlap with existing PRDs, reads CLAUDE.md sentinel for domain context, and recommends `/effect:dev:run` as primary next step for agentic workflows.
 
 **`/effectum:explore`.** Spawns 4 parallel analysis agents that produce 7 knowledge documents in `knowledge/codebase/`: architecture, stack, conventions, testing strategy, concerns, integrations. Use it on any unfamiliar codebase before you start building.
 
-**`/effect:dev:diagnose`.** When a loop fails, `/effect:dev:diagnose` reads HANDOFF.md, STUCK.md, loop-state, metrics, and git log. Classifies the failure mode, analyzes root cause, writes `FORENSICS-{date}.md` with recommended next steps.
+**`/effect:dev:diagnose`.** When a loop fails, reads HANDOFF.md, STUCK.md, loop-state, metrics, and git log. Classifies the failure mode, analyzes root cause, writes `FORENSICS-{date}.md` with recommended next steps.
 
 ---
 
 ### Numbers
 
-- 42 commands (up from 31 in v0.16.0)
-- 446 tests
-- 7 stack presets (Next.js+Supabase, FastAPI, Django, Go+Echo, Flutter+Firebase, Swift/SwiftUI, generic)
-- 3 autonomy levels: Conservative, Standard, Full Autonomy (overnight)
+- 539 tests (0 failing)
+- 8 stack presets (Next.js+Supabase, FastAPI, Django, Go+Echo, Flutter+Firebase, Swift/SwiftUI, loop-worker, generic)
+- 3 autonomy levels: Conservative, Standard, Full Autonomy (overnight `/loop`)
 - Works with Agent Teams for parallel multi-domain builds
+- ~3,200+ npm installs in March 2026
 
 ---
 
@@ -105,4 +105,4 @@ It's MIT licensed. `github.com/aslomon/effectum`. If you're using Claude Code se
 
 ---
 
-*This is a personal project — I use it daily. v0.17.0 is stable with 446 passing tests. Feedback welcome.*
+*This is a personal project — I use it daily. v0.18.3 is stable with 539 passing tests. Feedback welcome.*

@@ -7,9 +7,95 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.18.3] - 2026-03-29
+
+### Fixed
+
+- **Internal Namespace Consistency** — All internal cross-references within `effect:/effectum:` command files updated to use new canonical namespace names. No more old command names referenced internally.
+
+## [0.18.2] - 2026-03-29
+
+### Fixed
+
+- **Deprecated Aliases Execute Full Command** — Deprecated aliases now include complete command content (not just a redirect banner), so old command names work identically to new ones. Deprecation notice shown, but full functionality preserved.
+
+## [0.18.1] - 2026-03-29
+
+### Fixed
+
+- **Thin Redirects for Deprecated Aliases** — Deprecated command aliases converted from duplicated content to thin redirects. Content now exists only once at the new canonical location; aliases simply include the target file.
+
+## [0.18.0] - 2026-03-29
+
 ### Added
 
-- **Command Entry Point & Smart Router (2026-03-28)** — New `/effectum` entry point with `/help` alias; smart `/next` router that reads project state and recommends the single best next action.
+- **Namespace Clarity** — New dual-namespace command structure: `effect/` (short, daily use) and `effectum/` (explicit, scripting). All commands available under both namespaces.
+- **`effect/dev/run`** — Primary entry point for autonomous loop. Replaces `/ralph-loop` as the recommended daily driver.
+- **`effect/dev/plan`, `effect/dev/review`, `effect/dev/fix`, `effect/dev/refactor`, `effect/dev/e2e`, `effect/dev/save`, `effect/dev/stop`, `effect/dev/diagnose`, `effect/dev/orchestrate`** — Full `effect/dev/*` namespace covering the core workflow.
+- **`effect/design`** — Design specification command under new namespace.
+- **`effectum:status` Dashboard** — New status dashboard command showing project health, open tasks, and effectum configuration.
+- **Ralph Loop as Permanent Command** — `/ralph-loop` is now a permanent alias (no deprecation planned), reinforced as the canonical autonomous loop.
+- **~38 Deprecated Aliases** — Legacy short-form aliases marked deprecated with removal notices; new namespaced forms are canonical.
+
+### Changed
+
+- **README Command Index** — Restructured with new namespace hierarchy, updated all command references.
+- **Command Files Updated** — All `.claude/commands/` files updated for namespace consistency.
+- **`.effectum/` Templates Synced** — Templates updated to reflect v0.18 namespace structure.
+
+## [0.17.8] - 2026-03-29
+
+### Fixed
+
+- **Stop Hook Ralph Loop Recognition** — Stop hook prompt now detects Ralph Loop completion via `<promise>...</promise>` tag and responds `{"ok": true}` immediately, preventing infinite loop on finished builds. Also recognizes "ralph"/"iteration" keywords in loop context.
+
+## [0.17.7] - 2026-03-29
+
+### Changed
+
+- **Auto Mode as Default for Full Autonomy** — `full` autonomy level now uses `auto` mode as default (safer than `bypassPermissions`, aligns with Claude Code Auto Mode).
+
+## [0.17.6] - 2026-03-29
+
+### Fixed
+
+- **Autonomy Detection from All Claude Code Modes** — Detect autonomy level from both `defaultMode` and `allow` list, supporting all 6 Claude Code permission modes.
+
+## [0.17.5] - 2026-03-29
+
+### Fixed
+
+- **Autonomy Level Detection** — `effectum update` now correctly infers `autonomyLevel` from existing `settings.json` `defaultMode` when creating `.effectum.json` for legacy projects.
+
+## [0.17.4] - 2026-03-29
+
+### Fixed
+
+- **Update Routing** — `bin/effectum.js` now correctly calls `update.js` `main()` when routing detected projects to the update flow.
+
+## [0.17.3] - 2026-03-29
+
+### Fixed
+
+- **Effectum Detection** — Projects are now detected by unique Effectum-specific commands (`ralph-loop`, `prd/`) rather than generic `CLAUDE.md` presence, avoiding false positives.
+
+## [0.17.2] - 2026-03-29
+
+### Fixed
+
+- **Legacy Project Support** — Projects with Effectum commands but no `.effectum.json` are now correctly detected and upgraded; config is inferred from existing setup during update.
+
+## [0.17.1] - 2026-03-29
+
+### Fixed
+
+- **Auto-detect Update** — `npx @aslomon/effectum` in an existing Effectum project now automatically routes to `update` instead of the full installer.
+
+## [0.17.0] - 2026-03-28
+
+### Added
+
+- **Command Entry Point & Smart Router** — New `/effectum` entry point with `/help` alias; smart `/next` router that reads project state and recommends the single best next action.
 - **Namespace Reorganization (2026-03-28)** — Commands renamed for clarity: `/workshop:init` → `/project:init`, `/workshop:archive` → `/project:archive`, `/effectum:init` → `/context:init`. Deprecated old names still work with v0.19 removal notice.
 - **Command Aliases (2026-03-28)** — New convenience aliases: `/run` (→ `/tdd`), `/stop` (→ `/cancel-ralph`), `/save` (→ `/checkpoint`), `/diagnose` (→ `/forensics`), `/explore` (→ `/map-codebase`).
 - **Restructured Command README (2026-03-28)** — Updated `.claude/commands/README.md` with new hierarchical navigation: entry point (`/effectum`, `/help`, `/next`), core workflow, quality gates, git operations, loop control, orchestration, and setup categories.
