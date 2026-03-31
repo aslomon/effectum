@@ -19,6 +19,11 @@ const {
 } = require("./lib/template");
 const { AUTONOMY_MAP, FORMATTER_MAP } = require("./lib/constants");
 const { ensureDir, deepMerge, findRepoRoot } = require("./lib/utils");
+const {
+  applyHeadlessHook,
+  installHeadlessScript,
+  isHeadlessEnabled,
+} = require("./lib/headless");
 const { initClack } = require("./lib/ui");
 const { recommend } = require("./lib/recommendation");
 
@@ -206,6 +211,13 @@ function reRenderTemplates(config, targetDir, repoRoot) {
     }
   }
 
+  // Apply headless CI mode hook
+  const headless = isHeadlessEnabled(config);
+  applyHeadlessHook(settingsObj, headless);
+  if (headless) {
+    installHeadlessScript(repoRoot, targetDir);
+  }
+
   const settingsDest = path.join(claudeDir, "settings.json");
   let existing = {};
   if (fs.existsSync(settingsDest)) {
@@ -336,11 +348,17 @@ async function main() {
   if (!config) {
     // Legacy project: has .claude/commands but no .effectum.json
     // Infer minimal config from existing setup
-    const hasRalph = fs.existsSync(path.join(targetDir, ".claude", "commands", "ralph-loop.md"));
-    const hasPrd = fs.existsSync(path.join(targetDir, ".claude", "commands", "prd"));
+    const hasRalph = fs.existsSync(
+      path.join(targetDir, ".claude", "commands", "ralph-loop.md"),
+    );
+    const hasPrd = fs.existsSync(
+      path.join(targetDir, ".claude", "commands", "prd"),
+    );
     const hasCommands = hasRalph || hasPrd;
     if (hasCommands) {
-      p.log.warn("No .effectum.json found — inferring config from existing setup.");
+      p.log.warn(
+        "No .effectum.json found — inferring config from existing setup.",
+      );
       const pkgPath = path.join(targetDir, "package.json");
       let projectName = path.basename(targetDir);
       let stack = "generic";
@@ -349,7 +367,10 @@ async function main() {
           const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"));
           projectName = pkg.name || projectName;
           const deps = { ...pkg.dependencies, ...pkg.devDependencies };
-          if (deps["next"]) stack = deps["@supabase/supabase-js"] ? "nextjs-supabase" : "nextjs";
+          if (deps["next"])
+            stack = deps["@supabase/supabase-js"]
+              ? "nextjs-supabase"
+              : "nextjs";
           else if (deps["fastapi"] || deps["django"]) stack = "python";
         } catch (_) {}
       }
@@ -375,7 +396,10 @@ async function main() {
             // defaultMode: "default" or unset — check allow list
             if (allowStr.includes("Bash(*)") && allowStr.includes("Write(*)")) {
               autonomyLevel = "standard";
-            } else if (allowStr.includes("Bash(*)") || allowStr.includes("Write(*)")) {
+            } else if (
+              allowStr.includes("Bash(*)") ||
+              allowStr.includes("Write(*)")
+            ) {
               autonomyLevel = "standard";
             } else {
               autonomyLevel = "conservative";

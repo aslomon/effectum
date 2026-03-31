@@ -26,7 +26,12 @@ const fs = require("fs");
 const path = require("path");
 const os = require("os");
 const { spawnSync, spawn } = require("child_process");
-const { detectAll, detectionToStackKey, loadPresets, detectAgentsMd } = require("./lib/detect");
+const {
+  detectAll,
+  detectionToStackKey,
+  loadPresets,
+  detectAgentsMd,
+} = require("./lib/detect");
 const { loadStackPreset } = require("./lib/stack-parser");
 const {
   buildSubstitutionMap,
@@ -474,6 +479,18 @@ function generateConfiguredFiles(config, targetDir, repoRoot, isGlobal) {
     }
   }
 
+  // Apply headless CI mode hook
+  const {
+    applyHeadlessHook,
+    installHeadlessScript,
+    isHeadlessEnabled,
+  } = require("./lib/headless");
+  const headless = isHeadlessEnabled(config);
+  applyHeadlessHook(settingsObj, headless);
+  if (headless) {
+    installHeadlessScript(repoRoot, targetDir);
+  }
+
   // Merge with existing settings if present
   const settingsDest = path.join(claudeDir, "settings.json");
   let existing = {};
@@ -718,7 +735,11 @@ Options:
       generateConfiguredFiles(config, targetDir, repoRoot, isGlobal);
 
       // Generate AGENTS.md if explicitly requested, or if AGENTS.md already exists in project
-      if (outputFormat === "agents-md" || outputFormat === "both" || agentsMdDetect.agentsMdFound) {
+      if (
+        outputFormat === "agents-md" ||
+        outputFormat === "both" ||
+        agentsMdDetect.agentsMdFound
+      ) {
         generateAgentsMd(config, targetDir, repoRoot);
       }
 
