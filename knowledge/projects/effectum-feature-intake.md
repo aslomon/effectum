@@ -344,3 +344,145 @@
 | **Status** | ⏳ offen |
 
 ---
+
+---
+
+### 2026-04-01 — Batch 4 (aus 07:30 Cron, Claude Code v2.1.87–v2.1.89)
+
+---
+
+#### #014 — `"defer"` Permission Decision in PreToolUse Hooks (v2.1.89)
+
+| Feld | Inhalt |
+| ---- | ------ |
+| **Datum** | 2026-04-01 |
+| **Signal** | v2.1.89: Neues `"defer"` Permission Decision in `PreToolUse`-Hooks — headless Sessions können an einem Tool-Call pausieren und mit `-p --resume` fortgesetzt werden, sodass der Hook neu evaluiert wird |
+| **Quelle** | Claude Code Changelog v2.1.89 |
+| **Bereich** | Hooks, Headless-Flows, ralph-loop |
+| **Entscheidung** | `spec` |
+| **Priorität** | P1 |
+| **Aktion** | Spec: Effectum Hook-Templates für `"defer"`-Pattern ausbauen; direkte Ergänzung zu #012 (headless CI mode) — ermöglicht granulare Pause/Resume-Kontrolle in `effect:dev:run`; PRD erstellen in `docs/prds/intake-014-defer-hook-pattern.md` |
+| **Roadmap** | `v0.17` |
+| **Confidence** | hoch |
+| **Status** | ⏳ offen |
+
+---
+
+#### #015 — `PermissionDenied` Hook nach Auto-Mode-Classifier-Denials (v2.1.89)
+
+| Feld | Inhalt |
+| ---- | ------ |
+| **Datum** | 2026-04-01 |
+| **Signal** | v2.1.89: Neuer `PermissionDenied`-Hook der nach Auto-Mode-Classifier-Denials feuert — Rückgabe von `{retry: true}` erlaubt dem Model einen erneuten Versuch |
+| **Quelle** | Claude Code Changelog v2.1.89 |
+| **Bereich** | Hooks, ralph-loop, Resilience |
+| **Entscheidung** | `spec` |
+| **Priorität** | P1 |
+| **Aktion** | Standard-Retry-Hook als Effectum-Template anbieten; in ralph-loop-Resilience-Doku einbauen; Spec in `docs/prds/intake-015-permission-denied-hook.md` |
+| **Roadmap** | `v0.17` |
+| **Confidence** | hoch |
+| **Status** | ⏳ offen |
+
+---
+
+#### #016 — `MCP_CONNECTION_NONBLOCKING=true` für `-p` Mode (v2.1.89)
+
+| Feld | Inhalt |
+| ---- | ------ |
+| **Datum** | 2026-04-01 |
+| **Signal** | v2.1.89: Neue Env-Var `MCP_CONNECTION_NONBLOCKING=true` überspringt MCP-Connection-Wait in `-p`-Mode; `--mcp-config` Server-Verbindungen auf 5s gedeckelt statt blockend |
+| **Quelle** | Claude Code Changelog v2.1.89 |
+| **Bereich** | MCP, Config, Headless, ralph-loop |
+| **Entscheidung** | `implement-now` |
+| **Priorität** | P1 |
+| **Aktion** | In Effectum MCP-Setup-Templates und `effect:dev:run`-Docs dokumentieren; `MCP_CONNECTION_NONBLOCKING=true` als empfohlene Env-Var für headless Starts in `system/stacks/` eintragen |
+| **Roadmap** | `v0.17` |
+| **Confidence** | hoch |
+| **Status** | ⏳ offen |
+
+---
+
+#### #017 — Named Subagents in `@`-Mention Typeahead (v2.1.89)
+
+| Feld | Inhalt |
+| ---- | ------ |
+| **Datum** | 2026-04-01 |
+| **Signal** | v2.1.89: Named Subagents erscheinen in `@`-Mention Typeahead-Vorschlägen — bessere UX für Teams/Orchestrate-Workflows |
+| **Quelle** | Claude Code Changelog v2.1.89 |
+| **Bereich** | Teams, Orchestrate |
+| **Entscheidung** | `watchlist` |
+| **Priorität** | P2 |
+| **Aktion** | Prüfen ob Effectum Agent-Team-Definitionen für Named Subagents optimiert werden können; Benennungskonventionen für Sub-Agents in Teams-Docs empfehlen |
+| **Roadmap** | `later` |
+| **Confidence** | mittel |
+| **Status** | ⏳ offen |
+
+---
+
+#### #018 — `TaskCreated` Hook Event offiziell dokumentiert (v2.1.89)
+
+| Feld | Inhalt |
+| ---- | ------ |
+| **Datum** | 2026-04-01 |
+| **Signal** | v2.1.89: `TaskCreated` Hook Event (mit blocking behavior) jetzt offiziell dokumentiert — ermöglicht Pre-Task-Hooks in Agent Teams |
+| **Quelle** | Claude Code Changelog v2.1.89 |
+| **Bereich** | Teams, Hooks, Orchestrate |
+| **Entscheidung** | `spec` |
+| **Priorität** | P1 |
+| **Aktion** | Spec: `TaskCreated`-Hook für Effectum Agent Teams — Kontext-Injection, Logging, Pre-Flight-Checks vor jedem Subagent-Task; Spec in `docs/prds/intake-018-taskcreated-hook.md` |
+| **Roadmap** | `v0.17` |
+| **Confidence** | hoch |
+| **Status** | ⏳ offen |
+
+---
+
+#### #019 — Hook Output > 50K Zeichen → automatisch auf Disk (v2.1.89)
+
+| Feld | Inhalt |
+| ---- | ------ |
+| **Datum** | 2026-04-01 |
+| **Signal** | v2.1.89: Hook-Output über 50K Zeichen wird automatisch auf Disk gespeichert; nur Datei-Path + Preview wird in Context injiziert |
+| **Quelle** | Claude Code Changelog v2.1.89 |
+| **Bereich** | Hooks, Templates |
+| **Entscheidung** | `docs-only` |
+| **Priorität** | P2 |
+| **Aktion** | Effectum Hook-Templates: Warnung + Best-Practice ergänzen — Hook-Output kompakt halten; Disk-Fallback als Feature dokumentieren |
+| **Roadmap** | `none` |
+| **Confidence** | hoch |
+| **Status** | ⏳ offen |
+
+---
+
+#### #020 — `showThinkingSummaries` jetzt `false` by default (v2.1.89)
+
+| Feld | Inhalt |
+| ---- | ------ |
+| **Datum** | 2026-04-01 |
+| **Signal** | v2.1.89: Thinking summaries in interaktiven Sessions nicht mehr standardmäßig generiert — benötigt `showThinkingSummaries: true` in settings.json |
+| **Quelle** | Claude Code Changelog v2.1.89 |
+| **Bereich** | Config, Setup-Templates |
+| **Entscheidung** | `docs-only` |
+| **Priorität** | P2 |
+| **Aktion** | Effectum settings.json-Template: `showThinkingSummaries: true` als Opt-in kommentieren; Breaking-Change-Hinweis für bestehende Nutzer |
+| **Roadmap** | `none` |
+| **Confidence** | hoch |
+| **Status** | ⏳ offen |
+
+---
+
+#### #021 — Autocompact Thrash Loop Fix (v2.1.89)
+
+| Feld | Inhalt |
+| ---- | ------ |
+| **Datum** | 2026-04-01 |
+| **Signal** | v2.1.89: Autocompact thrash loop gefixed — erkennt wenn Context nach 3x Compact sofort wieder voll läuft, stoppt mit actionable error |
+| **Quelle** | Claude Code Changelog v2.1.89 |
+| **Bereich** | ralph-loop, Config |
+| **Entscheidung** | `watchlist` |
+| **Priorität** | P2 |
+| **Aktion** | In `effect:dev:diagnose` als bekanntes Failure-Pattern dokumentieren; Hinweis auf context-management in langen ralph-loop-Runs ergänzen |
+| **Roadmap** | `later` |
+| **Confidence** | hoch |
+| **Status** | ⏳ offen |
+
+---
