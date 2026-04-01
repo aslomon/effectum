@@ -1422,6 +1422,14 @@ Test fails
 | **Playwright**          | Browser automation, E2E testing                  |
 | **Sequential Thinking** | Structured reasoning                             |
 
+> **Headless / `-p` Mode:** Set `MCP_CONNECTION_NONBLOCKING=true` to skip MCP connection wait during headless starts. Without this, `--mcp-config` server connections block up to 30s. With it, connections are attempted in the background (capped at 5s) — significantly faster Ralph Loop starts in CI.
+>
+> ```bash
+> MCP_CONNECTION_NONBLOCKING=true claude --print /ralph-loop
+> ```
+>
+> Added in Claude Code v2.1.89. Recommended for all Effectum headless/CI setups.
+
 ### Specialized Agents (automatically selected)
 
 | Agent               | Use Case                        |
