@@ -443,3 +443,23 @@ For `Stop` hooks with `type: prompt`, test with intentionally incomplete work to
 ### 5. Make it async if appropriate
 
 If the hook does not need to block the tool call (e.g., logging, notifications), set `"async": true` to avoid adding latency to tool execution.
+
+---
+
+## Claude Code v2.1.89 — Notable Settings Changes
+
+### `showThinkingSummaries` (Breaking Change in v2.1.89)
+
+As of Claude Code v2.1.89, `showThinkingSummaries` defaults to **`false`** in interactive sessions.  
+Effectum's `settings.json.tmpl` sets it to **`true`** explicitly to preserve the pre-v2.1.89 behaviour.
+
+If you prefer silent thinking (no summaries in the UI), remove the line or set it to `false`:
+
+```json
+{
+  "showThinkingSummaries": false
+}
+```
+
+**Why Effectum enables it by default:**  
+Thinking summaries help developers follow agent reasoning during long ralph-loop iterations. Effectum's workflow assumes you want visibility into what Claude is reasoning about.
