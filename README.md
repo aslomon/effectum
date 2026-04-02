@@ -47,6 +47,12 @@ This isn't a new idea — it's the best combination of existing ideas I've found
 
 ---
 
+## Compatibility
+
+> **Note:** Claude Haiku 3 (claude-3-haiku-20240307) is deprecated by Anthropic as of April 19, 2026. Effectum users relying on Haiku 3 as a sub-agent or cost-saving model should migrate to claude-haiku-4-5 before that date.
+
+---
+
 ## 🚀 Quick Start
 
 ```bash
@@ -103,23 +109,23 @@ claude
 
 One command. Everything you need for autonomous Claude Code development.
 
-| What                          | Details |
-| ----------------------------- | ------- |
-| **Intelligent Configurator**  | Stack auto-detection, package manager config, 8 quick presets, 16 languages |
+| What                          | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Intelligent Configurator**  | Stack auto-detection, package manager config, 8 quick presets, 16 languages                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | **32 primary commands**       | `/effectum`, `effectum:setup`, `effectum:init`, `effectum:status`, `effectum:archive`, `effectum:onboard`, `effectum:onboard:review`, `effectum:explore`, `effect:next`, `effect:design`, `effect:prd:new`, `effect:prd:express`, `effect:prd:review`, `effect:prd:handoff`, `effect:prd:update`, `effect:prd:discuss`, `effect:prd:decompose`, `effect:prd:resume`, `effect:prd:status`, `effect:prd:network-map`, `effect:dev:run`, `effect:dev:stop`, `effect:dev:save`, `effect:dev:diagnose`, `effect:dev:plan`, `effect:dev:tdd`, `effect:dev:verify`, `effect:dev:review`, `effect:dev:e2e`, `effect:dev:fix`, `effect:dev:refactor`, `effect:dev:orchestrate` |
-| **Permanent aliases**         | `/ralph-loop` → `effect:dev:run`, `/help` → `/effectum` |
-| **Update Command**            | `npx @aslomon/effectum update` — add new commands, refresh templates, preserve config |
-| **PRD Lifecycle**             | Frontmatter, changelog, semantic diff, delta handoffs, task registry, network map auto-sync |
-| **Project Onboarding**        | 6 parallel analysis agents, 7-point self-test loop, per-area PRDs, interactive HTML network map |
-| **Design System Generation**  | `effect:design` generates DESIGN.md — color tokens, typography, component specs, constraints |
-| **25 Agent Specializations**  | Pre-configured agent roles with distinct behaviors for planning, TDD, review, security, and more |
-| **43+ Skills**                | Reusable capability blocks attached to agent roles |
-| **7 Stack Presets + 8 Quick** | Next.js+Supabase, Python+FastAPI, Swift/SwiftUI, Go+Echo, Django+PostgreSQL, Rust+Actix, Generic + Firebase, Prisma, Flutter… |
-| **YAML Frontmatter**          | All command files have machine-readable metadata (`name`, `description`, `allowed-tools`) |
-| **Quality gates**             | 8 automated checks (build, types, lint, tests, security, etc.) |
-| **Foundation Hooks**          | Always-on: secret detection, TDD enforcement, guardrails |
-| **Extensible**                | JSON-based tool definitions + detection rules, community presets + blocks |
-| **446 tests**                 | Comprehensive test suite covering configurator, templates, commands, frontmatter, and more |
+| **Permanent aliases**         | `/ralph-loop` → `effect:dev:run`, `/help` → `/effectum`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| **Update Command**            | `npx @aslomon/effectum update` — add new commands, refresh templates, preserve config                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| **PRD Lifecycle**             | Frontmatter, changelog, semantic diff, delta handoffs, task registry, network map auto-sync                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| **Project Onboarding**        | 6 parallel analysis agents, 7-point self-test loop, per-area PRDs, interactive HTML network map                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| **Design System Generation**  | `effect:design` generates DESIGN.md — color tokens, typography, component specs, constraints                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| **25 Agent Specializations**  | Pre-configured agent roles with distinct behaviors for planning, TDD, review, security, and more                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| **43+ Skills**                | Reusable capability blocks attached to agent roles                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| **7 Stack Presets + 8 Quick** | Next.js+Supabase, Python+FastAPI, Swift/SwiftUI, Go+Echo, Django+PostgreSQL, Rust+Actix, Generic + Firebase, Prisma, Flutter…                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| **YAML Frontmatter**          | All command files have machine-readable metadata (`name`, `description`, `allowed-tools`)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| **Quality gates**             | 8 automated checks (build, types, lint, tests, security, etc.)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| **Foundation Hooks**          | Always-on: secret detection, TDD enforcement, guardrails                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| **Extensible**                | JSON-based tool definitions + detection rules, community presets + blocks                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| **446 tests**                 | Comprehensive test suite covering configurator, templates, commands, frontmatter, and more                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 
 ---
 
@@ -131,26 +137,26 @@ Effectum now has a cleaner mental model.
 
 Use these before or around development. They set up the environment, understand the codebase, and tell you the current state.
 
-| Command | What it does |
-| ------- | ------------ |
-| `effectum:setup` | Install Effectum workflow into a project |
-| `effectum:init` | Teach Claude about your domain and project conventions |
-| `effectum:status` | Project-health dashboard: version, stack, PRDs, loop status |
-| `effectum:archive` | Archive a completed project |
-| `effectum:onboard` | Full codebase analysis with 6 parallel agents + self-test loop |
-| `effectum:onboard:review` | Re-run onboarding review after significant changes |
-| `effectum:explore` | Fast brownfield analysis with 4 parallel agents and structured docs |
+| Command                   | What it does                                                        |
+| ------------------------- | ------------------------------------------------------------------- |
+| `effectum:setup`          | Install Effectum workflow into a project                            |
+| `effectum:init`           | Teach Claude about your domain and project conventions              |
+| `effectum:status`         | Project-health dashboard: version, stack, PRDs, loop status         |
+| `effectum:archive`        | Archive a completed project                                         |
+| `effectum:onboard`        | Full codebase analysis with 6 parallel agents + self-test loop      |
+| `effectum:onboard:review` | Re-run onboarding review after significant changes                  |
+| `effectum:explore`        | Fast brownfield analysis with 4 parallel agents and structured docs |
 
 ### `effect:*` — Pipeline Sphere
 
 Use these while building. They move a feature from idea to spec to production-ready code.
 
-| Area | Commands |
-| ---- | -------- |
-| **Navigation** | `effect:next` |
-| **PRD pipeline** | `effect:prd:new`, `effect:prd:express`, `effect:prd:review`, `effect:prd:handoff`, `effect:prd:update`, `effect:prd:discuss`, `effect:prd:decompose`, `effect:prd:resume`, `effect:prd:status`, `effect:prd:network-map` |
+| Area             | Commands                                                                                                                                                                                                                                          |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Navigation**   | `effect:next`                                                                                                                                                                                                                                     |
+| **PRD pipeline** | `effect:prd:new`, `effect:prd:express`, `effect:prd:review`, `effect:prd:handoff`, `effect:prd:update`, `effect:prd:discuss`, `effect:prd:decompose`, `effect:prd:resume`, `effect:prd:status`, `effect:prd:network-map`                          |
 | **Dev pipeline** | `effect:dev:run`, `effect:dev:stop`, `effect:dev:save`, `effect:dev:diagnose`, `effect:dev:plan`, `effect:dev:tdd`, `effect:dev:verify`, `effect:dev:review`, `effect:dev:e2e`, `effect:dev:fix`, `effect:dev:refactor`, `effect:dev:orchestrate` |
-| **Standalone** | `effect:design`, `effect:next` |
+| **Standalone**   | `effect:design`, `effect:next`                                                                                                                                                                                                                    |
 
 > [!TIP]
 > Old names still work until v0.20, but the documentation now uses the canonical v0.18 namespace everywhere.
@@ -307,56 +313,56 @@ The namespace is now simple: **System** with `effectum:*`, **Pipeline** with `ef
 
 ### System Commands (`effectum:*`)
 
-| Command | What it does |
-| ------- | ------------ |
-| `effectum:setup` | Install Effectum workflow into a project |
-| `effectum:init` | Interactive interview to populate project context in `CLAUDE.md` |
-| `effectum:status` | Project dashboard: installed version, stack, autonomy level, PRDs, health |
-| `effectum:onboard` | Full codebase analysis with 6 parallel agents + self-test loop |
-| `effectum:onboard:review` | Re-run onboarding review after significant changes |
-| `effectum:explore` | 4 parallel agents → 7 structured knowledge docs for brownfield codebases |
-| `effectum:archive` | Archive a completed project |
+| Command                   | What it does                                                              |
+| ------------------------- | ------------------------------------------------------------------------- |
+| `effectum:setup`          | Install Effectum workflow into a project                                  |
+| `effectum:init`           | Interactive interview to populate project context in `CLAUDE.md`          |
+| `effectum:status`         | Project dashboard: installed version, stack, autonomy level, PRDs, health |
+| `effectum:onboard`        | Full codebase analysis with 6 parallel agents + self-test loop            |
+| `effectum:onboard:review` | Re-run onboarding review after significant changes                        |
+| `effectum:explore`        | 4 parallel agents → 7 structured knowledge docs for brownfield codebases  |
+| `effectum:archive`        | Archive a completed project                                               |
 
 ### Pipeline Commands (`effect:*`)
 
 #### PRD Pipeline (`effect:prd:*`)
 
-| Command | What it does |
-| ------- | ------------ |
-| `effect:prd:new` | Start a new specification (guided workshop) |
-| `effect:prd:express` | Quick PRD from structured input |
-| `effect:prd:discuss` | Deep-dive discussion for a specific PRD |
-| `effect:prd:decompose` | Split large scope into multiple PRDs |
-| `effect:prd:update` | Evolve an existing spec — tracks changes semantically |
-| `effect:prd:review` | Quality check — is this spec ready for implementation? |
-| `effect:prd:handoff` | Delta handoff export for implementation (`--prompt-only` supported) |
-| `effect:prd:resume` | Resume work on an existing project/PRD |
-| `effect:prd:status` | Dashboard of all projects and PRDs |
-| `effect:prd:network-map` | Render PRD dependencies as interactive HTML map |
+| Command                  | What it does                                                        |
+| ------------------------ | ------------------------------------------------------------------- |
+| `effect:prd:new`         | Start a new specification (guided workshop)                         |
+| `effect:prd:express`     | Quick PRD from structured input                                     |
+| `effect:prd:discuss`     | Deep-dive discussion for a specific PRD                             |
+| `effect:prd:decompose`   | Split large scope into multiple PRDs                                |
+| `effect:prd:update`      | Evolve an existing spec — tracks changes semantically               |
+| `effect:prd:review`      | Quality check — is this spec ready for implementation?              |
+| `effect:prd:handoff`     | Delta handoff export for implementation (`--prompt-only` supported) |
+| `effect:prd:resume`      | Resume work on an existing project/PRD                              |
+| `effect:prd:status`      | Dashboard of all projects and PRDs                                  |
+| `effect:prd:network-map` | Render PRD dependencies as interactive HTML map                     |
 
 #### Dev Pipeline (`effect:dev:*`)
 
-| Command | What it does |
-| ------- | ------------ |
-| `effect:dev:plan` | Read spec, explore codebase, produce a plan — **waits for your OK** |
-| `effect:dev:tdd` | Failing test → passing code → refactor → repeat |
-| `effect:dev:verify` | Run all 8 quality gates |
-| `effect:dev:review` | Security audit, architecture review, rating by severity |
-| `effect:dev:e2e` | End-to-end test run with Playwright |
-| `effect:dev:fix` | Targeted fix loop for a specific failing build or test |
-| `effect:dev:refactor` | Clean up code without changing behavior |
-| `effect:dev:run` | Autonomous build loop — writes, tests, fixes, iterates until done |
-| `effect:dev:stop` | Stop the loop cleanly, preserve state |
-| `effect:dev:save` | Snapshot current state (git + test results + notes) |
-| `effect:dev:diagnose` | Post-mortem diagnosis — reads loop artifacts and produces failure report |
-| `effect:dev:orchestrate` | Parallel agent teams (opt-in) |
+| Command                  | What it does                                                             |
+| ------------------------ | ------------------------------------------------------------------------ |
+| `effect:dev:plan`        | Read spec, explore codebase, produce a plan — **waits for your OK**      |
+| `effect:dev:tdd`         | Failing test → passing code → refactor → repeat                          |
+| `effect:dev:verify`      | Run all 8 quality gates                                                  |
+| `effect:dev:review`      | Security audit, architecture review, rating by severity                  |
+| `effect:dev:e2e`         | End-to-end test run with Playwright                                      |
+| `effect:dev:fix`         | Targeted fix loop for a specific failing build or test                   |
+| `effect:dev:refactor`    | Clean up code without changing behavior                                  |
+| `effect:dev:run`         | Autonomous build loop — writes, tests, fixes, iterates until done        |
+| `effect:dev:stop`        | Stop the loop cleanly, preserve state                                    |
+| `effect:dev:save`        | Snapshot current state (git + test results + notes)                      |
+| `effect:dev:diagnose`    | Post-mortem diagnosis — reads loop artifacts and produces failure report |
+| `effect:dev:orchestrate` | Parallel agent teams (opt-in)                                            |
 
 #### Standalone Pipeline Commands
 
-| Command | What it does |
-| ------- | ------------ |
+| Command         | What it does                                                     |
+| --------------- | ---------------------------------------------------------------- |
 | `effect:design` | Generate `DESIGN.md` — color tokens, typography, component specs |
-| `effect:next` | Read project state and recommend the single best next action |
+| `effect:next`   | Read project state and recommend the single best next action     |
 
 > [!TIP]
 > See the full [Command Index](system/commands/README.md) for all commands organized by sphere and namespace.
@@ -432,14 +438,14 @@ effect:dev:diagnose
 
 It reads all available loop artifacts and produces a structured diagnosis report:
 
-| Artifact                    | What it reveals |
-| --------------------------- | --------------- |
-| `HANDOFF.md`                | Context budget stop — what was done, what's left |
-| `STUCK.md`                  | Stuck detection report — the repeated error and diagnosis |
-| `.effectum/loop-state.json` | Last persisted iteration state |
-| `effectum-metrics.json`     | Historical session ledger |
-| `.claude/ralph-loop.local.md` | Internal loop state |
-| `.claude/ralph-blockers.md` | Documented blockers |
+| Artifact                      | What it reveals                                           |
+| ----------------------------- | --------------------------------------------------------- |
+| `HANDOFF.md`                  | Context budget stop — what was done, what's left          |
+| `STUCK.md`                    | Stuck detection report — the repeated error and diagnosis |
+| `.effectum/loop-state.json`   | Last persisted iteration state                            |
+| `effectum-metrics.json`       | Historical session ledger                                 |
+| `.claude/ralph-loop.local.md` | Internal loop state                                       |
+| `.claude/ralph-blockers.md`   | Documented blockers                                       |
 
 The output is a root-cause diagnosis with a recommended next action — whether that's fixing the blocker, resuming from checkpoint, or rewriting a failing test.
 
@@ -476,12 +482,12 @@ This is the right command to run before `effect:dev:run` on a new project, or be
 effectum:explore
 ```
 
-| Agent | Output document |
-| ----- | --------------- |
+| Agent                  | Output document                                    |
+| ---------------------- | -------------------------------------------------- |
 | **ArchitectureMapper** | `ARCHITECTURE.md` — structure, modules, boundaries |
-| **DataFlowMapper** | `DATA-FLOW.md` — how data moves through the system |
-| **APIMapper** | `API-SURFACE.md` — all endpoints, contracts, auth |
-| **DependencyMapper** | `DEPENDENCIES.md` — packages, versions, risk flags |
+| **DataFlowMapper**     | `DATA-FLOW.md` — how data moves through the system |
+| **APIMapper**          | `API-SURFACE.md` — all endpoints, contracts, auth  |
+| **DependencyMapper**   | `DEPENDENCIES.md` — packages, versions, risk flags |
 
 Plus three synthesis documents: `ENTRY-POINTS.md`, `RISK-MAP.md`, and `KNOWLEDGE-INDEX.md`.
 
@@ -574,11 +580,11 @@ When you run `npx @aslomon/effectum update`, the system-managed section is refre
 
 Foundation hooks now support richer configuration:
 
-| Feature | Example |
-| ------- | ------- |
-| **Conditional `if:`** | Run a hook only when specific files are staged |
-| **Multi-glob** | Match multiple file patterns in a single hook rule |
-| **`effort:` level** | Tag commands as `low`, `medium`, or `high` effort for context budgeting |
+| Feature               | Example                                                                 |
+| --------------------- | ----------------------------------------------------------------------- |
+| **Conditional `if:`** | Run a hook only when specific files are staged                          |
+| **Multi-glob**        | Match multiple file patterns in a single hook rule                      |
+| **`effort:` level**   | Tag commands as `low`, `medium`, or `high` effort for context budgeting |
 
 Hooks remain always-active for the three core guardrails (secret detection, TDD enforcement, destructive command blocking). The new features apply to custom hooks you add in `system/hooks/`.
 
@@ -586,16 +592,16 @@ Hooks remain always-active for the three core guardrails (secret detection, TDD 
 
 ### `effect:dev:verify` — Every quality gate, every time
 
-| Gate | What it checks | Standard |
-| ---- | -------------- | -------- |
-| 🔨 Build | Compiles without errors | 0 errors |
-| 📐 Types | Type safety | 0 errors |
-| 🧹 Lint | Clean code style | 0 warnings |
-| 🧪 Tests | Test suite | All pass, 80%+ coverage |
-| 🔒 Security | OWASP vulnerabilities | None found |
-| 🚫 Debug logs | `console.log` in production | 0 occurrences |
-| 🛡️ Type safety | `any` or unsafe casts | None |
-| 📏 File size | Oversized files | Max 300 lines |
+| Gate           | What it checks              | Standard                |
+| -------------- | --------------------------- | ----------------------- |
+| 🔨 Build       | Compiles without errors     | 0 errors                |
+| 📐 Types       | Type safety                 | 0 errors                |
+| 🧹 Lint        | Clean code style            | 0 warnings              |
+| 🧪 Tests       | Test suite                  | All pass, 80%+ coverage |
+| 🔒 Security    | OWASP vulnerabilities       | None found              |
+| 🚫 Debug logs  | `console.log` in production | 0 occurrences           |
+| 🛡️ Type safety | `any` or unsafe casts       | None                    |
+| 📏 File size   | Oversized files             | Max 300 lines           |
 
 ---
 
@@ -652,14 +658,14 @@ $ npx @aslomon/effectum update
 
 The configurator now auto-detects your package manager from lock files and recommends the best option for your ecosystem.
 
-| Lock file detected | Package manager |
-| ------------------ | --------------- |
+| Lock file detected | Package manager    |
+| ------------------ | ------------------ |
 | `pnpm-lock.yaml`   | pnpm (recommended) |
-| `yarn.lock`        | yarn |
-| `bun.lockb`        | bun |
-| `uv.lock`          | uv |
-| `Cargo.lock`       | cargo |
-| `go.sum`           | go |
+| `yarn.lock`        | yarn               |
+| `bun.lockb`        | bun                |
+| `uv.lock`          | uv                 |
+| `Cargo.lock`       | cargo              |
+| `go.sum`           | go                 |
 
 - **Apple-like flow**: detected package manager → confirm or change
 - **Ecosystem-aware defaults**: pnpm for JS, uv for Python, cargo for Rust, go for Go
@@ -777,14 +783,14 @@ docs/network-map.html  ← open in browser, zoom, click nodes
 
 Run `effectum:onboard` in any project directory. Effectum spawns **6 parallel analysis agents**, each with a specific lens:
 
-| Agent | Focus |
-| ----- | ----- |
-| 🏗️ **Architecture** | Directory structure, module boundaries, dependency graph |
-| 🗄️ **Data Model** | Schemas, migrations, RLS policies, relationships |
-| 🔌 **API Surface** | Endpoints, contracts, authentication patterns |
-| 🧪 **Test Coverage** | What's tested, what's not, test quality assessment |
-| 🔒 **Security** | Auth flows, secret handling, known vulnerability patterns |
-| 📦 **Dependencies** | Packages, versions, outdated or risky dependencies |
+| Agent                | Focus                                                     |
+| -------------------- | --------------------------------------------------------- |
+| 🏗️ **Architecture**  | Directory structure, module boundaries, dependency graph  |
+| 🗄️ **Data Model**    | Schemas, migrations, RLS policies, relationships          |
+| 🔌 **API Surface**   | Endpoints, contracts, authentication patterns             |
+| 🧪 **Test Coverage** | What's tested, what's not, test quality assessment        |
+| 🔒 **Security**      | Auth flows, secret handling, known vulnerability patterns |
+| 📦 **Dependencies**  | Packages, versions, outdated or risky dependencies        |
 
 ### Self-Test Loop (7 Tests)
 
@@ -831,15 +837,15 @@ docs/
 
 Effectum ships with pre-configured agent roles. Each has a distinct behavior profile, toolset, and communication style appropriate to its function:
 
-| Category | Agents |
-| -------- | ------ |
-| **Planning** | Architect, Decomposer, Risk Analyst |
-| **Build** | Engineer, TDD Driver, Refactor Specialist, Fullstack Developer, Next.js Developer |
-| **Quality** | QA Reviewer, Security Auditor, Performance Analyst, Code Reviewer |
-| **Documentation** | Spec Writer, API Documenter, Onboarding Analyst |
-| **Orchestration** | Ralph (autonomous loop), Checkpoint Manager, Delta Tracker |
-| **Analysis** | Architecture Analyst, DB Analyst, API Analyst, Frontend Analyst, Stack Analyst, Test Analyst |
-| **Specialist** | Mobile Developer, Docker Expert, MCP Developer, Postgres Pro, Data Engineer, Debugger, UI Designer |
+| Category          | Agents                                                                                             |
+| ----------------- | -------------------------------------------------------------------------------------------------- |
+| **Planning**      | Architect, Decomposer, Risk Analyst                                                                |
+| **Build**         | Engineer, TDD Driver, Refactor Specialist, Fullstack Developer, Next.js Developer                  |
+| **Quality**       | QA Reviewer, Security Auditor, Performance Analyst, Code Reviewer                                  |
+| **Documentation** | Spec Writer, API Documenter, Onboarding Analyst                                                    |
+| **Orchestration** | Ralph (autonomous loop), Checkpoint Manager, Delta Tracker                                         |
+| **Analysis**      | Architecture Analyst, DB Analyst, API Analyst, Frontend Analyst, Stack Analyst, Test Analyst       |
+| **Specialist**    | Mobile Developer, Docker Expert, MCP Developer, Postgres Pro, Data Engineer, Debugger, UI Designer |
 
 Each specialization is defined in `system/agents/` and composed from shared skills.
 
@@ -847,23 +853,23 @@ Each specialization is defined in `system/agents/` and composed from shared skil
 
 Skills are reusable capability blocks that agent specializations are composed from:
 
-| Domain | Examples |
-| ------ | -------- |
-| **Code** | TypeScript, Python, Go, Swift, Rust, SQL |
-| **Testing** | TDD, E2E, snapshot, load testing |
-| **Security** | Secret detection, OWASP scanning, RLS validation |
-| **Documentation** | PRD authoring, markdown, Mermaid diagrams |
-| **Infrastructure** | Vercel, Railway, Fly.io, Docker, GitHub Actions |
+| Domain             | Examples                                         |
+| ------------------ | ------------------------------------------------ |
+| **Code**           | TypeScript, Python, Go, Swift, Rust, SQL         |
+| **Testing**        | TDD, E2E, snapshot, load testing                 |
+| **Security**       | Secret detection, OWASP scanning, RLS validation |
+| **Documentation**  | PRD authoring, markdown, Mermaid diagrams        |
+| **Infrastructure** | Vercel, Railway, Fly.io, Docker, GitHub Actions  |
 
 ### Foundation Hooks (Always Active)
 
 Three hooks run on every Claude Code session, regardless of configuration:
 
-| Hook | What it does |
-| ---- | ------------ |
+| Hook                 | What it does                                                     |
+| -------------------- | ---------------------------------------------------------------- |
 | **Secret Detection** | Blocks writes containing API keys, tokens, passwords to any file |
-| **TDD Enforcement** | Warns when code is written before a failing test exists |
-| **Guardrails** | Prevents `rm -rf`, `DROP TABLE`, direct writes to `.env` |
+| **TDD Enforcement**  | Warns when code is written before a failing test exists          |
+| **Guardrails**       | Prevents `rm -rf`, `DROP TABLE`, direct writes to `.env`         |
 
 These can't be disabled by mistake. They're the safety net.
 
@@ -940,12 +946,12 @@ Pull requests for new stacks, presets, and detection rules are especially welcom
 
 ## 🆚 How is this different?
 
-| Tool | What it does | What Effectum adds / differs |
-| ---- | ------------ | ---------------------------- |
-| **GSD** | Context engineering, prevents context rot | PRD Lifecycle (spec versioning + delta handoffs), autonomous loop, Project Onboarding |
-| **BMAD** | Full enterprise methodology | Same ideas, 90% less ceremony. Configurator auto-selects what's relevant. |
-| **SpecKit** | Living specifications | + Autonomous execution + Quality gates + Task registry + Network map |
-| **Taskmaster** | Task breakdown from PRDs | + TDD workflow + Code review + E2E testing + Semantic diff + Onboarding agents |
+| Tool           | What it does                              | What Effectum adds / differs                                                            |
+| -------------- | ----------------------------------------- | --------------------------------------------------------------------------------------- |
+| **GSD**        | Context engineering, prevents context rot | PRD Lifecycle (spec versioning + delta handoffs), autonomous loop, Project Onboarding   |
+| **BMAD**       | Full enterprise methodology               | Same ideas, 90% less ceremony. Configurator auto-selects what's relevant.               |
+| **SpecKit**    | Living specifications                     | + Autonomous execution + Quality gates + Task registry + Network map                    |
+| **Taskmaster** | Task breakdown from PRDs                  | + TDD workflow + Code review + E2E testing + Semantic diff + Onboarding agents          |
 | **Kiro (AWS)** | IDE-native spec-driven dev (VS Code fork) | CLI-native. No IDE required. No opaque request pricing. Works with your existing setup. |
 
 The short version: Effectum doesn't invent new concepts. It combines what already works, removes what doesn't, and packages it so it actually runs.
@@ -1033,16 +1039,16 @@ Customize everything<br>
 
 ### Quick Presets (Add-Ons)
 
-| Quick Preset | Adds to your stack |
-| ------------ | ------------------ |
-| **+ Firebase** | Firebase SDK, Firestore rules, Auth integration patterns |
-| **+ Prisma** | Prisma schema, migration workflow, typed client |
-| **+ Flutter** | Dart/Flutter project config, widget test setup |
-| **+ Stripe** | Webhook handling patterns, price/subscription management |
-| **+ tRPC** | End-to-end typesafe API layer |
-| **+ Turborepo** | Monorepo workspace configuration |
-| **+ Docker** | Dockerfile, docker-compose, health check patterns |
-| **+ GitHub CI** | GitHub Actions workflow for test + deploy |
+| Quick Preset    | Adds to your stack                                       |
+| --------------- | -------------------------------------------------------- |
+| **+ Firebase**  | Firebase SDK, Firestore rules, Auth integration patterns |
+| **+ Prisma**    | Prisma schema, migration workflow, typed client          |
+| **+ Flutter**   | Dart/Flutter project config, widget test setup           |
+| **+ Stripe**    | Webhook handling patterns, price/subscription management |
+| **+ tRPC**      | End-to-end typesafe API layer                            |
+| **+ Turborepo** | Monorepo workspace configuration                         |
+| **+ Docker**    | Dockerfile, docker-compose, health check patterns        |
+| **+ GitHub CI** | GitHub Actions workflow for test + deploy                |
 
 Each preset configures build commands, test frameworks, linters, formatters, and architecture rules for your stack.
 
@@ -1052,13 +1058,13 @@ Each preset configures build commands, test frameworks, linters, formatters, and
 
 Choose how much Claude decides on its own:
 
-|                           | Conservative | Standard | Full Autonomy |
-| ------------------------- | :----------: | :------: | :-----------: |
-| **Claude asks before...** | Most changes | Ambiguous specs | Almost nothing |
-| **Git operations**        | Always asks | Asks for push | Autonomous |
-| **File changes**          | Confirms each | Works freely | Works freely |
-| **Best for**              | Teams, learning | Daily dev | Overnight builds |
-| **Autonomous loop**       | ❌ | ✅ | ✅ Recommended |
+|                           |  Conservative   |    Standard     |  Full Autonomy   |
+| ------------------------- | :-------------: | :-------------: | :--------------: |
+| **Claude asks before...** |  Most changes   | Ambiguous specs |  Almost nothing  |
+| **Git operations**        |   Always asks   |  Asks for push  |    Autonomous    |
+| **File changes**          |  Confirms each  |  Works freely   |   Works freely   |
+| **Best for**              | Teams, learning |    Daily dev    | Overnight builds |
+| **Autonomous loop**       |       ❌        |       ✅        |  ✅ Recommended  |
 
 Choose during setup. Change anytime in `.claude/settings.json`.
 
@@ -1117,14 +1123,14 @@ effectum/
 
 ## 📚 Documentation
 
-| Guide | What you'll learn |
-| ----- | ----------------- |
-| 📖 [Workflow Overview](docs/workflow-overview.md) | The complete autonomous workflow explained |
-| ⚙️ [Configurator Guide](docs/configurator-guide.md) | Stack detection, presets, language setup |
-| 📋 [PRD Lifecycle](docs/prd-lifecycle.md) | Frontmatter, diffs, delta handoffs, tasks.md |
-| 🔍 [Onboarding Guide](docs/onboarding-guide.md) | Getting up to speed on any codebase fast |
-| 🔧 [Customization](docs/customization.md) | JSON tools, detection rules, community presets |
-| 🔍 [Troubleshooting](docs/troubleshooting.md) | Common issues and solutions |
+| Guide                                               | What you'll learn                              |
+| --------------------------------------------------- | ---------------------------------------------- |
+| 📖 [Workflow Overview](docs/workflow-overview.md)   | The complete autonomous workflow explained     |
+| ⚙️ [Configurator Guide](docs/configurator-guide.md) | Stack detection, presets, language setup       |
+| 📋 [PRD Lifecycle](docs/prd-lifecycle.md)           | Frontmatter, diffs, delta handoffs, tasks.md   |
+| 🔍 [Onboarding Guide](docs/onboarding-guide.md)     | Getting up to speed on any codebase fast       |
+| 🔧 [Customization](docs/customization.md)           | JSON tools, detection rules, community presets |
+| 🔍 [Troubleshooting](docs/troubleshooting.md)       | Common issues and solutions                    |
 
 ---
 
