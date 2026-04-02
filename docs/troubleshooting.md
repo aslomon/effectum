@@ -69,6 +69,18 @@ Common JSON errors:
 - Add a `ruff.toml` file to configure ruff.
 - Adjust the `FORMATTER_GLOB` to exclude file types that should not be formatted.
 
+### Edit/Write fails with "File content has changed" after formatting
+
+**Symptom**: Claude's second consecutive `Edit` or `Write` on a file fails with an error like `"File content has changed"` when a format-on-save hook is configured.
+
+**Cause**: Before Claude Code v2.1.90, a `PostToolUse` format-on-save hook that rewrote a file immediately after an edit would cause the next `Edit`/`Write` call to see a different file hash than expected, triggering this error.
+
+**Fix**: Upgrade to Claude Code v2.1.90 or later — the race condition is fixed.
+
+**Workaround (older versions)**: Disable the format-on-save hook temporarily, or configure the formatter to only run on explicit save (not on every PostToolUse event).
+
+---
+
 ### File protection blocking legitimate edits
 
 **Symptom**: Claude cannot edit a file that is not actually sensitive.
