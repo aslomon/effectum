@@ -87,6 +87,27 @@ Fires in Agent Teams mode when a teammate becomes idle (all assigned tasks compl
 
 ---
 
+### `TaskCreated`
+Fires in Agent Teams mode when a new task is created and assigned. Blocking: returning `{"ok": false}` from a `prompt`-type hook prevents task execution from starting. Receives task context on stdin.
+
+> **Added in Claude Code v2.1.89.** Officially documented; previously undocumented behavior.
+
+**Typical uses:** Pre-flight context injection, task logging, validation before a subagent starts work, conditional routing based on task type.
+
+**Example — inject context before task starts:**
+```json
+{
+  "event": "TaskCreated",
+  "hooks": [{
+    "type": "command",
+    "command": "bash -c 'INPUT=$(cat); TASK=$(echo \"$INPUT\" | jq -r \".task_id // empty\"); echo \"$(date +%Y-%m-%dT%H:%M:%S) TASK_CREATED: $TASK\" >> \"${CLAUDE_PROJECT_DIR:-.}/.claude/logs/team-activity.log\"; exit 0'",
+    "async": true
+  }]
+}
+```
+
+---
+
 ### `TaskCompleted`
 Fires in Agent Teams mode when a teammate marks a task as completed. Receives `task_id` and `agent_name` on stdin.
 
