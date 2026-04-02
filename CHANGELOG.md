@@ -7,34 +7,104 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+_PRs pending: #6 (loop-worker preset), #9 (frontmatter schema), #10 (headless CI), #11 (hooks #017+#018), #12 (absolute file_path). Target: v0.19.0_
+
+---
+
+## [0.18.3] - 2026-03-30
+
+### Fixed
+
+- **Internal Reference Cleanup** — All internal command cross-references updated to new `effect:`/`effectum:` namespace names. No deprecated names remain in non-alias files.
+
+## [0.18.2] - 2026-03-30
+
+### Fixed
+
+- **Deprecated Aliases — Full Content** — Deprecated command aliases now include full command content (not just a redirect text). Old names execute identically to new names, with a one-line deprecation banner prepended.
+
+## [0.18.1] - 2026-03-30
+
+### Fixed
+
+- **Deprecated Aliases — Thin Redirects** — Converted deprecated alias files to thin redirects: content lives only in one place (new name), aliases point there. Eliminates duplication.
+
+## [0.18.0] - 2026-03-30
+
 ### Added
 
-- **Command Entry Point & Smart Router (2026-03-28)** — New `/effectum` entry point with `/help` alias; smart `/next` router that reads project state and recommends the single best next action.
-- **Namespace Reorganization (2026-03-28)** — Commands renamed for clarity: `/workshop:init` → `/project:init`, `/workshop:archive` → `/project:archive`, `/effectum:init` → `/context:init`. Deprecated old names still work with v0.20 removal notice.
-- **Command Aliases (2026-03-28)** — New convenience aliases: `/run` (→ `/tdd`), `/stop` (→ `/cancel-ralph`), `/save` (→ `/checkpoint`), `/diagnose` (→ `/forensics`), `/explore` (→ `/map-codebase`).
-- **Restructured Command README (2026-03-28)** — Updated `.claude/commands/README.md` with new hierarchical navigation: entry point (`/effectum`, `/help`, `/next`), core workflow, quality gates, git operations, loop control, orchestration, and setup categories.
+- **`effect:` / `effectum:` Namespace Split** — Commands reorganized into two clear namespaces: `effect:` for workflow commands (`effect:dev:run`, `effect:dev:tdd`, `effect:prd:new`, etc.) and `effectum:` for meta/setup commands (`effectum:setup`, `effectum:status`, `effectum:update`). Old names kept as deprecated aliases through v0.20.
+- **`effectum:status` Dashboard** — New command that prints a concise project health summary: version, active PRDs, loop state, test status, lint status, and git branch.
+- **`/ralph-loop` Permanent Name** — `/ralph-loop` is the canonical name for the autonomous development loop. Previous aliases (`/run-loop`, `/dev-loop`) deprecated.
+- **~38 Deprecated Aliases** — All renamed commands have backward-compatible aliases with migration notices. Removal target: v0.20.
+- **`MIGRATION.md`** — Documents all deprecated command names, their new names, and the v0.20 removal timeline.
 
 ### Changed
 
-- **Feature Intake Batch 2 (2026-03-28)** — Tracked three new feature signals: Description length capping in v2.1.86 (P1: cap to 250 chars), X-Claude-Code-Session-Id header support for API proxies (P2: watchlist), and improvements to `/skills` listing (docs-only).
-- **Effort Field on Commands** — Added `effort: "high"` annotation to `/ralph-loop` and `/orchestrate` commands to signal context-intensive operations.
-- **Agent-Ready Extension Fields in `/prd:new`** — Quality Gates, Completion Promise, and Autonomy Rules conditionally prompted in Step 5 for agent-facing specifications.
-- **Loop State Persistence** — `/cancel-ralph` now updates `.effectum/loop-state.json` with `status: "cancelled"` and `cancelled_at` timestamp for resumable workflows.
-- **Plan Output Automation** — `/plan` command now writes plan to `.claude/plan.local.md` with YAML frontmatter in new Step 7; subsequent steps renumbered.
+- **README** — Updated for v0.18 namespace clarity: new command table with `effect:`/`effectum:` prefixes, migration section.
+- **`.effectum.json` Command List** — Synced with new namespace names.
+
+## [0.17.8] - 2026-03-29
+
+### Changed
+
+- **Auto Mode Compatibility** — `/effectum` entry point and `/next` router updated for compatibility with Auto Mode spec (loop-worker preset, PRD #v018-autonomy-modes).
+
+## [0.17.7] - 2026-03-29
+
+_Patch: bug fixes from v0.17 journey analysis._
+
+## [0.17.6] - 2026-03-29
+
+_Patch: bug fixes from v0.17 journey analysis._
+
+## [0.17.5] - 2026-03-29
+
+_Patch: bug fixes from v0.17 journey analysis._
+
+## [0.17.4] - 2026-03-28
+
+_Patch: bug fixes from v0.17 journey analysis._
+
+## [0.17.3] - 2026-03-28
+
+_Patch: bug fixes from v0.17 journey analysis._
+
+## [0.17.2] - 2026-03-28
+
+_Patch: bug fixes from v0.17 journey analysis._
+
+## [0.17.1] - 2026-03-28
+
+_Patch: bug fixes from v0.17 journey analysis._
+
+## [0.17.0] - 2026-03-28
+
+### Added
+
+- **`/effectum` Entry Point** — New top-level command with `/help` alias. Single entry point for first-time users; links to all major workflow commands.
+- **`/next` Smart Router** — Reads project state (open PRDs, task registry, git status, test results) and recommends exactly one next action. First commit? → `/context:init`. PRD exists? → `/prd:task-breakdown`. Tests failing? → `/tdd`. One answer, always.
+- **Command Aliases** — New convenience aliases: `/run` (→ `/tdd`), `/stop` (→ `/cancel-ralph`), `/save` (→ `/checkpoint`), `/diagnose` (→ `/forensics`), `/explore` (→ `/map-codebase`).
+- **Restructured Command README** — Updated `.claude/commands/README.md` with hierarchical navigation: entry point, core workflow, quality gates, git operations, loop control, orchestration, setup.
+
+### Changed
+
+- **Namespace Reorganization** — Commands renamed for clarity: `/workshop:init` → `/project:init`, `/workshop:archive` → `/project:archive`, `/effectum:init` → `/context:init`. Deprecated old names still work with v0.20 removal notice.
+- **Effort Field on Commands** — Added `effort: "high"` to `/ralph-loop` and `/orchestrate`.
+- **Agent-Ready Extension Fields in `/prd:new`** — Quality Gates, Completion Promise, Autonomy Rules conditionally prompted for agent-facing specs.
+- **Loop State Persistence** — `/cancel-ralph` updates `.effectum/loop-state.json` with `status: "cancelled"` and `cancelled_at`.
+- **Plan Output Automation** — `/plan` writes plan to `.claude/plan.local.md` with YAML frontmatter.
 - **PRD Overlap Detection** — `/prd:new` reads existing PRDs in Step 2 for overlap detection.
-- **CLAUDE.md Sentinel Integration** — `/prd:new` reads CLAUDE.md sentinel for domain context during feature generation.
-- **Checkpoint Detection in `/ralph-loop`** — Detects checkpoint tags, stores in loop-state.json, mentions rollback in stuck handler.
-- **Task Registry Integration** — `/tdd` now integrates with task registry (reads on start, updates on completion).
-- **Debugger Agent Tags** — `debugger.md` agent now includes `tags: debugging, error-analysis, troubleshooting` for improved discoverability.
-
-### Changed
-
-- **Hook Conditionals in Templates** — Updated `settings.json.tmpl` templates to add `"if"` conditional fields: commit message validation only fires on `git commit*`, secret scanning fires on `git commit*` or `git push*`. Applied consistently across `.claude/settings.json`, `.effectum/templates/settings.json.tmpl`, and `system/templates/settings.json.tmpl`.
-- **README.md Command Tables** — Updated formatting for consistency in Loop Control and Setup & Brownfield sections; added descriptions for `/forensics`, `/effectum:init`, and `/map-codebase` to command reference tables.
-- **`/prd:handoff` Primary Next Step** — Now recommends `/ralph-loop` as the primary recommended next step for agentic workflows.
-- **`/prd:network-map` Sanitize Order** — Mermaid sanitize step moved before write (Steps 7→11 renumbered for clarity).
-- **`/workshop:archive` Path Format** — Fixed archive path to `workshop/archive/{date}_{slug}/` for consistent organization.
-- **Preset Stack Assignments** — `nextjs-firebase` and `nextjs-prisma` presets corrected from `nextjs-supabase` to `generic` (no matching stack files exist).
+- **CLAUDE.md Sentinel Integration** — `/prd:new` reads CLAUDE.md sentinel for domain context.
+- **Checkpoint Detection in `/ralph-loop`** — Detects checkpoint tags, stores in loop-state.json.
+- **Task Registry Integration** — `/tdd` integrates with task registry.
+- **Hook Conditionals** — `settings.json.tmpl`: commit message validation only fires on `git commit*`, secret scanning on `git commit*`/`git push*`.
+- **Debugger Agent Tags** — Added `tags: debugging, error-analysis, troubleshooting`.
+- **`/prd:handoff`** — Recommends `/ralph-loop` as primary next step.
+- **`/prd:network-map`** — Mermaid sanitize step moved before write.
+- **`/workshop:archive`** — Fixed archive path to `workshop/archive/{date}_{slug}/`.
+- **Preset Stack Assignments** — `nextjs-firebase` and `nextjs-prisma` corrected from `nextjs-supabase` to `generic`.
+- **Feature Intake** — Tracked signals: description length capping (P1), X-Claude-Code-Session-Id header (P2 watchlist), `/skills` listing improvements (docs-only).
 
 ## [0.16.0] - 2026-03-28
 
