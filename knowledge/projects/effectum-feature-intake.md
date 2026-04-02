@@ -486,3 +486,71 @@
 | **Status** | ⏳ offen |
 
 ---
+
+#### #022 — `"defer"` Permission Decision für PreToolUse-Hooks (v2.1.89)
+
+| Feld | Inhalt |
+| ---- | ------ |
+| **Datum** | 2026-04-02 |
+| **Signal** | v2.1.89: PreToolUse-Hooks können `"defer"` zurückgeben — pausiert Headless-Session, die via `-p --resume` fortgesetzt werden kann |
+| **Quelle** | Claude Code Changelog v2.1.89 |
+| **Bereich** | Hooks, ralph-loop, Headless CI |
+| **Entscheidung** | `spec` |
+| **Priorität** | P1 |
+| **Aktion** | Spec: `defer`-Pattern für Effectum permission-denied-handler und headless-approver — ermöglicht menschliche Überprüfung vor destruktiven Ops; `docs/prds/intake-022-defer-permission.md` |
+| **Roadmap** | `v0.17` |
+| **Confidence** | hoch |
+| **Status** | ⏳ offen |
+
+---
+
+#### #023 — `CLAUDE_CODE_PLUGIN_KEEP_MARKETPLACE_ON_FAILURE` (v2.1.90)
+
+| Feld | Inhalt |
+| ---- | ------ |
+| **Datum** | 2026-04-02 |
+| **Signal** | v2.1.90: Neues Env-Var behält Marketplace-Cache bei `git pull`-Fehler — relevant für Offline/Air-Gap-Deployments |
+| **Quelle** | Claude Code Changelog v2.1.90 |
+| **Bereich** | Setup, Config |
+| **Entscheidung** | `docs-only` |
+| **Priorität** | P2 |
+| **Aktion** | In Effectum Setup-Docs als Env-Var für Offline-Umgebungen dokumentieren |
+| **Roadmap** | `none` |
+| **Confidence** | hoch |
+| **Status** | ⏳ offen |
+
+---
+
+#### #024 — `/powerup` In-App Onboarding Command (v2.1.90)
+
+| Feld | Inhalt |
+| ---- | ------ |
+| **Datum** | 2026-04-02 |
+| **Signal** | v2.1.90: `/powerup` bietet interaktive Lernlektionen für Claude Code Features mit animierten Terminal-Demos |
+| **Quelle** | Claude Code Changelog v2.1.90 |
+| **Bereich** | Onboarding, Docs |
+| **Entscheidung** | `spec` |
+| **Priorität** | P1 |
+| **Aktion** | Effectum `/onboard` um Hinweis auf `/powerup` erweitern; prüfen ob Effectum-eigene "powerup"-artige Lektionen für seine Befehle sinnvoll sind; `docs/prds/intake-024-powerup-onboarding.md` |
+| **Roadmap** | `later` |
+| **Confidence** | mittel |
+| **Status** | ⏳ offen |
+
+---
+
+#### #025 — `.husky` Protected Directory + PowerShell Security-Hardening (v2.1.90)
+
+| Feld | Inhalt |
+| ---- | ------ |
+| **Datum** | 2026-04-02 |
+| **Signal** | v2.1.90: `.husky` als Protected Directory; PowerShell: Background-Job-Bypass, Debugger-Hang, TOCTOU-Fix, deny-rule-Degradation |
+| **Quelle** | Claude Code Changelog v2.1.90 |
+| **Bereich** | Security, Hooks |
+| **Entscheidung** | `docs-only` |
+| **Priorität** | P2 |
+| **Aktion** | Effectum Security-Hinweise: `.husky`-Schutz erwähnen; PowerShell-Nutzer-Hinweis in Docs |
+| **Roadmap** | `none` |
+| **Confidence** | hoch |
+| **Status** | ⏳ offen |
+
+---
