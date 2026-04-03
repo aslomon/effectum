@@ -376,6 +376,38 @@ Hooks are defined under the `hooks` key in `~/.claude/settings.json` (global) or
 
 Return exit code `2` from a `PreToolUse` `command` hook to block the tool call. Write the reason to `stderr`. Exit code `0` allows the call to proceed.
 
+> **v2.1.90+ required for JSON-blocking hooks:** Before v2.1.90, `PreToolUse` hooks that emitted JSON on stdout and exited with code `2` did not reliably block the tool call. This was a Claude Code bug fixed in v2.1.90. If you use JSON output in a blocking hook (e.g., to set `permissionDecision`), upgrade to v2.1.90 or later.
+
+**Pattern: JSON-emitting blocking hook (requires v2.1.90+)**
+
+```bash
+#!/bin/bash
+# PreToolUse hook that blocks with structured JSON output
+INPUT=$(cat)
+CMD=$(echo "$INPUT" | jq -r ".tool_input.command // empty")
+
+if echo "$CMD" | grep -qE "^rm -rf|^sudo rm"; then
+  # Send structured JSON to stdout (v2.1.90+ only)
+  echo '{"permissionDecision": "deny", "reason": "Destructive rm command blocked by Effectum guardrail"}'
+  exit 2
+fi
+exit 0
+```
+
+**Simpler pattern (all versions):** Write reason to `stderr` only, no JSON output:
+
+```bash
+#!/bin/bash
+INPUT=$(cat)
+CMD=$(echo "$INPUT" | jq -r ".tool_input.command // empty")
+
+if echo "$CMD" | grep -qE "^rm -rf|^sudo rm"; then
+  echo "Destructive rm command blocked by Effectum guardrail" >&2
+  exit 2
+fi
+exit 0
+```
+
 ### Blocking a Stop
 
 Return `{"ok": false, "reason": "…"}` from a `prompt` or `agent` Stop hook to continue the session. Return `{"ok": true}` to allow stopping.
