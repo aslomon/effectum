@@ -947,6 +947,7 @@ Pull requests for new stacks, presets, and detection rules are especially welcom
 | **SpecKit** | Living specifications | + Autonomous execution + Quality gates + Task registry + Network map |
 | **Taskmaster** | Task breakdown from PRDs | + TDD workflow + Code review + E2E testing + Semantic diff + Onboarding agents |
 | **Kiro (AWS)** | IDE-native spec-driven dev (VS Code fork) | CLI-native. No IDE required. No opaque request pricing. Works with your existing setup. |
+| **ai-codex** | Generates a compact codebase index (saves 50K+ tokens/conversation) | Complementary: run `ai-codex` to generate the index, then use Effectum's `/map-codebase` for the full structured knowledge graph. |
 
 The short version: Effectum doesn't invent new concepts. It combines what already works, removes what doesn't, and packages it so it actually runs.
 
