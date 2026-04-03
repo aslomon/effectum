@@ -71,7 +71,7 @@ One answer. Always.
 ---
 
 **Tweet 6 (traction):**
-1,650+ downloads last week on npm.
+4,600+ downloads in March on npm.
 
 Organic. No launch post.
 
