@@ -44,7 +44,7 @@ Curious what your Claude Code workflow looks like — especially around quality 
 ## Post 2: r/SideProject
 
 **Title:**  
-Show r/SideProject: I built an autonomous dev framework for Claude Code (2 months in, ~235 downloads/day)
+Show r/SideProject: I built an autonomous dev framework for Claude Code (2 months in, ~150 downloads/day)
 
 **Body:**
 
@@ -57,7 +57,7 @@ So I spent two months building **Effectum** — an open-source Claude Code frame
 3. **7 stack presets**: Next.js+Supabase, FastAPI, Django+Postgres, Go+Echo, Rust+Actix, Swift/SwiftUI, generic
 4. **Agent Teams**: experimental parallel builds across multiple Claude instances (v0.12.0)
 
-What surprised me: ~235 downloads/day (1,650+ last week) before any community launch. People are apparently searching for this.
+What surprised me: ~150 downloads/day (4,600+ in March) before any community launch. People are apparently searching for this.
 
 `npx @aslomon/effectum` — open source, MIT
 
