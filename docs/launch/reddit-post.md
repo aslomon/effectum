@@ -1,8 +1,8 @@
 # Reddit Launch Posts — Effectum
 
-> **Status:** Draft — needs Jason review before posting  
+> **Status:** Ready to post — Jason review + post  
 > **Target subreddits:** r/ClaudeAI, r/SideProject, r/programming  
-> **Updated:** 2026-03-30 (v0.18.3, 539 tests)
+> **Updated:** 2026-04-01 (v0.18.3, 539 tests)
 
 ---
 
@@ -44,7 +44,7 @@ Curious what your Claude Code workflow looks like — especially around quality 
 ## Post 2: r/SideProject
 
 **Title:**  
-Show r/SideProject: I built an autonomous dev framework for Claude Code (2 months in, ~235 downloads/day)
+Show r/SideProject: I built an autonomous dev framework for Claude Code (2 months in, ~323 downloads/day)
 
 **Body:**
 
@@ -57,7 +57,7 @@ So I spent two months building **Effectum** — an open-source Claude Code frame
 3. **7 stack presets**: Next.js+Supabase, FastAPI, Django+Postgres, Go+Echo, Rust+Actix, Swift/SwiftUI, generic
 4. **Agent Teams**: experimental parallel builds across multiple Claude instances (v0.12.0)
 
-What surprised me: ~235 downloads/day (1,650+ last week) before any community launch. People are apparently searching for this.
+What surprised me: ~323 downloads/day (2,266+ last week) before any community launch. People are apparently searching for this.
 
 `npx @aslomon/effectum` — open source, MIT
 
