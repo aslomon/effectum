@@ -187,6 +187,22 @@ If you are on Linux, replace the `osascript` commands with `notify-send` or remo
 
 If it says `"allowEdits"`, Claude will ask before edits. Change to `"bypassPermissions"` for standard autonomy.
 
+### Disabling shell execution in skills (CI/CD environments)
+
+**Symptom**: You want to prevent Claude from running arbitrary shell commands embedded in skill files, custom slash commands, or plugin commands — e.g., in a locked-down CI/CD environment.
+
+**Fix**: Add `disableSkillShellExecution` to your settings (available since Claude Code v2.1.91):
+
+```json
+{
+  "disableSkillShellExecution": true
+}
+```
+
+This disables inline shell execution in skills, custom slash commands, and plugin commands. Note: regular Bash tool calls from Claude itself are unaffected — this only restricts shell commands embedded *inside* skill/command definitions.
+
+Use together with [Headless CI Mode](./installation-guide.md) for fully locked-down non-interactive environments.
+
 ### Claude cannot access MCP servers
 
 **Symptom**: Supabase MCP, Playwright MCP, or other servers are not available.
