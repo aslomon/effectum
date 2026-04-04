@@ -320,3 +320,11 @@ This prints the cost estimate and validates the profile without creating any tea
 **Cause:** The lead's instructions are too vague, or there are ACs with no file ownership match.
 
 **Fix:** Ensure every AC maps to a teammate's file ownership scope. ACs that don't match are assigned to the lead by default — if this happens frequently, adjust file ownership patterns or add a teammate to cover the gap.
+
+### Subagent spawning fails with "Could not determine pane count"
+
+**Symptom:** Teammates fail to spawn permanently mid-session with a tmux-related error.
+
+**Cause:** A pre-CC-v2.1.92 bug where Claude Code lost track of tmux pane counts after windows were killed or renumbered during a long-running session.
+
+**Fix:** Update Claude Code to v2.1.92 or later — the bug is fixed upstream. No Effectum changes needed.
