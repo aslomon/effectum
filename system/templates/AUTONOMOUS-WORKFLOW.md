@@ -129,12 +129,37 @@ Exact phrase for `effect:dev:run` (must be 100% true before outputting):
 
 ---
 
+
+## 1.4 Goal Envelope — v0.19 Workflow Catch-up
+
+Before choosing `effect:dev:plan`, `effect:dev:run`, or `effect:dev:orchestrate`, define the Goal:
+
+```
+effect:goal "[what should be achieved]"
+```
+
+`effect:goal` writes `GOAL.md` and `.effectum/goal-state.json`. The Goal is the provider-neutral work-order envelope for Claude Code, Codex, and future adapters. It contains:
+
+- outcome and mandate
+- in-scope and out-of-scope boundaries
+- autonomy rules and human approval boundaries
+- workflow mode (`plan-first`, `tdd-direct`, `full-auto`, `orchestrated`, `review-only`)
+- completion promise
+- quality gates
+- evidence required before claiming done
+- stop/escalation conditions
+
+A PRD answers “what should exist?”. A Goal answers “how should an agent pursue this responsibly?”.
+
+Use `effect:goal` when intent exists but workflow mode is unclear, when a PRD is ready for handoff, or before starting a long autonomous run.
+
 ## 1.5 PRD -> effect:dev:run Conversion
 
 ### Quick Conversion
 
-1. Write your PRD using the Agent-Ready template (Section 1 + extension)
-2. Copy it into this `effect:dev:run` prompt template:
+1. Define the Goal with `effect:goal` so mandate, workflow mode, gates, evidence, and stop conditions are explicit
+2. Write your PRD using the Agent-Ready template (Section 1 + extension)
+3. Copy Goal + PRD into this `effect:dev:run` prompt template:
 
 ```
 effect:dev:run Implement the following feature fully autonomously from database to frontend.
@@ -1042,7 +1067,7 @@ Configure via `"teammateMode": "in-process"` or `"tmux"` in settings.json.
 | -------------- | --------------------------------- | --------------------------------------------------------------- |
 | **Standard**   | Normal session                    | You want control over each step                                 |
 | **High**       | Normal session + full-auto prompt | Few stops, but you're present                                   |
-| **Full Auto**  | **effect:dev:run**                | Well-defined goal, measurable criteria, no subjective decisions |
+| **Full Auto**  | **effect:dev:run**                | Well-defined Goal, measurable criteria, no subjective decisions |
 
 **Use `effect:dev:run` when:**
 
@@ -1066,7 +1091,8 @@ effect:dev:run "PROMPT" --max-iterations N --completion-promise "PHRASE"
 
 **Parameters:**
 
-- **Prompt** -- The complete work order (PRD + workflow)
+- **Goal** -- The `GOAL.md` envelope with mandate, workflow mode, completion promise, evidence, and stop conditions
+- **Prompt** -- The complete work order (Goal + PRD + workflow)
 - **--max-iterations N** -- Safety limit (always set this)
 - **--completion-promise "PHRASE"** -- Claude must output `<promise>PHRASE</promise>` when done
 

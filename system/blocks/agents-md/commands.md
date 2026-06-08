@@ -4,6 +4,7 @@ These slash commands are available in your agent workflow for **{{projectName}}*
 
 | Command                  | Purpose                                                   |
 | ------------------------ | --------------------------------------------------------- |
+| `effect:goal`            | Define the work-order Goal before choosing a workflow      |
 | `effect:prd:new`         | Create a new PRD for a feature or task                    |
 | `effect:prd:update`      | Update an existing PRD with changes or new requirements   |
 | `effect:dev:orchestrate` | Spawn sub-agents to work on parallel tasks                |
@@ -16,4 +17,4 @@ These slash commands are available in your agent workflow for **{{projectName}}*
 | `/document`              | Generate or update documentation for changed code         |
 
 **Usage:** Type the command name in your message to invoke it.
-Commands follow the workflow defined in `AUTONOMOUS-WORKFLOW.md`.
+Commands follow the workflow defined in `AUTONOMOUS-WORKFLOW.md`. Start with `effect:goal` when intent exists but workflow mode is unclear.

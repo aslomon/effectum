@@ -11,7 +11,7 @@
 | `effectum:*`   | System & setup      | `effectum:setup`, `effectum:onboard`  |
 | `effect:prd:*` | Spec & planning     | `effect:prd:new`, `effect:prd:review` |
 | `effect:dev:*` | Implementation      | `effect:dev:run`, `effect:dev:plan`   |
-| `effect:*`     | Design & navigation | `effect:design`, `effect:next`        |
+| `effect:*`     | Goal, design & navigation | `effect:goal`, `effect:design`        |
 
 ## Entry Point
 
@@ -46,10 +46,11 @@
 
 ## Pipeline Commands (effect:\*)
 
-### Navigation
+### Goal & Navigation
 
 | Command       | Description                                                    | When to use                     |
 | ------------- | -------------------------------------------------------------- | ------------------------------- |
+| `effect:goal` | Create/update GOAL.md, the provider-neutral work-order envelope | Before choosing plan/run/orchestrate |
 | `effect:next` | Reads project state and recommends the single best next action | When you're not sure what to do |
 
 ### Spec (effect:prd:\*)
@@ -101,6 +102,7 @@
 | ------------- | ---------------- | ---------------------- |
 | `/ralph-loop` | `effect:dev:run` | Brand name             |
 | `/help`       | `/effectum`      | Universal help command |
+| `/goal`       | `effect:goal`    | Short, memorable Goal command |
 
 ## Deprecated Aliases (→ removal in v0.20)
 

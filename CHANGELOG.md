@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _PRs pending: #6 (loop-worker preset), #9 (frontmatter schema), #10 (headless CI), #11 (hooks #017+#018), #12 (absolute file_path). Target: v0.19.0_
 
+### Added
+
+- Added `effect:goal` plus `/goal` shortcut as a first-class, provider-neutral Goal envelope before choosing plan/run/orchestrate workflows.
+- Added Goal-first workflow documentation across CLAUDE/AGENTS command surfaces and AUTONOMOUS-WORKFLOW.
+- Updated `effect:next` routing to recommend Goal creation/update before PRD handoff or autonomous run selection.
+- Added tests for Goal command surface, command counts, Next Steps, and AGENTS command documentation.
+
 ---
 
 ## [0.18.3] - 2026-03-30

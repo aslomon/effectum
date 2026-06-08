@@ -48,6 +48,7 @@
 
 ## Development Workflow
 
+- GOAL-FIRST: define `GOAL.md` with outcome, mandate, workflow mode, evidence, and stop conditions before choosing plan/run/orchestrate (use `effect:goal`)
 - SPEC-DRIVEN: define requirements and acceptance criteria before coding
 - TEST-FIRST: write failing tests, then implement (use `effect:dev:tdd`)
 - DONE = compiles + tests pass + linter clean (use `effect:dev:verify`)
@@ -69,6 +70,7 @@
 
 | Command                | Phase          | Function                                 |
 | ---------------------- | -------------- | ---------------------------------------- |
+| `effect:goal`          | Start          | Goal envelope + workflow-mode decision    |
 | `effect:dev:plan`      | Start          | Analysis + plan + **waits for approval** |
 | `effect:dev:tdd`       | Implementation | Tests first -> code -> refactor          |
 | `effect:dev:verify`    | QA             | Build + types + lint + tests             |
