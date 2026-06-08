@@ -17,12 +17,16 @@ Check these paths **in order**. Stop at the FIRST match:
 2. **HANDOFF.md exists** AND `.effectum/loop-state.json` exists with `status` != `"complete"` → Recommend `effect:dev:run` resume
 3. **FORENSICS-\*.md exists** in project root → Recommend `effect:dev:run` retry
 4. **No CLAUDE.md** in project root, OR CLAUDE.md has no `<!-- effectum:project-context:start -->` sentinel → Recommend `effectum:init`
-5. **No `docs/prds/` directory** AND no `workshop/projects/*/prds/` with PRD files → Recommend `effect:prd:new`
-6. **PRD exists** but no plan (no `PLAN.md` or plan section in the PRD) → Recommend `effect:dev:plan`
-7. **Plan exists** but no implementation (no source files changed since plan) → Recommend `effect:dev:run`
-8. **Uncommitted changes** (`git status` shows modifications) → Recommend `effect:dev:verify`
-9. **After verify** (all quality gates pass, uncommitted changes exist) → Recommend `effect:dev:review`
-10. **Feature complete** (all tests pass, clean code review) → Recommend `effect:dev:save`
+5. **PRD exists** but no `GOAL.md` → Recommend `effect:goal`
+6. **No `docs/prds/` directory** AND no `workshop/projects/*/prds/` with PRD files AND no `GOAL.md` → Recommend `effect:goal`
+7. **GOAL.md exists** with `.effectum/goal-state.json` status `draft` → Recommend `effect:goal` update
+8. **GOAL.md exists** and mode is `plan-first`, but no plan (no `PLAN.md` or plan section in the PRD) → Recommend `effect:dev:plan`
+9. **GOAL.md exists** and mode is `full-auto`, but no implementation (no source files changed since Goal) → Recommend `effect:dev:run`
+10. **PRD exists** but no plan (no `PLAN.md` or plan section in the PRD) → Recommend `effect:dev:plan`
+11. **Plan exists** but no implementation (no source files changed since plan) → Recommend `effect:dev:run`
+12. **Uncommitted changes** (`git status` shows modifications) → Recommend `effect:dev:verify`
+13. **After verify** (all quality gates pass, uncommitted changes exist) → Recommend `effect:dev:review`
+14. **Feature complete** (all tests pass, clean code review) → Recommend `effect:dev:save`
 
 Use `Read` to check for file existence and content. Use `Bash` for `git status` and `git diff --stat`.
 

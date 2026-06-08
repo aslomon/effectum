@@ -33,6 +33,15 @@ function getNextStepsSection(content) {
 // ─── Core workflow commands have Next Steps ───────────────────────────────────
 
 describe("Next Steps — core commands", () => {
+  test("effect:goal shows next steps toward plan/run/orchestrate", () => {
+    const content = readCommand("effect/goal.md");
+    assert.ok(hasNextSteps(content), "effect:goal should have ## Next Steps");
+    const section = getNextStepsSection(content);
+    assert.ok(section.includes("effect:dev:plan"), "effect:goal next steps should mention effect:dev:plan");
+    assert.ok(section.includes("effect:dev:run"), "effect:goal next steps should mention effect:dev:run");
+    assert.ok(section.includes("effect:dev:orchestrate"), "effect:goal next steps should mention effect:dev:orchestrate");
+  });
+
   test("/plan shows next steps (→ /tdd or /ralph-loop)", () => {
     const content = readCommand("effect/dev/plan.md");
     assert.ok(hasNextSteps(content), "/plan should have ## Next Steps");
@@ -115,6 +124,7 @@ describe("Next Steps — PRD commands", () => {
 
 describe("Next Steps — completeness check", () => {
   const coreCommands = [
+    "effect/goal.md",
     "effect/dev/plan.md",
     "effect/dev/tdd.md",
     "effect/dev/verify.md",

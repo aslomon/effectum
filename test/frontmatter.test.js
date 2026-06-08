@@ -65,11 +65,11 @@ function parseFrontmatter(content) {
 const commandFiles = collectCommandFiles(COMMANDS_DIR);
 
 describe("command frontmatter", () => {
-  test("finds exactly 73 command files", () => {
+  test("finds exactly 75 command files", () => {
     assert.equal(
       commandFiles.length,
-      73,
-      `Expected 73 command files, found ${commandFiles.length}: ${commandFiles.map((f) => path.relative(COMMANDS_DIR, f)).join(", ")}`,
+      75,
+      `Expected 75 command files, found ${commandFiles.length}: ${commandFiles.map((f) => path.relative(COMMANDS_DIR, f)).join(", ")}`,
     );
   });
 
@@ -200,6 +200,8 @@ describe("commands README.md", () => {
       path.join(COMMANDS_DIR, "README.md"),
       "utf8",
     );
+    assert.ok(content.includes("effect:goal"), "README must list effect:goal");
+    assert.ok(content.includes("/goal"), "README must list /goal");
     assert.ok(content.includes("/plan"), "README must list /plan");
     assert.ok(content.includes("/tdd"), "README must list /tdd");
     assert.ok(content.includes("/verify"), "README must list /verify");

@@ -26,19 +26,19 @@ Then print three numbered journeys:
 **1. NEW PROJECT** — Start from scratch
 
 ```
-effect:prd:new → effect:prd:review → effect:prd:handoff → [open target repo] → effect:dev:run
+effect:goal → effect:prd:new → effect:prd:review → effect:prd:handoff → [open target repo] → effect:dev:run
 ```
 
 **2. EXISTING CODEBASE** — Bring an existing project into Effectum
 
 ```
-effectum:onboard → effect:prd:new → effect:prd:review → effect:prd:handoff → effect:dev:run
+effectum:onboard → effect:goal → effect:prd:new → effect:prd:review → effect:prd:handoff → effect:dev:run
 ```
 
 **3. FEATURE BUILD** — Add a feature to a project already under Effectum
 
 ```
-effect:prd:new → effect:dev:save → effect:dev:run
+effect:goal → effect:dev:save → effect:dev:run
 ```
 
 ### Command Reference
@@ -64,10 +64,12 @@ Then print all commands grouped by namespace tier. Use a table for each group wi
 | `effectum:onboard:review` | Review onboarded PRDs for consistency                      | After onboarding                 |
 | `effectum:explore`        | Spawn 4 parallel agents to produce codebase knowledge docs | Understanding a new codebase     |
 
-**Navigation**
+**Goal & Navigation**
 
 | Command       | Description                                                    | When to use                     |
 | ------------- | -------------------------------------------------------------- | ------------------------------- |
+| `effect:goal` | Create/update GOAL.md, the provider-neutral work-order envelope | Before choosing plan/run/orchestrate |
+| `/goal`       | Shortcut for `effect:goal`                                     | Fast Goal drafting              |
 | `effect:next` | Reads project state and recommends the single best next action | When you're not sure what to do |
 
 **Spec (effect:prd:\*)**
