@@ -94,3 +94,12 @@ docs/                       # Documentation (if needed)
 - **CHANGELOG is auto-updated**: The Stop hook handles CHANGELOG.md. Don't update it manually unless explicitly asked.
 - **Lock files are protected**: Dependency lock files cannot be written to directly. Use package manager commands.
 ```
+
+## ENVIRONMENT_VARIABLES
+
+```
+# Recommended for headless / CI runs (Claude Code v2.1.89+)
+MCP_CONNECTION_NONBLOCKING=true   # Skip blocking MCP connection wait in -p / --print mode
+EFFECTUM_HEADLESS=1               # Enable headless approver hook (auto-approve safe tools)
+EFFECTUM_MAX_SUBAGENTS=5          # Max concurrent subagents in Agent Teams (default: 5)
+```

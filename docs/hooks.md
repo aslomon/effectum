@@ -37,6 +37,16 @@ Fires before any tool executes. The hook receives the tool name and input as JSO
 
 **Typical uses:** Validate inputs, check file protection rules, scan for dangerous commands, enforce commit message quality, scan for secrets before git operations.
 
+**Decision values (v2.1.89+):**
+
+| Exit / Output | Behavior |
+|---|---|
+| Exit `0` | Allow tool execution |
+| Exit `2` | Deny tool execution (fires `PermissionDenied` hook) |
+| `{"decision":"defer","waitForSignal":"<path>"}` | Pause and poll for signal file before proceeding |
+
+The `defer` decision enables pause/resume flows (e.g., Ralph Loop checkpoints, human approval gates). See `docs/prds/intake-014-defer-hook-pattern.md`.
+
 ---
 
 ### `PostToolUse`
@@ -84,6 +94,38 @@ Fires when a subagent finishes its work. The orchestrator uses this to verify su
 Fires in Agent Teams mode when a teammate becomes idle (all assigned tasks completed). Can assign additional tasks by returning `{"ok": false, "reason": "…"}`.
 
 **Typical uses:** Load-balance work across teammates, prevent early idling when other tasks remain unclaimed.
+
+---
+
+### `TaskCreated`
+Fires in Agent Teams mode when an orchestrator spawns a new subagent task. Receives task metadata (id, description, parentSessionId) on stdin. Supports blocking behavior (exit code `2` prevents spawn).
+
+**Output (optional):** Return JSON with `additionalContext` to inject context into the new subagent's session.
+
+```json
+{"additionalContext": "Stack: NextJS+Supabase. Branch: feat/v0.17. Commit before finishing."}
+```
+
+**Typical uses:** Inject Effectum stack context into subagents, rate-limit concurrent spawns, audit-log task creation, pre-flight check the subagent environment.
+
+> **Added:** Claude Code v2.1.89. See `docs/prds/intake-018-taskcreated-hook.md` for the full Effectum spec.
+
+---
+
+### `PermissionDenied`
+Fires when a `PreToolUse` hook returns a `deny` decision. Receives the tool name, input, and `denyReason` on stdin. Can return `{"retry": true}` to trigger a re-evaluation of the original `PreToolUse` hook.
+
+**Typical uses:** Auto-recover from common denial patterns (dirty git tree, locked files, missing node_modules), implement retry logic without human intervention.
+
+```json
+// Allow retry after recovery
+{"retry": true, "reason": "Stashed dirty working tree. Retrying."}
+
+// Permanent block
+{"retry": false, "reason": "Protected path — no recovery possible."}
+```
+
+> **Added:** Claude Code v2.1.89. See `docs/prds/intake-015-permission-denied-hook.md` for the full Effectum spec.
 
 ---
 
