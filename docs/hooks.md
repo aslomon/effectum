@@ -380,6 +380,8 @@ Return exit code `2` from a `PreToolUse` `command` hook to block the tool call. 
 
 Return `{"ok": false, "reason": "…"}` from a `prompt` or `agent` Stop hook to continue the session. Return `{"ok": true}` to allow stopping.
 
+> **CC v2.1.92 fix:** Prior to v2.1.92, prompt-type Stop hooks that returned `ok:false` could be silently ignored when the small fast model handled the response. This is now fixed. If you observe increased hook-triggered continuations after updating to CC v2.1.92, this is correct behavior — hooks are now reliably respected.
+
 ---
 
 ## Adding a New Hook
