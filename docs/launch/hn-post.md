@@ -1,7 +1,7 @@
 # Show HN: Effectum — Autonomous dev framework for Claude Code
 
-> **Status:** Draft — needs Jason review before posting  
-> **Updated:** 2026-03-30 (v0.18.3, 539 tests, ~38 commands + full deprecated aliases)  
+> **Status:** Ready to post — Jason review + post  
+> **Updated:** 2026-04-01 (v0.18.3, 539 tests, ~38 commands + full deprecated aliases)  
 > **Target:** news.ycombinator.com/submit
 
 ---
@@ -42,7 +42,7 @@ The command system got a full UX pass across v0.17 and v0.18. New `/effectum` en
 
 I tried BMAD, GSD, Taskmaster, SpecKit. Each taught me something. Effectum combines what worked: context engineering (GSD), structured specs (SpecKit), autonomous execution with real quality gates, and now progressive disclosure so a first-time user can build something in 10 minutes without reading the docs.
 
-**Traction:** 1,650+ downloads last week on npm — organic, no launch post. That's what finally pushed me to write this.
+**Traction:** 2,266+ downloads last week on npm — organic, no launch post. That's what finally pushed me to write this.
 
 v0.18.3, 539 tests, MIT.
 
@@ -67,7 +67,7 @@ github.com/aslomon/effectum
 > Max iterations configurable (default 30). Stuck Detection stops at 2 repeated errors with diagnosis. Context Budget Monitor stops cleanly at 80% usage. Fails gracefully, never silently.
 
 **"GitHub has 0 stars — is this production-ready?"**  
-> v0.18.3 is stable with 539 passing tests. I've been using it daily on my own projects, and ~3,200 people downloaded it in March without a launch post. Stars are a lagging indicator — hopefully less so after this post.
+> v0.18.3 is stable with 539 passing tests. I've been using it daily on my own projects, and ~3,200 people downloaded it in March + 2,266 last week alone, without a launch post. Stars are a lagging indicator — hopefully less so after this post.
 
 **"What's the /effect:next command exactly?"**  
 > It reads your current project state: open PRDs, tasks.md status, uncommitted changes, test results. Then recommends exactly one action. First commit? `/effectum:setup`. PRD exists but no tasks? `/prd:task-breakdown`. Tests failing? `/effect:dev:fix`. No ambiguity.
@@ -78,6 +78,6 @@ github.com/aslomon/effectum
 
 - **Best HN posting time:** Tuesday–Thursday, 8–10 AM US Eastern (2–4 PM Berlin)
 - **Weekend posting:** Lower volume but also less competition — Sunday morning ET can work
-- **npm traction:** 1,653 downloads last week, ~3,200 in March total (organic, pre-launch) — mention for credibility
+- **npm traction:** 2,266 downloads last week, ~3,200+ in March total (organic, pre-launch) — mention for credibility
 - **v0.18.3 angle:** Namespace clarity + backward compat is the UX story; "539 tests" signals maturity
 - **Competitor context:** AWS Kiro launched (pricing complaints), Windsurf acquired by OpenAI — good moment for "Claude Code native" positioning
