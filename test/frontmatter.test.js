@@ -118,6 +118,39 @@ describe("command frontmatter", () => {
         `${relativePath} 'description' must be ≤200 chars (got ${frontmatter.description.length})`,
       );
     });
+
+    test(`${relativePath} 'effort' field is valid if present`, () => {
+      const content = fs.readFileSync(filePath, "utf8");
+      const frontmatter = parseFrontmatter(content);
+      if (frontmatter && frontmatter.effort !== undefined) {
+        const validEffort = ["low", "medium", "high"];
+        assert.ok(
+          validEffort.includes(frontmatter.effort),
+          `${relativePath} 'effort' must be one of: ${validEffort.join(", ")} (got "${frontmatter.effort}")`,
+        );
+      }
+    });
+
+    test(`${relativePath} 'tags' field is array of strings if present`, () => {
+      const content = fs.readFileSync(filePath, "utf8");
+      const frontmatter = parseFrontmatter(content);
+      if (frontmatter && frontmatter.tags !== undefined) {
+        assert.ok(
+          Array.isArray(frontmatter.tags),
+          `${relativePath} 'tags' must be an array (got ${typeof frontmatter.tags})`,
+        );
+        for (const tag of frontmatter.tags) {
+          assert.ok(
+            typeof tag === "string",
+            `${relativePath} 'tags' must be an array of strings (got ${typeof tag} in array)`,
+          );
+          assert.ok(
+            tag.length > 0,
+            `${relativePath} 'tags' must not contain empty strings`,
+          );
+        }
+      }
+    });
   }
 });
 
