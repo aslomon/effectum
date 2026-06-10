@@ -406,6 +406,9 @@ CMD=$(jq -r ".tool_input.command" <<< "$(cat)")
 
 # Extract the file path being written
 FILE=$(jq -r ".tool_input.file_path // empty" <<< "$(cat)")
+# ⚠️  file_path is always an absolute path in Claude Code ≥ v2.1.88.
+# To match relative paths, strip the project root prefix:
+#   RELPATH=${FILE#"$PWD/"}
 
 # Extract tool name
 TOOL=$(jq -r ".tool_name" <<< "$(cat)")
