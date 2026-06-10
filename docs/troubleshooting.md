@@ -131,6 +131,8 @@ If you are on Linux, replace the `osascript` commands with `notify-send` or remo
 3. Fix the root cause manually.
 4. Restart the Ralph Loop with remaining tasks.
 
+> **Tip (v2.1.88+):** Adding a `PermissionDenied` hook with `{"retry": true}` can reduce stuck situations caused by Auto-Mode denials. Instead of halting, Claude will try an alternative approach. See [hooks.md — PermissionDenied](hooks.md#permissiondenied) for setup instructions.
+
 ## Quality Gate Issues
 
 ### Quality gates failing unexpectedly
