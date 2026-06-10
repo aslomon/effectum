@@ -199,6 +199,8 @@ Blocks the commit/push if any pattern is found.
 **What it does:**
 Runs a formatter after every file edit. In the template this is a placeholder (`echo formatter-not-configured`). Configure it per project by replacing the command with the appropriate formatter (e.g., `prettier --write`, `black`, `gofmt`).
 
+> **v2.1.90+ required for format-on-save hooks:** Before v2.1.90, if a `PostToolUse` format-on-save hook rewrote a file between two consecutive `Edit`/`Write` calls, the second call could fail with `"File content has changed"`. This was a Claude Code bug fixed in v2.1.90. If your project uses a formatter hook and you see this error, upgrade to v2.1.90 or later.
+
 ---
 
 ### PostToolUse — Command audit log
