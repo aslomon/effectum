@@ -567,7 +567,15 @@ describe("loadPresets", () => {
       assert.ok(preset.id, `preset missing id: ${JSON.stringify(preset)}`);
       assert.ok(preset.label, `preset ${preset.id} missing label`);
       assert.ok(preset.ecosystem, `preset ${preset.id} missing ecosystem`);
-      assert.ok(preset.framework, `preset ${preset.id} missing framework`);
+      if (preset.kind === "workflow") {
+        assert.equal(
+          preset.framework,
+          null,
+          `workflow preset ${preset.id} must use framework=null`,
+        );
+      } else {
+        assert.ok(preset.framework, `preset ${preset.id} missing framework`);
+      }
       assert.ok(preset.stack, `preset ${preset.id} missing stack`);
     }
   });
