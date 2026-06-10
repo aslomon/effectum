@@ -162,6 +162,32 @@ Skills can be published to [clawhub.ai](https://clawhub.ai) using the `clawhub` 
 
 ---
 
+## Security: Disabling Shell Execution in Skills (CI/CD)
+
+By default, skill `SKILL.md` files may include inline shell commands that Claude executes as part of following the skill's instructions. In locked-down CI/CD environments, you may want to prevent this.
+
+Add `disableSkillShellExecution: true` to your `.claude/settings.json` (available since Claude Code v2.1.91):
+
+```json
+{
+  "disableSkillShellExecution": true
+}
+```
+
+**What this affects:**
+- Inline shell execution inside `SKILL.md` instruction sets ✅ blocked
+- Inline shell inside custom slash commands (`.claude/commands/*.md`) ✅ blocked  
+- Inline shell inside plugin command definitions ✅ blocked
+
+**What this does NOT affect:**
+- Regular `Bash(*)` tool calls Claude makes on its own initiative
+- Scripts called via the Bash tool from outside skill definitions
+- MCP server commands
+
+Use this together with [Headless CI Mode](./installation-guide.md) and a restrictive `permissions.allow` list for fully locked-down non-interactive environments.
+
+---
+
 ## Skills vs. Commands vs. Agents
 
 Understanding when to use each extension point:
